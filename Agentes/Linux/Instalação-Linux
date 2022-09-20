@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<h2 align="center"><b>
 CentOS 6 install LINUX
 
 sudo rpm -Uvh /home/olos/Downloads/zabbix-agent-5.4.9-1.el7.x86_64.rpm
