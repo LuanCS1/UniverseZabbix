@@ -122,7 +122,7 @@ https://wiki.kolmisoft.com/index.php/Freeswitch_SNMP
 No Zabbix precisará colocar a comunicação via SNMP:
 <ol>
 <li>
-<img src=”https://github.com/LuanCS1/ProcessamentoDImagens/blob/main/ConfigFreeSwitch.png” height="150" width="150"></li>
+<img src="https://raw.githubusercontent.com/LuanCS1/ProcessamentoDImagens/main/ConfigFreeSwitch.png"></li>
 <li>
-<img src="[https://github.com/LuanCS1/ProcessamentoDImagens/blob/main/ConfigFreeSwitch2.png](https://github.com/LuanCS1/ProcessamentoDImagens/blob/main/ConfigFreeSwitch2.png?raw=true)" height="150" width="150"></li>
+<img src="https://raw.githubusercontent.com/LuanCS1/ProcessamentoDImagens/main/ConfigFreeSwitch2.png"></li>
 
