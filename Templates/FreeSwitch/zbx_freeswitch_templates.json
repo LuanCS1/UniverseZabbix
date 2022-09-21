@@ -1,0 +1,302 @@
+{
+    "zabbix_export": {
+        "version": "5.4",
+        "date": "2022-09-19T14:21:27Z",
+        "groups": [
+            {
+                "uuid": "7df96b18c230490a9a0a9e2307226338",
+                "name": "Templates"
+            },
+            {
+                "uuid": "91290fe175a04a15adff4015122fa0b6",
+                "name": "Templates/Olos"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "d2c6c5cb645f422cb20f7b7c4ba47ffa",
+                "template": "Olos - ECOS SNMP",
+                "name": "Olos - ECOS SNMP",
+                "description": "## Vis\u00e3o geral\n\nMonitores: uptime do servi\u00e7o, taxa de sess\u00e3o, chamadas ativas, sess\u00f5es ativas, sess\u00f5es de pico, chamadas de pico e n\u00famero de processos Freeswitch. Acionar em muitas chamadas ativas [ou seja, quando voc\u00ea est\u00e1 ficando sem canais].\n\n\nRequer que o subagente SNMP mod\\_snmp esteja habilitado em Freeswitch+net-snmp.",
+                "groups": [
+                    {
+                        "name": "Templates"
+                    },
+                    {
+                        "name": "Templates/Olos"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "85c25434a0d44ecda7ee2fc3465f7fd2",
+                        "name": "Ecos version",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "enterprises.27880.1.1.1.0",
+                        "key": "enterprises.27880.1.1.1.0",
+                        "delay": "12h",
+                        "history": "1w",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "preprocessing": [
+                            {
+                                "type": "STR_REPLACE",
+                                "parameters": [
+                                    "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ",
+                                    ""
+                                ]
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Ecos"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a752fdb8aa1d4ea1bbd430bd3ae96514",
+                        "name": "Ecos session rate",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "enterprises.27880.1.2.2.0",
+                        "key": "enterprises.27880.1.2.2.0",
+                        "delay": "5m",
+                        "history": "1w",
+                        "preprocessing": [
+                            {
+                                "type": "CHANGE_PER_SECOND",
+                                "parameters": [
+                                    ""
+                                ]
+                            }
+                        ],
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Ecos"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "cb485101a9ef48559a736d749e078b09",
+                        "name": "Ecos active sessions",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "enterprises.27880.1.2.3.0",
+                        "key": "enterprises.27880.1.2.3.0",
+                        "history": "1w",
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Ecos"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "b00da048a13f428fb60cc25b22cfc108",
+                        "name": "Ecos maximum allowed sessions",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "enterprises.27880.1.2.4.0",
+                        "key": "enterprises.27880.1.2.4.0",
+                        "history": "1w",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Ecos"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "6ec24db139624c16ba497b358488a621",
+                        "name": "Ecos active calls",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "enterprises.27880.1.2.5.0",
+                        "key": "enterprises.27880.1.2.5.0",
+                        "history": "1w",
+                        "units": "calls",
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Ecos"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "787c51ebc1f94be8a47a6f8233757260",
+                                "expression": "last(/Olos - ECOS SNMP/enterprises.27880.1.2.5.0)={$FS_MAX_CALLS}",
+                                "name": "Maximum concurrent calls reached",
+                                "priority": "HIGH",
+                                "description": "Maximum concurrent calls has been reached. Any further call attempts will get busy signal. Buy more SIP channels!"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "4f202718d1714dc79e7289d17396d6f0",
+                        "name": "Ecos current sessions per second",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "enterprises.27880.1.2.6.0",
+                        "key": "enterprises.27880.1.2.6.0",
+                        "history": "1w",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Ecos"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "5daf9ab8e0c14fad9ca0a67d445386db",
+                        "name": "Ecos peak sessions per second",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "enterprises.27880.1.2.8.0",
+                        "key": "enterprises.27880.1.2.8.0",
+                        "delay": "30m",
+                        "history": "1w",
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Ecos"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "2888b15dd1ad483386acc131c6c5dd89",
+                        "name": "Ecos peak sessions",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "enterprises.27880.1.2.10.0",
+                        "key": "enterprises.27880.1.2.10.0",
+                        "delay": "30m",
+                        "history": "1w",
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Ecos"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "48e27105e54b4e558e7b8bee93c9d2a8",
+                        "name": "Ecos peak sessions last five minutes",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "enterprises.27880.1.2.11.0",
+                        "key": "enterprises.27880.1.2.11.0",
+                        "delay": "5m",
+                        "history": "1w",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Ecos"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "049fd6a3d3914f39bcaab608afab8f09",
+                        "name": "Ecos service uptime",
+                        "type": "SNMP_AGENT",
+                        "snmp_oid": "iso.3.6.1.4.1.27880.1.2.1.0",
+                        "key": "iso.3.6.1.4.1.27880.1.2.1.0",
+                        "delay": "5m",
+                        "history": "1w",
+                        "units": "s",
+                        "preprocessing": [
+                            {
+                                "type": "MULTIPLIER",
+                                "parameters": [
+                                    "0.01"
+                                ]
+                            }
+                        ],
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Ecos"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "999dfde8b7a44952b6ee282dc749ca3a",
+                                "expression": "last(/Olos - ECOS SNMP/iso.3.6.1.4.1.27880.1.2.1.0)<600",
+                                "name": "Ecos service has restarted",
+                                "priority": "DISASTER",
+                                "description": "Uptime is less than 10 minutes, service has restarted."
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e6b5039e79264259a64fc1c5f68899ce",
+                        "name": "Number of ecos processes",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "proc.num[,,,freeswitch]",
+                        "delay": "2m",
+                        "history": "1w",
+                        "request_method": "POST",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Ecos"
+                            }
+                        ]
+                    }
+                ],
+                "macros": [
+                    {
+                        "macro": "{$FS_MAX_CALLS}",
+                        "value": "4"
+                    }
+                ]
+            }
+        ],
+        "graphs": [
+            {
+                "uuid": "1a3f9f8508ff497b8508d8a1488617d3",
+                "name": "Ecos Performance",
+                "graph_items": [
+                    {
+                        "sortorder": "1",
+                        "color": "C80000",
+                        "item": {
+                            "host": "Olos - ECOS SNMP",
+                            "key": "enterprises.27880.1.2.5.0"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "00C800",
+                        "item": {
+                            "host": "Olos - ECOS SNMP",
+                            "key": "enterprises.27880.1.2.3.0"
+                        }
+                    },
+                    {
+                        "sortorder": "3",
+                        "color": "0000C8",
+                        "item": {
+                            "host": "Olos - ECOS SNMP",
+                            "key": "enterprises.27880.1.2.10.0"
+                        }
+                    },
+                    {
+                        "sortorder": "4",
+                        "color": "C800C8",
+                        "item": {
+                            "host": "Olos - ECOS SNMP",
+                            "key": "enterprises.27880.1.2.8.0"
+                        }
+                    },
+                    {
+                        "sortorder": "5",
+                        "color": "00C8C8",
+                        "item": {
+                            "host": "Olos - ECOS SNMP",
+                            "key": "enterprises.27880.1.2.2.0"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
