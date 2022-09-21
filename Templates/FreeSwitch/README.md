@@ -118,11 +118,12 @@ https://freeswitch.org/confluence/display/FREESWITCH/mod_snmp<br>
 https://freeswitch.org/confluence/display/FREESWITCH/SNMP<br>
 https://wiki.kolmisoft.com/index.php/Freeswitch_SNMP
   </blockquote>
-
-No Zabbix precisará colocar a comunicação via SNMP:
+<h2 align="center">Configuração Zabbix</h2>
+<p>No Zabbix precisará colocar a comunicação via SNMP:<p>
 <ol>
-<li>
+  
+  <li><p>Atrelando a comunicação via SNMP com a <b>porta 161</b>:</p>
 <img src="https://raw.githubusercontent.com/LuanCS1/ProcessamentoDImagens/main/ConfigFreeSwitch.png"></li>
-<li>
+  <li><p>Finalizando o atrelamento com a versão do SNMP e a comunicação:</p>
 <img src="https://raw.githubusercontent.com/LuanCS1/ProcessamentoDImagens/main/ConfigFreeSwitch2.png"></li>
 
