@@ -1,0 +1,107 @@
+Procedimento Ativação SNMP FS
+=============================
+Compilação e instalação do mod_snmp
+Habilite a compilação do módulo por padrão, editando o arquivo modules.conf.
+# Compile mod_snmp
+
+cd /usr/src/freeswitch
+nano modules.conf
+
+Descomente a linha abaixo em modules.conf.:
+
+event_handlers/mod_snmp
+
+Compile e instale.
+
+sudo make mod_snmp-install
+
+Para habilitar o carregamento automático do módulo, 
+edite o arquivo /usr/local/freeswitch/conf/autoload_configs/modules.conf.xml 
+
+sudo nano /usr/local/freeswitch/conf/autoload_configs/modules.conf.xml
+
+E adicione a linha abaixo.
+
+<load module="mod_snmp">
+
+# Instalação e configuração do serviço snmpd
+# Crie o arquivo /etc/apt/sources.list.d/snmpd.list e insira as linhas abaixo com as URLs do repositório.
+
+sudo nano /etc/apt/sources.list
+
+O exemplo abaixo refere-se à instalação no Debian 11 (bullseye). 
+Para outras versões de Debian, é necessário trocar 'bullseye' para o codinome correspondente.
+
+# non-free
+deb http://ftp.us.debian.org/debian/ bullseye non-free
+deb-src http://ftp.us.debian.org/debian/ bullseye non-free
+
+Instale os pacotes necessários.
+
+sudo apt-get update
+sudo apt-get install snmp snmp-mibs-downloader snmpd
+
+Edite o arquivo de configuração /etc/snmp/snmpd.conf
+
+sudo nano /etc/snmp/snmpd.conf
+
+Adicionando ou efetuando a troca das variáveis abaixo e fazendo ajustes se necessário (ex. agentXPerms).
+Add this:
+
+# --- #
+# Run as an AgentX master agent
+master agentx
+
+# Listen on default named socket /var/agentx/master
+# agentXPerms SOCKPERMS [DIRPERMS [USER|UID [GROUP|GID]]]
+agentXPerms 0755 0755 freeswitch daemon
+agentXPerms 0755 0755 freeswitch freeswitch
+
+agentaddress 0.0.0.0,[::]
+
+rocommunity public
+# --- #
+Na variável agentXPerms devem ser especificados o username e group sob os quais o serviço freeswitch é executado.
+Por exemplo, em servidores VPL, em geral o usuário/grupo é olos_vpl.
+
+Reinicie o serviço de snmpd.
+
+sudo systemctl restart snmpd
+
+sudo /etc/init.d/snmpd restart
+
+Altere permissões do diretório abaixo.
+
+sudo chmod 755 /var/agentx/
+
+Configuração de firewall
+Para permitir a monitoração remota por ferramentas como o Zabbix, a porta 161/UDP deve estar autorizado no firewall.
+
+O exemplo abaixo apresenta os comandos para fazer a habilitação e a verificação das regras ativas em Debian 11 com firewalld.
+
+sudo firewall-cmd --add-service snmp --permanent
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-all
+
+Reinicie o Freeswitch.
+
+sudo systemctl restart freeswitch
+
+Verificação do funcionamento
+
+# Check if the agentX is connected to the FS in the FS log (fs_cli):
+
+[INFO] mod_snmp.c:70 NET-SNMP version 5.9 AgentX subagent connected
+
+For tests:
+
+snmpwalk -v 1 -c public localhost .1.3.6.1.4.1.27880
+snmpwalk -v 1 -c public localhost .1.3.6.1.4.1.27880.1.2
+
+More details:
+
+https://freeswitch.org/confluence/display/FREESWITCH/mod_snmp
+
+https://freeswitch.org/confluence/display/FREESWITCH/SNMP
+
+https://wiki.kolmisoft.com/index.php/Freeswitch_SNMP
