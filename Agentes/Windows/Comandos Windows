@@ -1,0 +1,8 @@
+Deletar Zabbix no CMD
+
+sc delete "Zabbix Agent"
+
+Criptografia:
+Identifier: zabbix.com.br
+Key: ____________________________________________
+
