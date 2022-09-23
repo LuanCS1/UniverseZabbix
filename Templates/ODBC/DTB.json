@@ -1,0 +1,1483 @@
+{
+    "zabbix_export": {
+        "version": "5.4",
+        "date": "2022-09-23T16:52:36Z",
+        "groups": [
+            {
+                "uuid": "e115692d9bc8436a910fa4d77e4f54dc",
+                "name": "Templates/JLCP"
+            },
+            {
+                "uuid": "91290fe175a04a15adff4015122fa0b6",
+                "name": "Templates/LUANCS"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "37795e173e3b400096314d402183d5d9",
+                "template": "LUANCS - SO Windows Active - DTBs Cloud",
+                "name": "LUANCS - SO Windows Active - DTBs Cloud",
+                "groups": [
+                    {
+                        "name": "Templates/JLCP"
+                    },
+                    {
+                        "name": "Templates/LUANCS"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "e13bd65d4f914cfcb709c873fa804549",
+                        "name": "Host name of zabbix_agentd running",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "agent.hostname",
+                        "delay": "600",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix agent"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "b04f33aa0a8049bf80b42207c4ca5fd6",
+                                "expression": "(last(/LUANCS - SO Windows Active - DTBs Cloud/agent.hostname,#1)<>last(/LUANCS - SO Windows Active - DTBs Cloud/agent.hostname,#2))>0",
+                                "name": "{HOSTNAME}: Host name of zabbix_agentd was changed - INFORMATION",
+                                "priority": "INFO"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "83651a1cf9be4cf39baf36d56c2d14ac",
+                        "name": "Agent ping",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "agent.ping",
+                        "delay": "90",
+                        "history": "30d",
+                        "description": "The agent always returns 1 for this item. It could be used in combination with nodata() for availability check.",
+                        "valuemap": {
+                            "name": "Zabbix agent ping status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix agent"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "42142ca2e2ab4c34a6967decf657e4f3",
+                                "expression": "nodata(/LUANCS - SO Windows Active - DTBs Cloud/agent.ping,10m)=1",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "nodata(/LUANCS - SO Windows Active - DTBs Cloud/agent.ping,10m)=0",
+                                "name": "{HOSTNAME}: Zabbix agent is unreachable - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "785cc313bfc4495aacd92d7ca684a4d6",
+                        "name": "Version of zabbix_agent(d) running",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "agent.version",
+                        "delay": "600",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix agent"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "a7f095a59068408ab83e0507d63201dd",
+                                "expression": "(last(/LUANCS - SO Windows Active - DTBs Cloud/agent.version,#1)<>last(/LUANCS - SO Windows Active - DTBs Cloud/agent.version,#2))>0",
+                                "name": "{HOSTNAME}: Version of zabbix_agent(d) was changed - INFORMATION",
+                                "priority": "INFO"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "eb505156100a4cd9835391fc982acd9a",
+                        "name": "Event Viewer LUANCS",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "eventlog[Application,LUANCS,,,,,]",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Event Viewer"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "d09ffaf31397418db24cb39f51a04223",
+                        "name": "Event Viewer LUANCS - Threads",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "eventlog[Application,ThreadAvailable = 0,,,,,]",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Event Viewer"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "83c936b6439e441ea1e5894bb09d8aea",
+                                "expression": "count(/LUANCS - SO Windows Active - DTBs Cloud/eventlog[Application,ThreadAvailable = 0,,,,,],1m,,\"ThreadAvailable = 0\")>1",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "nodata(/LUANCS - SO Windows Active - DTBs Cloud/eventlog[Application,ThreadAvailable = 0,,,,,],1h)=1",
+                                "name": "{HOSTNAME} - Event Viewer - {ITEM.VALUE} 1x in the last minute - HIGH",
+                                "priority": "HIGH"
+                            },
+                            {
+                                "uuid": "09c866871fe7420ebae931e1aeb8f10a",
+                                "expression": "count(/LUANCS - SO Windows Active - DTBs Cloud/eventlog[Application,ThreadAvailable = 0,,,,,],1m,,\"ThreadAvailable = 0\")>10",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "nodata(/LUANCS - SO Windows Active - DTBs Cloud/eventlog[Application,ThreadAvailable = 0,,,,,],1h)=1",
+                                "name": "{HOSTNAME} - Event Viewer - {ITEM.VALUE} more than 10x in the last minute - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "457f71394a594250adb5bf24cd28f1f1",
+                        "name": "ICMP ping",
+                        "type": "SIMPLE",
+                        "key": "icmpping",
+                        "delay": "60",
+                        "history": "30d",
+                        "valuemap": {
+                            "name": "Service state"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "ICMP"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "f54ffdba71cd4ebb926ca0d69be48820",
+                        "name": "ICMP ping loss",
+                        "type": "SIMPLE",
+                        "key": "icmppingloss",
+                        "delay": "60",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "ICMP"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "71f148ad82e74769b4a0f2c47190b030",
+                        "name": "ICMP response time",
+                        "type": "SIMPLE",
+                        "key": "icmppingsec",
+                        "delay": "60",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "s",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "ICMP"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "71b33142250246f78869f3d07b226638",
+                        "name": "PhysicalDisk: Avg. Disk Queue Length",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "perf_counter[\\234(_Total)\\1400]",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Disk"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "3fd22351bcba44848ed6c1dc35dee3e9",
+                                "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],1h)>=50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)<50",
+                                "name": "{HOSTNAME} - Disk Queue Length is above 50 for more than 1 hour - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Disk Queue Length is above 200 for more than 1 hour - HIGH",
+                                        "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],1h)>=200",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)<200"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Disk Queue Length is above 500 for more than 30 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)>=500",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],15m)<500"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "f8a9e24ac3b949af8f5b2bfaf9406237",
+                                "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],1h)>=200",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)<200",
+                                "name": "{HOSTNAME} - Disk Queue Length is above 200 for more than 1 hour - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Disk Queue Length is above 500 for more than 30 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)>=500",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],15m)<500"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "0dd5494d36d64d059df57ca51dc5b85a",
+                                "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)>=500",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],15m)<500",
+                                "name": "{HOSTNAME} - Disk Queue Length is above 500 for more than 30 minutes - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "316075035b3c4930acd26acd8e4efa8c",
+                        "name": "PhysicalDisk: Avg. Disk Read Queue Length",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "perf_counter[\\234(_Total)\\1402]",
+                        "delay": "180",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Disk"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "06c3349a451e4119a0bb957fc283df16",
+                        "name": "PhysicalDisk: Avg. Disk Write Queue Length",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "perf_counter[\\234(_Total)\\1404]",
+                        "delay": "180",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "description": "Full counter name: \\PhysicalDisk(_Total)\\Avg. Disk Write Queue Length",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Disk"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "6641a5aac61c4803be3d60402353ca62",
+                        "name": "Paging File: % Usage",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "perf_counter[\\700(_Total)\\702]",
+                        "delay": "300",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "641aca850b38466ea6ec900c311531cf",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],8h)>50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)<=50",
+                                "name": "{HOSTNAME} - Average pagefile usage is more than 50% for more than 8 hours - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average pagefile usage is more than 90% for more then 1 hour - DISASTER",
+                                        "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>90",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],30m)<=90"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Average pagefile usage is than 70% for more then 1 hour - HIGH",
+                                        "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>70",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)<=70"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "96234010e25143efa4ae8dc5d76d9e10",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>90",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],30m)<=90",
+                                "name": "{HOSTNAME} - Average pagefile usage is more than 90% for more then 1 hour - DISASTER",
+                                "priority": "DISASTER",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Pagefile above 95% for more then 10 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)>=95",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)<95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "10097d1c8a5d40638d0d1caedd6d05cd",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>70",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)<=70",
+                                "name": "{HOSTNAME} - Average pagefile usage is than 70% for more then 1 hour - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average pagefile usage is more than 90% for more then 1 hour - DISASTER",
+                                        "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>90",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],30m)<=90"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "dfd71410a03d404897f65800070054f0",
+                                "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)>=95",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)<95",
+                                "name": "{HOSTNAME} - Pagefile above 95% for more then 10 minutes - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "fd4b30aa69ab4a60b6e94ccce6cdeaf5",
+                        "name": "Processor load (1 min average)",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.cpu.load[percpu,avg1]",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "description": "Carga de sistema geral",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "CPU"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "774a152c66d4423ab286cc832d8e54d6",
+                                "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],10m)>=100",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],10m)<100",
+                                "name": "{HOSTNAME} - Processor load is above 100 for more than 10 minutes - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "4bfd3cba58d74226ba8ddd97937c4388",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],8h)>25",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],1h)<=25",
+                                "name": "{HOSTNAME} - Processor load is more than 25 for more than 8 hours - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Processor load is more than 50 for more than 1 hour - HIGH",
+                                        "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],1h)>50",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],10m)<=50"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Processor load is more than 50 for more than 8 hours - DISASTER",
+                                        "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],8h)>50",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],1h)<=50"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "9eb6f55aa7354c04b4ee4c3d5ee3af92",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],1h)>50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],10m)<=50",
+                                "name": "{HOSTNAME} - Processor load is more than 50 for more than 1 hour - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Processor load is more than 50 for more than 8 hours - DISASTER",
+                                        "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],8h)>50",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],1h)<=50"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "239c2991f11a4af0a75a87719ec99d48",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],8h)>50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],1h)<=50",
+                                "name": "{HOSTNAME} - Processor load is more than 50 for more than 8 hours - DISASTER",
+                                "priority": "DISASTER",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Processor load is above 100 for more than 10 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],10m)>=100",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.load[percpu,avg1],10m)<100"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a4157dad6a0146208d49daf1705165b2",
+                        "name": "CPU Number",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.cpu.num",
+                        "delay": "600",
+                        "history": "30d",
+                        "description": "N\u00famero de CPU f\u00edsicas e l\u00f3gicas.",
+                        "preprocessing": [
+                            {
+                                "type": "MULTIPLIER",
+                                "parameters": [
+                                    "1"
+                                ]
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "CPU"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "cfed73ec4d79400abc8a9b1a11157461",
+                        "name": "CPU Usage in %",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.cpu.util",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "CPU"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "d4199171edb34fb095f6f28474e35624",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,24h)>80",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,1h)<=80",
+                                "name": "{HOSTNAME} - Average CPU usage is more than 80% for more than 24 hours - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average CPU usage is more than 90% for more than 8 hour - HIGH",
+                                        "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,8h)>90",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,1h)<=90"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - CPU usage is above 95% for more than 10 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,10m)>=95",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,10m)<95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "1c89401b3825412b9113c2c081d04e2b",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,8h)>90",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,1h)<=90",
+                                "name": "{HOSTNAME} - Average CPU usage is more than 90% for more than 8 hour - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - CPU usage is above 95% for more than 10 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,10m)>=95",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,10m)<95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "f947f3b76904421891ad50eb69cd2adc",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,1h)>95",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,1h)<=95",
+                                "name": "{HOSTNAME} - Average CPU usage is more than 95% for more than 1 hour - DISASTER",
+                                "priority": "DISASTER",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - CPU usage is above 95% for more than 10 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,10m)>=95",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,10m)<95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "8151ba69834549b28415c582d4f7efae",
+                                "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,10m)>=95",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,10m)<95",
+                                "name": "{HOSTNAME} - CPU usage is above 95% for more than 10 minutes - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "aa4cf127a99b44728c81d45c7205263a",
+                                "expression": "nodata(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,10m)=1",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "nodata(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,10m)=0",
+                                "name": "{HOSTNAME}: Stopped recieving data (CPU) - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "1f2b101039e64679b866f65ec67d8faf",
+                        "name": "Computer name",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.hostname",
+                        "delay": "300",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "inventory_link": "NAME",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "System"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "95e4b4f744404513a7d15fcc3553378b",
+                        "name": "Current time",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.localtime",
+                        "delay": "300",
+                        "history": "30d",
+                        "units": "unixtime",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "System"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "05c3552c72064b72bc54bcd2e86b7f68",
+                                "expression": "fuzzytime(/LUANCS - SO Windows Active - DTBs Cloud/system.localtime,180s)=0",
+                                "name": "{HOSTNAME} time is not synchronized with Zabbix Server - AVERAGE",
+                                "priority": "AVERAGE"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "71629ffddd334d17b42c1442f0d19a95",
+                        "name": "Windows Status Active",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.run[\"c:\\Windows\\System32\\cscript.exe /nologo c:\\Windows\\System32\\slmgr.vbs /xpr\"]",
+                        "delay": "1d",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Active Status"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "933a4a4f425645379c852357ac4886b8",
+                                "expression": "find(/LUANCS - SO Windows Active - DTBs Cloud/system.run[\"c:\\Windows\\System32\\cscript.exe /nologo c:\\Windows\\System32\\slmgr.vbs /xpr\"],,\"like\",\"Notification mode\")=1",
+                                "name": "{HOSTNAME}: Windows is not Activated - INFORMATION",
+                                "priority": "INFO"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "f85a168a5c8d4b9cb9881deb646052e6",
+                        "name": "System Information",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.uname",
+                        "delay": "3600",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "inventory_link": "OS",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "System"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3aa7ecdaac474682b9ae62097fbc63ee",
+                        "name": "System Uptime",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.uptime",
+                        "delay": "60",
+                        "history": "30d",
+                        "units": "uptime",
+                        "inventory_link": "HARDWARE_FULL",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "System"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "d723a4febe154093b11aba2673132f69",
+                                "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/system.uptime)<10m",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/system.uptime)>=8h",
+                                "name": "{HOST.NAME}: has just been restarted - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "b485a77aa7014466a22afe09dcadecf6",
+                        "name": "Available memory",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vm.memory.size[available]",
+                        "history": "30d",
+                        "units": "B",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "53dbcf4773d643fc82b330ccaab0779d",
+                        "name": "Available memory in %",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vm.memory.size[pavailable]",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "87018df5066b44558539bea0571686d9",
+                        "name": "Memory usage in %",
+                        "type": "CALCULATED",
+                        "key": "vm.memory.size[pused]",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "params": "100-last(//vm.memory.size[pavailable])",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "2354b1d0517b464a818f10803de8ec01",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/vm.memory.size[pused],24h)>90",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/vm.memory.size[pused],1h)<=90",
+                                "name": "{HOSTNAME} - Average MEM usage is more than 90% for more than 8 hours - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average MEM usage is more than 95% for more than 8 hours - HIGH",
+                                        "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/vm.memory.size[pused],8h)>95",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/vm.memory.size[pused],1h)<=95"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Average MEM usage is more than 95% for more than 24 hours - DISASTER",
+                                        "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/vm.memory.size[pused],24h)>95",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/vm.memory.size[pused],1h)<=95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "0f5ee203177347fa9726fb83d710c078",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/vm.memory.size[pused],8h)>95",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/vm.memory.size[pused],1h)<=95",
+                                "name": "{HOSTNAME} - Average MEM usage is more than 95% for more than 8 hours - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average MEM usage is more than 95% for more than 24 hours - DISASTER",
+                                        "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/vm.memory.size[pused],24h)>95",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/vm.memory.size[pused],1h)<=95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "67f009b4d40b48babb685626e5626ba7",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/vm.memory.size[pused],24h)>95",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/vm.memory.size[pused],1h)<=95",
+                                "name": "{HOSTNAME} - Average MEM usage is more than 95% for more than 24 hours - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "a2814996d8054f2f8c5c05e73ad35df3",
+                                "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/vm.memory.size[pused],10m)>=98",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/vm.memory.size[pused],10m)<98",
+                                "name": "{HOSTNAME} - MEM usage is above 98% for more than 1 hour - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "efe3bdb690b34f8c8ee10a4efe6f1c35",
+                        "name": "Total memory",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vm.memory.size[total]",
+                        "delay": "300",
+                        "history": "30d",
+                        "units": "B",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "acbebecb75d741738234e67cd3081101",
+                        "name": "Memory usage",
+                        "type": "CALCULATED",
+                        "key": "vm.memory.size[used]",
+                        "history": "30d",
+                        "units": "B",
+                        "params": "last(//vm.memory.size[total])-last(//vm.memory.size[available])",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ]
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "83c587ae24c04791befc70451ce4adaf",
+                        "name": "Network interface discovery",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "net.if.discovery",
+                        "delay": "1800",
+                        "filter": {
+                            "conditions": [
+                                {
+                                    "macro": "{#IFNAME}",
+                                    "value": "@Network interfaces for discovery",
+                                    "formulaid": "A"
+                                }
+                            ]
+                        },
+                        "lifetime": "7d",
+                        "item_prototypes": [
+                            {
+                                "uuid": "968b4e53b17d444e8f9c47d573b78bc4",
+                                "name": "Incoming network traffic on {#IFNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "net.if.in[{#IFNAME}]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "bps",
+                                "preprocessing": [
+                                    {
+                                        "type": "CHANGE_PER_SECOND",
+                                        "parameters": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "type": "MULTIPLIER",
+                                        "parameters": [
+                                            "8"
+                                        ]
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Network"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "e9db57acc790419f82e991ed56067a8c",
+                                "name": "Outgoing network traffic o {#IFNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "net.if.out[{#IFNAME}]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "bps",
+                                "preprocessing": [
+                                    {
+                                        "type": "CHANGE_PER_SECOND",
+                                        "parameters": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "type": "MULTIPLIER",
+                                        "parameters": [
+                                            "8"
+                                        ]
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Network"
+                                    }
+                                ]
+                            }
+                        ],
+                        "graph_prototypes": [
+                            {
+                                "uuid": "77f2cf24a862449d937b87b62dfce9fa",
+                                "name": "Network traffic in {#IFNAME}",
+                                "show_work_period": "NO",
+                                "ymin_type_1": "FIXED",
+                                "graph_items": [
+                                    {
+                                        "color": "C80000",
+                                        "item": {
+                                            "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                                            "key": "net.if.in[{#IFNAME}]"
+                                        }
+                                    },
+                                    {
+                                        "sortorder": "1",
+                                        "color": "00C800",
+                                        "item": {
+                                            "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                                            "key": "net.if.out[{#IFNAME}]"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "d2fd9bf16edd4b5181da2a29e326f141",
+                        "name": "Mounted filesystem discovery",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vfs.fs.discovery",
+                        "delay": "1800",
+                        "filter": {
+                            "conditions": [
+                                {
+                                    "macro": "{#FSTYPE}",
+                                    "value": "@File systems for discovery",
+                                    "formulaid": "A"
+                                }
+                            ]
+                        },
+                        "lifetime": "0",
+                        "item_prototypes": [
+                            {
+                                "uuid": "d5425b8c189940419663a37a130db61c",
+                                "name": "Free disk space on {#FSNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "vfs.fs.size[{#FSNAME},free]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "B",
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Disk"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "b3b0da658c944b2ea9bb16d9e39dd952",
+                                "name": "Free disk space on {#FSNAME} in %",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "vfs.fs.size[{#FSNAME},pfree]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "value_type": "FLOAT",
+                                "units": "%",
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Disk"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "fec19110968b4c71a4b65af420c7cc24",
+                                        "expression": "nodata(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree],1h)=1",
+                                        "recovery_mode": "RECOVERY_EXPRESSION",
+                                        "recovery_expression": "nodata(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree],10m)=0",
+                                        "name": "{HOST.NAME}: Stopped recieving data (HDD) - DISASTER",
+                                        "priority": "DISASTER"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "ce220d4ce2164ffba2e3b0ed414be63b",
+                                "name": "Total disk space on {#FSNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "vfs.fs.size[{#FSNAME},total]",
+                                "delay": "600",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "B",
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Disk"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "aebbb821f9e74a3b9ecbcd1c1e3195b8",
+                                "name": "Used disk space on {#FSNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "vfs.fs.size[{#FSNAME},used]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "B",
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Disk"
+                                    }
+                                ]
+                            }
+                        ],
+                        "trigger_prototypes": [
+                            {
+                                "uuid": "2758908391864f2182408b451ff2129b",
+                                "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>1",
+                                "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "f144ca5de2d7437ba3eac7dba3fd0008",
+                                "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>2",
+                                "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "e97b00e27f49425680ca325def021370",
+                                "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>3",
+                                "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "84cdcb4e52e8439c9cacc9869d0cecd2",
+                                "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>4",
+                                "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "56859db2bd6b4fba8518f3a4fd9a344b",
+                                "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>5",
+                                "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "eab629c284ef43dd9ae939ac2d44494a",
+                                "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=10 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>10",
+                                "name": "{HOSTNAME} - Free disk space is less than 10% on partition: {#FSNAME} - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>1"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>2"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>3"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>4"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>5"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])=0 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>0"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "3e719d0447854c109ceba5517fbc71cd",
+                                "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=20 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>20",
+                                "name": "{HOSTNAME} - Free disk space is less than 20% on partition: {#FSNAME} - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>1"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>2"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>3"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>4"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>5"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])=0 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>0"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "018920d61df148fe9c784a1ac4701e94",
+                                "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=30 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>30",
+                                "name": "{HOSTNAME} - Free disk space is less than 30% on partition: {#FSNAME} - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>1"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>2"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>3"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>4"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>5"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 10% on partition: {#FSNAME} - HIGH",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=10 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>10"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 20% on partition: {#FSNAME} - HIGH",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=20 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>20"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])=0 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>0"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "264d5b4152cc40fd9742366d10f536d8",
+                                "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=50 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>50",
+                                "name": "{HOSTNAME} - Free disk space is less than 50% on partition: {#FSNAME} - WARNING",
+                                "priority": "WARNING",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>1"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>2"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>3"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>4"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>5"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 10% on partition: {#FSNAME} - HIGH",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=10 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>10"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 20% on partition: {#FSNAME} - HIGH",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=20 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>20"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 30% on partition: {#FSNAME} - AVERAGE",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])<=30 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>30"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])=0 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>0"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "c456ce2937db481893cfd5a0410eb8c1",
+                                "expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])=0 and last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - DTBs Cloud/vfs.fs.size[{#FSNAME},pfree])>0",
+                                "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ],
+                        "graph_prototypes": [
+                            {
+                                "uuid": "236101f229204ac58ef5a27422dbd6c7",
+                                "name": "Disk space usage history in % on the partition: {#FSNAME}",
+                                "width": "500",
+                                "ymin_type_1": "FIXED",
+                                "ymax_type_1": "ITEM",
+                                "ymax_item_1": {
+                                    "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                                    "key": "vfs.fs.size[{#FSNAME},pfree]"
+                                },
+                                "graph_items": [
+                                    {
+                                        "drawtype": "BOLD_LINE",
+                                        "color": "1A7C11",
+                                        "item": {
+                                            "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                                            "key": "vfs.fs.size[{#FSNAME},pfree]"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "e9226b3582e3479881dba9d6ddfc1cda",
+                                "name": "Disk space usage history on the partition: {#FSNAME}",
+                                "width": "500",
+                                "ymin_type_1": "FIXED",
+                                "ymax_type_1": "ITEM",
+                                "ymax_item_1": {
+                                    "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                                    "key": "vfs.fs.size[{#FSNAME},total]"
+                                },
+                                "graph_items": [
+                                    {
+                                        "drawtype": "BOLD_LINE",
+                                        "color": "1A7C11",
+                                        "item": {
+                                            "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                                            "key": "vfs.fs.size[{#FSNAME},used]"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "0c4d6af0c9684b6a8c2a6bb3128b86e9",
+                                "name": "Disk space usage on partition: {#FSNAME}",
+                                "width": "500",
+                                "yaxismax": "0",
+                                "show_work_period": "NO",
+                                "show_triggers": "NO",
+                                "type": "PIE",
+                                "show_3d": "YES",
+                                "graph_items": [
+                                    {
+                                        "color": "00C800",
+                                        "item": {
+                                            "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                                            "key": "vfs.fs.size[{#FSNAME},total]"
+                                        }
+                                    },
+                                    {
+                                        "sortorder": "1",
+                                        "color": "C80000",
+                                        "item": {
+                                            "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                                            "key": "vfs.fs.size[{#FSNAME},free]"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "macros": [
+                    {
+                        "macro": "{$CPU_AVERAGE}",
+                        "value": "80"
+                    },
+                    {
+                        "macro": "{$CPU_DISASTER}",
+                        "value": "95"
+                    },
+                    {
+                        "macro": "{$CPU_HIGH_0}",
+                        "value": "90"
+                    },
+                    {
+                        "macro": "{$CPU_HIGH_1}",
+                        "value": "85"
+                    },
+                    {
+                        "macro": "{$CPU_TIME}",
+                        "value": "10m"
+                    },
+                    {
+                        "macro": "{$FS_AVERAGE_0}",
+                        "value": "15"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0}",
+                        "value": "5"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0: \"C:\"}",
+                        "value": "50"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0: \"D:\"}",
+                        "value": "50"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0: \"E:\"}",
+                        "value": "20"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0: \"F:\"}",
+                        "value": "20"
+                    },
+                    {
+                        "macro": "{$FS_HIGH_0}",
+                        "value": "10"
+                    },
+                    {
+                        "macro": "{$FS_TIME}",
+                        "value": "5m"
+                    },
+                    {
+                        "macro": "{$ICMP_TIME}",
+                        "value": "5m"
+                    },
+                    {
+                        "macro": "{$MEM_AVERAGE}",
+                        "value": "50"
+                    },
+                    {
+                        "macro": "{$MEM_DISASTER}",
+                        "value": "80"
+                    },
+                    {
+                        "macro": "{$MEM_TIME}",
+                        "value": "10m"
+                    },
+                    {
+                        "macro": "{$NET_THRESHOLD}",
+                        "value": "90"
+                    },
+                    {
+                        "macro": "{$NET_TIME}",
+                        "value": "5m"
+                    },
+                    {
+                        "macro": "{$PAGEFILE_THRESHOLD}",
+                        "value": "75"
+                    },
+                    {
+                        "macro": "{$PAGEFILE_TIME}",
+                        "value": "5m"
+                    }
+                ],
+                "valuemaps": [
+                    {
+                        "uuid": "58d63f5fd2864ceea2c2db2a0c5868a3",
+                        "name": "Service state",
+                        "mappings": [
+                            {
+                                "value": "0",
+                                "newvalue": "Down"
+                            },
+                            {
+                                "value": "1",
+                                "newvalue": "Up"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "6f6c677004134397a9c5c125ef8d7c57",
+                        "name": "Zabbix agent ping status",
+                        "mappings": [
+                            {
+                                "value": "1",
+                                "newvalue": "Up"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "triggers": [
+            {
+                "uuid": "315b15dd8b234c90b8c1126584d9420b",
+                "expression": "nodata(/LUANCS - SO Windows Active - DTBs Cloud/system.uptime,10m)=1",
+                "recovery_mode": "RECOVERY_EXPRESSION",
+                "recovery_expression": "nodata(/LUANCS - SO Windows Active - DTBs Cloud/system.cpu.util,10m)=0",
+                "name": "{HOSTNAME}: Stopped recieving data (UPTIME) - DISASTER",
+                "priority": "DISASTER"
+            }
+        ],
+        "graphs": [
+            {
+                "uuid": "b0531ca0d9df4e5c925f00068812e68a",
+                "name": "Performance overview",
+                "show_work_period": "NO",
+                "show_triggers": "NO",
+                "ymin_type_1": "FIXED",
+                "graph_items": [
+                    {
+                        "drawtype": "BOLD_LINE",
+                        "color": "C80000",
+                        "item": {
+                            "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                            "key": "system.cpu.util"
+                        }
+                    },
+                    {
+                        "sortorder": "1",
+                        "color": "00C800",
+                        "item": {
+                            "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                            "key": "vm.memory.size[pused]"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "0000EE",
+                        "item": {
+                            "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                            "key": "perf_counter[\\700(_Total)\\702]"
+                        }
+                    },
+                    {
+                        "sortorder": "3",
+                        "color": "DAA520",
+                        "item": {
+                            "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                            "key": "system.cpu.load[percpu,avg1]"
+                        }
+                    },
+                    {
+                        "sortorder": "4",
+                        "color": "6C59DC",
+                        "item": {
+                            "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                            "key": "perf_counter[\\234(_Total)\\1400]"
+                        }
+                    },
+                    {
+                        "sortorder": "5",
+                        "color": "FF33FF",
+                        "item": {
+                            "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                            "key": "perf_counter[\\234(_Total)\\1402]"
+                        }
+                    },
+                    {
+                        "sortorder": "6",
+                        "color": "FFFF33",
+                        "item": {
+                            "host": "LUANCS - SO Windows Active - DTBs Cloud",
+                            "key": "perf_counter[\\234(_Total)\\1404]"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
