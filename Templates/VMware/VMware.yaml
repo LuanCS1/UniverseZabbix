@@ -1,0 +1,599 @@
+zabbix_export:
+  version: '5.4'
+  date: '2022-09-23T17:58:30Z'
+  groups:
+    -
+      uuid: e115692d9bc8436a910fa4d77e4f54dc
+      name: Templates/JLCP
+    -
+      uuid: 91290fe175a04a15adff4015122fa0b6
+      name: Templates/LUANCS
+  templates:
+    -
+      uuid: 93ca9f6b89a445f284775f938e95dc2c
+      template: 'LUANCS - SO VMware Hypervisor'
+      name: 'LUANCS - SO VMware Hypervisor'
+      groups:
+        -
+          name: Templates/JLCP
+        -
+          name: Templates/LUANCS
+      items:
+        -
+          uuid: 0e91f3c030dd450cb1d7e473aa4228f6
+          name: 'Cluster name'
+          type: SIMPLE
+          key: 'vmware.hv.cluster.name[{$URL},{HOST.HOST}]'
+          delay: '3600'
+          history: 8d
+          trends: '0'
+          value_type: CHAR
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'Cluster name of the guest VM.'
+          tags:
+            -
+              tag: Application
+              value: General
+        -
+          uuid: 8dd4e4e03a9e4768884d918903e22fc4
+          name: 'CPU usage'
+          type: SIMPLE
+          key: 'vmware.hv.cpu.usage[{$URL},{HOST.HOST}]'
+          delay: '60'
+          history: 8d
+          trends: 8d
+          units: Hz
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'Aggregated CPU usage across all cores on the host in Hz. This is only available if the host is connected.'
+          tags:
+            -
+              tag: Application
+              value: CPU
+        -
+          uuid: e7d841517eb94ba889f9f048bda740ef
+          name: 'Datacenter name'
+          type: SIMPLE
+          key: 'vmware.hv.datacenter.name[{$URL},{HOST.HOST}]'
+          delay: '60'
+          history: 8d
+          trends: '0'
+          value_type: CHAR
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'Datacenter name of the hypervisor.'
+          tags:
+            -
+              tag: Application
+              value: General
+        -
+          uuid: 3dabd6ab053e49ce80334aa797b9179c
+          name: 'Full name'
+          type: SIMPLE
+          key: 'vmware.hv.fullname[{$URL},{HOST.HOST}]'
+          delay: '3600'
+          history: 8d
+          trends: '0'
+          value_type: CHAR
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'The complete product name, including the version information.'
+          tags:
+            -
+              tag: Application
+              value: General
+        -
+          uuid: 33ba8837b9a341d2967aa29f765fad31
+          name: 'CPU frequency'
+          type: SIMPLE
+          key: 'vmware.hv.hw.cpu.freq[{$URL},{HOST.HOST}]'
+          delay: '3600'
+          history: 8d
+          trends: 8d
+          units: Hz
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'The speed of the CPU cores. This is an average value if there are multiple speeds. The product of CPU frequency and number of cores is approximately equal to the sum of the MHz for all the individual cores on the host.'
+          tags:
+            -
+              tag: Application
+              value: CPU
+            -
+              tag: Application
+              value: Hardware
+        -
+          uuid: 3058a664e5574a0191aea7094ee0b344
+          name: 'CPU model'
+          type: SIMPLE
+          key: 'vmware.hv.hw.cpu.model[{$URL},{HOST.HOST}]'
+          delay: '3600'
+          history: 8d
+          trends: '0'
+          value_type: CHAR
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'The CPU model.'
+          tags:
+            -
+              tag: Application
+              value: CPU
+            -
+              tag: Application
+              value: Hardware
+        -
+          uuid: 27fa0ca19f6a4be993837bdf64a49432
+          name: 'CPU cores'
+          type: SIMPLE
+          key: 'vmware.hv.hw.cpu.num[{$URL},{HOST.HOST}]'
+          delay: '3600'
+          history: 8d
+          trends: 8d
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'Number of physical CPU cores on the host. Physical CPU cores are the processors contained by a CPU package.'
+          tags:
+            -
+              tag: Application
+              value: CPU
+            -
+              tag: Application
+              value: Hardware
+        -
+          uuid: 4a172348cf554065a8bcb56cbaa595ac
+          name: 'CPU threads'
+          type: SIMPLE
+          key: 'vmware.hv.hw.cpu.threads[{$URL},{HOST.HOST}]'
+          delay: '3600'
+          history: 8d
+          trends: 8d
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'Number of physical CPU threads on the host.'
+          tags:
+            -
+              tag: Application
+              value: CPU
+            -
+              tag: Application
+              value: Hardware
+        -
+          uuid: 0389e44417614faf8e41dfbe5f7e1c40
+          name: 'Total memory'
+          type: SIMPLE
+          key: 'vmware.hv.hw.memory[{$URL},{HOST.HOST}]'
+          delay: '3600'
+          history: 8d
+          trends: 8d
+          units: B
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'The physical memory size.'
+          tags:
+            -
+              tag: Application
+              value: Hardware
+            -
+              tag: Application
+              value: Memory
+        -
+          uuid: 3efaad843a9545cdb141890b6db94431
+          name: Model
+          type: SIMPLE
+          key: 'vmware.hv.hw.model[{$URL},{HOST.HOST}]'
+          delay: '3600'
+          history: 8d
+          trends: '0'
+          value_type: CHAR
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'The system model identification.'
+          tags:
+            -
+              tag: Application
+              value: Hardware
+        -
+          uuid: 0ce67159b92a4b86aad7dfa6b32b9f76
+          name: 'Bios UUID'
+          type: SIMPLE
+          key: 'vmware.hv.hw.uuid[{$URL},{HOST.HOST}]'
+          delay: '3600'
+          history: 8d
+          trends: '0'
+          value_type: CHAR
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'The hardware BIOS identification.'
+          tags:
+            -
+              tag: Application
+              value: Hardware
+        -
+          uuid: 0007a8f736ec42119153ff5df9cc03b2
+          name: Vendor
+          type: SIMPLE
+          key: 'vmware.hv.hw.vendor[{$URL},{HOST.HOST}]'
+          delay: '3600'
+          history: 8d
+          trends: '0'
+          value_type: CHAR
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'The hardware vendor identification.'
+          tags:
+            -
+              tag: Application
+              value: Hardware
+        -
+          uuid: a8f4ae661be64206a834a5f27b49eba7
+          name: 'Used memory in %'
+          type: CALCULATED
+          key: vmware.hv.memory.pused
+          delay: '60'
+          history: 8d
+          trends: 8d
+          value_type: FLOAT
+          units: '%'
+          params: '100*last(//vmware.hv.memory.used[{$URL},{HOST.HOST}])/last(//vmware.hv.hw.memory[{$URL},{HOST.HOST}])'
+          tags:
+            -
+              tag: Application
+              value: Memory
+          triggers:
+            -
+              uuid: 1fb25b43a3e94c569484f6e234a5759f
+              expression: '({TRIGGER.VALUE}=0 and avg(/LUANCS - SO VMware Hypervisor/vmware.hv.memory.pused,{$MEM_TIME})>{$MEM_DISASTER_0}) or ({TRIGGER.VALUE}=1 and avg(/LUANCS - SO VMware Hypervisor/vmware.hv.memory.pused,{$MEM_TIME})>{$MEM_DISASTER_1})'
+              name: 'Critical memory usage on {HOST.NAME}: {ITEM.VALUE}'
+              priority: HIGH
+              manual_close: 'YES'
+            -
+              uuid: 71e8abc684044fe6be84f779865bc3f1
+              expression: '({TRIGGER.VALUE}=0 and avg(/LUANCS - SO VMware Hypervisor/vmware.hv.memory.pused,{$MEM_TIME})>{$MEM_HIGH_0}) or ({TRIGGER.VALUE}=1 and avg(/LUANCS - SO VMware Hypervisor/vmware.hv.memory.pused,{$MEM_TIME})>{$MEM_HIGH_1})'
+              name: 'High memory usage on {HOST.NAME}: {ITEM.VALUE}'
+              priority: HIGH
+              manual_close: 'YES'
+              dependencies:
+                -
+                  name: 'Critical memory usage on {HOST.NAME}: {ITEM.VALUE}'
+                  expression: '({TRIGGER.VALUE}=0 and avg(/LUANCS - SO VMware Hypervisor/vmware.hv.memory.pused,{$MEM_TIME})>{$MEM_DISASTER_0}) or ({TRIGGER.VALUE}=1 and avg(/LUANCS - SO VMware Hypervisor/vmware.hv.memory.pused,{$MEM_TIME})>{$MEM_DISASTER_1})'
+        -
+          uuid: 6e1184c720794e2bb021fc138900973e
+          name: 'Ballooned memory'
+          type: SIMPLE
+          key: 'vmware.hv.memory.size.ballooned[{$URL},{HOST.HOST}]'
+          delay: '60'
+          history: 8d
+          trends: 8d
+          units: B
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'The amount of guest physical memory that is currently reclaimed through the balloon driver. Sum of all guest VMs.'
+          tags:
+            -
+              tag: Application
+              value: Memory
+        -
+          uuid: 429638f3c2a04ffcb0802ec44f0e70e9
+          name: 'Used memory'
+          type: SIMPLE
+          key: 'vmware.hv.memory.used[{$URL},{HOST.HOST}]'
+          delay: '60'
+          history: 8d
+          trends: 8d
+          units: B
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'Physical memory usage on the host.'
+          tags:
+            -
+              tag: Application
+              value: Memory
+        -
+          uuid: fc426e6bf70f4e57b27303a401629a3b
+          name: 'Number of bytes received'
+          type: SIMPLE
+          key: 'vmware.hv.network.in[{$URL},{HOST.HOST},bps]'
+          delay: '60'
+          history: 8d
+          trends: 8d
+          units: Bps
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          tags:
+            -
+              tag: Application
+              value: Network
+        -
+          uuid: a4641088504b4aa39d49e73c738978da
+          name: 'Number of bytes transmitted'
+          type: SIMPLE
+          key: 'vmware.hv.network.out[{$URL},{HOST.HOST},bps]'
+          delay: '60'
+          history: 8d
+          trends: 8d
+          units: Bps
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          tags:
+            -
+              tag: Application
+              value: Network
+        -
+          uuid: 35805dec1c2f4c7b882a0fd9bfb00ebf
+          name: 'Health state rollup'
+          type: SIMPLE
+          key: 'vmware.hv.sensor.health.state[{$URL},{HOST.HOST}]'
+          delay: '60'
+          history: 8d
+          trends: 8d
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'The host health state rollup sensor value: gray - unknown, ok, red - it has a problem, yellow - it might have a problem.'
+          valuemap:
+            name: 'VMware status'
+          tags:
+            -
+              tag: Application
+              value: General
+        -
+          uuid: aedae2399b3a43d286dba74c9e403b7e
+          name: 'Overall status'
+          type: SIMPLE
+          key: 'vmware.hv.status[{$URL},{HOST.HOST}]'
+          delay: '60'
+          history: 8d
+          trends: 8d
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'The overall alarm status of the host: gray - unknown, ok, red - it has a problem, yellow - it might have a problem.'
+          valuemap:
+            name: 'VMware status'
+          tags:
+            -
+              tag: Application
+              value: General
+        -
+          uuid: 53f577a76279480eae68c91bb520d942
+          name: Uptime
+          type: SIMPLE
+          key: 'vmware.hv.uptime[{$URL},{HOST.HOST}]'
+          delay: '3600'
+          history: 8d
+          trends: 8d
+          units: uptime
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'System uptime.'
+          tags:
+            -
+              tag: Application
+              value: General
+        -
+          uuid: 80b847b60bb342258272154d539acf83
+          name: Version
+          type: SIMPLE
+          key: 'vmware.hv.version[{$URL},{HOST.HOST}]'
+          delay: '3600'
+          history: 8d
+          trends: '0'
+          value_type: CHAR
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'Dot-separated version string.'
+          tags:
+            -
+              tag: Application
+              value: General
+        -
+          uuid: 3aab3592b6ec4446ac55319b91668395
+          name: 'Number of guest VMs'
+          type: SIMPLE
+          key: 'vmware.hv.vm.num[{$URL},{HOST.HOST}]'
+          delay: '3600'
+          history: 8d
+          trends: 8d
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          description: 'Number of guest virtual machines.'
+          tags:
+            -
+              tag: Application
+              value: General
+      discovery_rules:
+        -
+          uuid: 7bd71442702847a6970335831562ecdd
+          name: 'Datastore discovery'
+          type: SIMPLE
+          key: 'vmware.hv.datastore.discovery[{$URL},{HOST.HOST}]'
+          delay: '3600'
+          username: '{$USERNAME}'
+          password: '{$PASSWORD}'
+          item_prototypes:
+            -
+              uuid: 9ea2200ca6b04fd3928cc810fe8c7578
+              name: 'Average read latency of the datastore $3'
+              type: SIMPLE
+              key: 'vmware.hv.datastore.read[{$URL},{HOST.HOST},{#DATASTORE},latency]'
+              delay: '600'
+              history: 8d
+              trends: 8d
+              username: '{$USERNAME}'
+              password: '{$PASSWORD}'
+              tags:
+                -
+                  tag: Application
+                  value: Datastore
+            -
+              uuid: 57fa7e67b45e438cb833d13e806f63f4
+              name: 'Free space on datastore $3 (percentage)'
+              type: SIMPLE
+              key: 'vmware.hv.datastore.size[{$URL},{HOST.HOST},{#DATASTORE},pfree]'
+              delay: '600'
+              history: 8d
+              trends: 8d
+              value_type: FLOAT
+              units: '%'
+              username: '{$USERNAME}'
+              password: '{$PASSWORD}'
+              tags:
+                -
+                  tag: Application
+                  value: Datastore
+              trigger_prototypes:
+                -
+                  uuid: df79a9420ae046c78b60d342bf9786b0
+                  expression: 'max(/LUANCS - SO VMware Hypervisor/vmware.hv.datastore.size[{$URL},{HOST.HOST},{#DATASTORE},pfree],{$FS_TIME})<={$FS_DISASTER_0}'
+                  name: '{HOST.NAME}: Free disk space is critical {ITEM.VALUE} on datastore: {#DATASTORE}'
+                  priority: DISASTER
+                -
+                  uuid: a75ff2db971c4b61af731214ec1b89e0
+                  expression: 'max(/LUANCS - SO VMware Hypervisor/vmware.hv.datastore.size[{$URL},{HOST.HOST},{#DATASTORE},pfree],{$FS_TIME})<={$FS_HIGH_0}'
+                  name: '{HOST.NAME}: Free disk space is low {ITEM.VALUE} on datastore: {#DATASTORE}'
+                  priority: HIGH
+                  dependencies:
+                    -
+                      name: '{HOST.NAME}: Free disk space is critical {ITEM.VALUE} on datastore: {#DATASTORE}'
+                      expression: 'max(/LUANCS - SO VMware Hypervisor/vmware.hv.datastore.size[{$URL},{HOST.HOST},{#DATASTORE},pfree],{$FS_TIME})<={$FS_DISASTER_0}'
+            -
+              uuid: e4cad2e4f7e74205908384cc9ee30f67
+              name: 'Total size of datastore $3'
+              type: SIMPLE
+              key: 'vmware.hv.datastore.size[{$URL},{HOST.HOST},{#DATASTORE}]'
+              delay: '1200'
+              history: 8d
+              trends: 8d
+              units: B
+              username: '{$USERNAME}'
+              password: '{$PASSWORD}'
+              tags:
+                -
+                  tag: Application
+                  value: Datastore
+            -
+              uuid: 921fe0b6569040ed8d2a298f2dc42e1c
+              name: 'Average write latency of the datastore $3'
+              type: SIMPLE
+              key: 'vmware.hv.datastore.write[{$URL},{HOST.HOST},{#DATASTORE},latency]'
+              delay: '600'
+              history: 8d
+              trends: 8d
+              username: '{$USERNAME}'
+              password: '{$PASSWORD}'
+              tags:
+                -
+                  tag: Application
+                  value: Datastore
+          graph_prototypes:
+            -
+              uuid: 15b83cb636f0412f95c49622f2b0f184
+              name: 'Disk space usage on partition: {#DATASTORE}'
+              width: '500'
+              yaxismax: '0'
+              show_work_period: 'NO'
+              show_triggers: 'NO'
+              type: PIE
+              graph_items:
+                -
+                  color: 00C800
+                  item:
+                    host: 'LUANCS - SO VMware Hypervisor'
+                    key: 'vmware.hv.datastore.size[{$URL},{HOST.HOST},{#DATASTORE}]'
+                -
+                  sortorder: '1'
+                  color: C80000
+                  item:
+                    host: 'LUANCS - SO VMware Hypervisor'
+                    key: 'vmware.hv.datastore.size[{$URL},{HOST.HOST},{#DATASTORE},pfree]'
+      macros:
+        -
+          macro: '{$FS_DISASTER_0}'
+          value: '5'
+        -
+          macro: '{$FS_HIGH_0}'
+          value: '10'
+        -
+          macro: '{$FS_TIME}'
+          value: 5m
+        -
+          macro: '{$MEM_DISASTER_0}'
+          value: '95'
+        -
+          macro: '{$MEM_DISASTER_1}'
+          value: '92'
+        -
+          macro: '{$MEM_HIGH_0}'
+          value: '90'
+        -
+          macro: '{$MEM_HIGH_1}'
+          value: '87'
+        -
+          macro: '{$MEM_TIME}'
+          value: 5m
+        -
+          macro: '{$PASSWORD}'
+        -
+          macro: '{$URL}'
+          value: 'https://IP/sdk'
+        -
+          macro: '{$USERNAME}'
+      valuemaps:
+        -
+          uuid: 7ef592a71ccc48c7a14682d6237766f8
+          name: 'VMware status'
+          mappings:
+            -
+              value: '0'
+              newvalue: gray
+            -
+              value: '1'
+              newvalue: green
+            -
+              value: '2'
+              newvalue: yellow
+            -
+              value: '3'
+              newvalue: red
+  graphs:
+    -
+      uuid: 9264870093d54111815a06c01cf99156
+      name: 'Performance overview'
+      show_work_period: 'NO'
+      show_triggers: 'NO'
+      ymin_type_1: FIXED
+      ymax_type_1: FIXED
+      graph_items:
+        -
+          color: 199C0D
+          item:
+            host: 'LUANCS - SO VMware Hypervisor'
+            key: 'vmware.hv.cpu.usage[{$URL},{HOST.HOST}]'
+        -
+          sortorder: '1'
+          color: F63100
+          item:
+            host: 'LUANCS - SO VMware Hypervisor'
+            key: 'vmware.hv.sensor.health.state[{$URL},{HOST.HOST}]'
+        -
+          sortorder: '2'
+          color: 2774A4
+          item:
+            host: 'LUANCS - SO VMware Hypervisor'
+            key: 'vmware.hv.memory.used[{$URL},{HOST.HOST}]'
+        -
+          sortorder: '3'
+          color: F7941D
+          item:
+            host: 'LUANCS - SO VMware Hypervisor'
+            key: vmware.hv.memory.pused
+        -
+          sortorder: '4'
+          color: FC6EA3
+          item:
+            host: 'LUANCS - SO VMware Hypervisor'
+            key: 'vmware.hv.hw.cpu.threads[{$URL},{HOST.HOST}]'
+        -
+          sortorder: '5'
+          color: 6C59DC
+          item:
+            host: 'LUANCS - SO VMware Hypervisor'
+            key: 'vmware.hv.status[{$URL},{HOST.HOST}]'
