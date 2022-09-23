@@ -1,0 +1,1438 @@
+zabbix_export:
+  version: '5.4'
+  date: '2022-09-23T17:58:57Z'
+  groups:
+    -
+      uuid: e115692d9bc8436a910fa4d77e4f54dc
+      name: Templates/JLCP
+    -
+      uuid: 91290fe175a04a15adff4015122fa0b6
+      name: Templates/LUANCS
+  templates:
+    -
+      uuid: 718d6d7972e644fbb0e7b7bb72acec19
+      template: 'LUANCS - Dell Compellent'
+      name: 'LUANCS - Dell Compellent'
+      description: |
+        Ajustes por André Rocha em 14/12/2016.
+        
+        Revisão do template Storage Dell Compellent (SNMP). Compatível com Zabbix 2.4.8. Não usar "bulk requests" na configuração do host monitorado.
+        
+        Instalação:
+        
+        Install echo.something in the ExternalScripts directory of your Zabbix server and/or proxy. Check your zabbix_server.conf and/or zabbix_proxy.conf if in doubt.
+        Then chmod a+x echo.something
+        
+        Go to  Administration -> General -> Value Mapping  and create the following maps:
+        
+        scItemStatus
+        1 => Up
+        2 => Down
+        3 => Degraded
+        
+        scProductIDGlobalStatus
+        1 => Other
+        2 => Unknown
+        3 => Ok
+        4 => Noncritical
+        5 => Critical
+        6 => Nonrecoverable
+        
+        scServerCnctvy
+        1 => Up
+        2 => Down
+        3 => Partial
+        
+        scScStatus
+        1 => Online
+        2 => Offline
+        3 => Unknown
+        
+        scDiskHealthy
+        1 => Healthy
+        2 => Not Healthy
+        3 => Unknown
+        
+        scDiskType
+        1 => FibreChannel
+        2 => iSCSI
+        3 => FibreChannelOverEthernet
+        4 => SAS
+        5 => Unknown
+        
+        scHostStatus
+        0 => Up
+        2 => Unreachable
+        
+        SNMP_interface_status
+        1 => Up
+        2 => Down
+        3 => Testing
+        4 => Unknown
+        5 => Dormant
+        6 => NotPresent
+        7 => LowerLayerDown
+      groups:
+        -
+          name: Templates/JLCP
+        -
+          name: Templates/LUANCS
+      items:
+        -
+          uuid: 08f49d0217bc4200b10df5ba4197853f
+          name: 'DEVICE MANUFACTER NAME'
+          type: EXTERNAL
+          key: 'echo.something["Dell-Compellent Technologies"]'
+          delay: '86400'
+          history: 30d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: TAG
+          tags:
+            -
+              tag: Application
+              value: Informations
+        -
+          uuid: 2f674ac063b0450fb93a0b6579ba328b
+          name: 'DEVICE REACHABILITY USING ICMP'
+          type: SIMPLE
+          key: icmpping
+          delay: '60'
+          history: 30d
+          trends: 180d
+          units: ms
+          valuemap:
+            name: scHostStatus
+          tags:
+            -
+              tag: Application
+              value: Informations
+          triggers:
+            -
+              uuid: e755e364538c4b25b631e5f2d67e9042
+              expression: 'avg(/LUANCS - Dell Compellent/icmpping,#3)=0'
+              name: '{HOST.NAME} is UNREACHABLE or DOWN'
+              priority: DISASTER
+        -
+          uuid: 2ff8dda437cd49629a7311d38af2be0b
+          name: 'DEVICE PACKET LOSS'
+          type: SIMPLE
+          key: icmppingloss
+          delay: '300'
+          history: 30d
+          trends: 180d
+          units: '%'
+          tags:
+            -
+              tag: Application
+              value: Informations
+        -
+          uuid: 9f86e5403b694e64a97e89ac1c08ceb8
+          name: 'PACKET LOSS (%)'
+          type: SIMPLE
+          key: 'icmppingloss[,,,,]'
+          delay: '300'
+          history: 30d
+          trends: 180d
+          value_type: FLOAT
+          units: '%'
+        -
+          uuid: 001c8f2d40e14b0396c58d97726ff6aa
+          name: 'RESPONSE TIME'
+          type: SIMPLE
+          key: 'icmppingsec[,,,,,]'
+          delay: '300'
+          history: 30d
+          trends: 180d
+          value_type: FLOAT
+          units: ms
+        -
+          uuid: b856f5a9a8724020b6864accf879cb97
+          name: 'QUANTIDADE DE INTERFACES'
+          type: SNMP_AGENT
+          snmp_oid: 'IF-MIB::ifNumber.0'
+          key: ifNumber
+          delay: '86400'
+          history: 30d
+          trends: 180d
+          units: Interfaces
+          description: 'The number of network interfaces (regardless of their current state) present on this system.'
+          inventory_link: HW_ARCH
+          valuemap:
+            name: SNMP_interface_status
+        -
+          uuid: b5aeb5f11e3541cfbd8e91764cfbd8e1
+          name: 'DEVICE SOFTWARE VERSION'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.16139.2.7.0
+          key: productIDBuildNumber
+          delay: '86400'
+          history: 30d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: OS
+          tags:
+            -
+              tag: Application
+              value: Informations
+        -
+          uuid: 090067369690494bb9bb9f16b7809192
+          name: 'DEVICE MODEL NAME'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.16139.2.1.0
+          key: productIDDisplayName
+          delay: '86400'
+          history: 30d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: TYPE
+          tags:
+            -
+              tag: Application
+              value: Informations
+        -
+          uuid: 4b2b281975234bcdb6a358fc1cc3d3e0
+          name: 'DEVICE GLOBAL STATUS'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.16139.2.6.0
+          key: productIDGlobalStatus
+          delay: '300'
+          history: 30d
+          trends: 180d
+          valuemap:
+            name: scProductIDGlobalStatus
+          tags:
+            -
+              tag: Application
+              value: Informations
+          triggers:
+            -
+              uuid: a04781734f1541998e0b0635ea4f7dd3
+              expression: 'last(/LUANCS - Dell Compellent/productIDGlobalStatus)<3'
+              name: 'Global status of {HOST.NAME} is abnormal'
+              priority: AVERAGE
+            -
+              uuid: 5080852c76694268b696a7ad1e44b006
+              expression: 'last(/LUANCS - Dell Compellent/productIDGlobalStatus)=5'
+              name: 'Global status of {HOST.NAME} is critical'
+              priority: HIGH
+            -
+              uuid: 4ff7d76e0dab4e518d4e27bb9583f562
+              expression: 'last(/LUANCS - Dell Compellent/productIDGlobalStatus)=4'
+              name: 'Global status of {HOST.NAME} is noncritical'
+              priority: WARNING
+            -
+              uuid: 1e4b48cc4a234eb19c3487061422f254
+              expression: 'last(/LUANCS - Dell Compellent/productIDGlobalStatus)=6'
+              name: 'Global status of {HOST.NAME} is nonrecoverable'
+              priority: DISASTER
+        -
+          uuid: c07929ec1a114f3abcba664f98542d65
+          name: 'DEVICE MANAGEMENT URL'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.16139.2.8.0
+          key: productIDURL
+          delay: '86400'
+          history: 30d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: URL_A
+          tags:
+            -
+              tag: Application
+              value: Informations
+        -
+          uuid: afbe6c3bddb2418c8b70302f3f82767a
+          name: 'DEVICE SERIAL NUMBER'
+          type: SNMP_AGENT
+          snmp_oid: .1.3.6.1.4.1.16139.2.10.0
+          key: scIndex
+          delay: '86400'
+          history: 30d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: SERIALNO_A
+          tags:
+            -
+              tag: Application
+              value: Informations
+        -
+          uuid: 93c34bf402fd437e90747755c6754a36
+          name: CONTACT
+          type: SNMP_AGENT
+          snmp_oid: 'SNMPv2-MIB::sysContact.0'
+          key: sysContact
+          delay: '86400'
+          history: 30d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: CONTACT
+          tags:
+            -
+              tag: Application
+              value: Informations
+        -
+          uuid: 20cec69b274e44e3a1106ba821981a36
+          name: 'DEVICE LOCATION'
+          type: SNMP_AGENT
+          snmp_oid: 'SNMPv2-MIB::sysLocation.0'
+          key: sysLocation
+          delay: '86400'
+          history: 30d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: LOCATION
+          tags:
+            -
+              tag: Application
+              value: Informations
+        -
+          uuid: 189f1b7dadfa48698efa4dea61fe0b56
+          name: 'DEVICE NAME'
+          type: SNMP_AGENT
+          snmp_oid: 'SNMPv2-MIB::sysName.0'
+          key: sysName
+          delay: '86400'
+          history: 30d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: NAME
+          tags:
+            -
+              tag: Application
+              value: Informations
+          triggers:
+            -
+              uuid: 04ff5fb96e91499abb740f1de91d0bc7
+              expression: '(last(/LUANCS - Dell Compellent/sysName,#1)<>last(/LUANCS - Dell Compellent/sysName,#2))>0'
+              name: '{HOST.NAME} name has changed'
+              priority: INFO
+        -
+          uuid: f3528b73b4514f0799f4ae018a03d897
+          name: UPTIME
+          type: SNMP_AGENT
+          snmp_oid: 'SNMPv2-MIB::sysUpTime.0'
+          key: sysUpTime
+          delay: '600'
+          history: 30d
+          trends: 180d
+          units: uptime
+          preprocessing:
+            -
+              type: MULTIPLIER
+              parameters:
+                - '0.01'
+          tags:
+            -
+              tag: Application
+              value: Informations
+          triggers:
+            -
+              uuid: a035bee102ab492497d75cb0135b5762
+              expression: 'change(/LUANCS - Dell Compellent/sysUpTime)<0'
+              name: '{HOST.NAME} has just been restarted'
+              priority: HIGH
+      discovery_rules:
+        -
+          uuid: d97db49ecf3240bfaede76b8a534c266
+          name: 'NETWORK INTERFACES'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},IF-MIB::ifDescr]'
+          key: ifDescr
+          delay: '86400'
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: c604252f249044bd9c464852a32c4802
+              name: 'Input Discards $1'
+              type: SNMP_AGENT
+              snmp_oid: 'IF-MIB::ifInDiscards.{#SNMPINDEX}'
+              key: 'ifInDiscards[{#SNMPVALUE}]'
+              delay: '900'
+              history: 30d
+              trends: 180d
+              tags:
+                -
+                  tag: Application
+                  value: Interfaces
+            -
+              uuid: 932c2b6eebf24932ad11964fc6209bbd
+              name: 'Input Errors $1'
+              type: SNMP_AGENT
+              snmp_oid: 'IF-MIB::ifInErrors.{#SNMPINDEX}'
+              key: 'ifInErrors[{#SNMPVALUE}]'
+              delay: '900'
+              history: 30d
+              trends: 180d
+              tags:
+                -
+                  tag: Application
+                  value: Interfaces
+            -
+              uuid: e5770a8790214bccb1122c3fee67a113
+              name: 'Input Traffic $1'
+              type: SNMP_AGENT
+              snmp_oid: 'IF-MIB::ifInOctets.{#SNMPINDEX}'
+              key: 'ifInOctets[{#SNMPVALUE}]'
+              delay: '300'
+              history: 30d
+              trends: 180d
+              units: bps
+              preprocessing:
+                -
+                  type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '8'
+              tags:
+                -
+                  tag: Application
+                  value: Interfaces
+            -
+              uuid: 3757f34f55a14480b33651417ff5f2a8
+              name: 'Interface Status $1'
+              type: SNMP_AGENT
+              snmp_oid: 'IF-MIB::ifOperStatus.{#SNMPINDEX}'
+              key: 'ifOperStatus[{#SNMPVALUE}]'
+              delay: '300'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: SNMP_interface_status
+              tags:
+                -
+                  tag: Application
+                  value: Interfaces
+              trigger_prototypes:
+                -
+                  uuid: aa0e47e6bafc480e855eae8690cf01b2
+                  expression: |
+                    {TRIGGER.VALUE}=0 and (last(/LUANCS - Dell Compellent/ifOperStatus[{#SNMPVALUE}],#1)<>last(/LUANCS - Dell Compellent/ifOperStatus[{#SNMPVALUE}],#2))=1 and 
+                    last(/LUANCS - Dell Compellent/ifOperStatus[{#SNMPVALUE}])<>1 or {TRIGGER.VALUE}=1 and last(/LUANCS - Dell Compellent/ifOperStatus[{#SNMPVALUE}])<>1
+                  name: 'STATUS OPERACIONAL DA INTERFACE {#SNMPVALUE} DOWN'
+                  priority: HIGH
+            -
+              uuid: 12977a1ab40e44ccbfaef7943fee10b3
+              name: 'Output Discards $1'
+              type: SNMP_AGENT
+              snmp_oid: 'IF-MIB::ifOutDiscards.{#SNMPINDEX}'
+              key: 'ifOutDiscards[{#SNMPVALUE}]'
+              delay: '900'
+              history: 30d
+              trends: 180d
+              tags:
+                -
+                  tag: Application
+                  value: Interfaces
+            -
+              uuid: 87517fd13def4347a763d2a11a684a22
+              name: 'Output Errors $1'
+              type: SNMP_AGENT
+              snmp_oid: 'IF-MIB::ifOutErrors.{#SNMPINDEX}'
+              key: 'ifOutErrors[{#SNMPVALUE}]'
+              delay: '900'
+              history: 30d
+              trends: 180d
+              tags:
+                -
+                  tag: Application
+                  value: Interfaces
+            -
+              uuid: 73953f8c38c9410096f440beb4b970fd
+              name: 'Output Traffic $1'
+              type: SNMP_AGENT
+              snmp_oid: 'IF-MIB::ifOutOctets.{#SNMPINDEX}'
+              key: 'ifOutOctets[{#SNMPVALUE}]'
+              delay: '300'
+              history: 30d
+              trends: 180d
+              units: bps
+              preprocessing:
+                -
+                  type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '8'
+              tags:
+                -
+                  tag: Application
+                  value: Interfaces
+          graph_prototypes:
+            -
+              uuid: fead3027f6c8449d83030027f1c83fcf
+              name: 'Traffic on Interface {#SNMPVALUE}'
+              type: STACKED
+              graph_items:
+                -
+                  color: 00C800
+                  item:
+                    host: 'LUANCS - Dell Compellent'
+                    key: 'ifInOctets[{#SNMPVALUE}]'
+                -
+                  sortorder: '1'
+                  color: 3333FF
+                  item:
+                    host: 'LUANCS - Dell Compellent'
+                    key: 'ifOutOctets[{#SNMPVALUE}]'
+        -
+          uuid: 1fa2abaa264d4bc3a2fa43d176b97647
+          name: 'CONTROLLER FANS'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.4.1.16139.2.16.1.4]'
+          key: scCtlrFanName
+          delay: '86400'
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: 9d7b96110c9e46388eeda5d37c951242
+              name: 'Status of "$1" in Controller 1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.16.1.3.{#SNMPINDEX}'
+              key: 'scCtlrFanStatus1[{#SNMPVALUE}]'
+              delay: '905'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scScStatus
+              tags:
+                -
+                  tag: Application
+                  value: Fans
+              trigger_prototypes:
+                -
+                  uuid: 3319d1ec219f484193d3da502e85fb1b
+                  expression: 'last(/LUANCS - Dell Compellent/scCtlrFanStatus1[{#SNMPVALUE}])=3'
+                  name: 'STATUS {#SNMPVALUE} CONTROLLER 1 IS DEGRADED'
+                  priority: WARNING
+                -
+                  uuid: 33c073bf7ec847fa9b1a9436294110ff
+                  expression: 'last(/LUANCS - Dell Compellent/scCtlrFanStatus1[{#SNMPVALUE}])=2'
+                  name: 'STATUS {#SNMPVALUE} CONTROLLER 1 IS DOWN'
+                  priority: DISASTER
+            -
+              uuid: e0fbdbd3386b411db6667b10c31cba03
+              name: 'Status of "$1" in Controller 2'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.16.1.3.{#SNMPINDEX}'
+              key: 'scCtlrFanStatus2[{#SNMPVALUE}]'
+              delay: '910'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scScStatus
+              tags:
+                -
+                  tag: Application
+                  value: Fans
+              trigger_prototypes:
+                -
+                  uuid: eacd3cdd2bba4a16bd53b0e45a6f8a22
+                  expression: 'last(/LUANCS - Dell Compellent/scCtlrFanStatus2[{#SNMPVALUE}])=3'
+                  name: 'STATUS {#SNMPVALUE} CONTROLLER 2 IS DEGRADED'
+                  priority: WARNING
+                -
+                  uuid: 38b398f0bd3b47b6b19bf46dc5092b33
+                  expression: 'last(/LUANCS - Dell Compellent/scCtlrFanStatus2[{#SNMPVALUE}])=2'
+                  name: 'STATUS {#SNMPVALUE} CONTROLLER 2 IS DOWN'
+                  priority: DISASTER
+        -
+          uuid: 32b62982b05e49cc90590f150ba073c9
+          name: 'CONTROLLER POWER SUPPLY'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.4.1.16139.2.17.1.4]'
+          key: scCtlrPowerName
+          delay: '86400'
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: bc495b8d3efd46f9a66eca29bfd93686
+              name: 'Status of "$1" in Controller 1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.17.1.3.{#SNMPINDEX}'
+              key: 'scCtlrPowerStatus1[{#SNMPVALUE}]'
+              delay: '935'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scScStatus
+              tags:
+                -
+                  tag: Application
+                  value: 'Power Supply'
+              trigger_prototypes:
+                -
+                  uuid: 6e5e0aa6982348f6a8513e886733cf9d
+                  expression: 'last(/LUANCS - Dell Compellent/scCtlrPowerStatus1[{#SNMPVALUE}])=3'
+                  name: 'STATUS {#SNMPVALUE} CONTROLLER 1 IS DEGRADED'
+                  priority: WARNING
+                -
+                  uuid: 606211ea35d04a8497709c62ee8eeb1e
+                  expression: 'last(/LUANCS - Dell Compellent/scCtlrPowerStatus1[{#SNMPVALUE}])=2'
+                  name: 'STATUS {#SNMPVALUE} CONTROLLER 1 IS DOWN'
+                  priority: DISASTER
+            -
+              uuid: 7cfdfe1ed0bf4976a0d8f1b8921be022
+              name: 'Status of "$1" in Controller 2'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.17.1.3.{#SNMPINDEX}'
+              key: 'scCtlrPowerStatus2[{#SNMPVALUE}]'
+              delay: '945'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scScStatus
+              tags:
+                -
+                  tag: Application
+                  value: 'Power Supply'
+              trigger_prototypes:
+                -
+                  uuid: f4bb6c1fd13044e9ae4cf1114a907804
+                  expression: 'last(/LUANCS - Dell Compellent/scCtlrPowerStatus2[{#SNMPVALUE}])=3'
+                  name: 'STATUS {#SNMPVALUE} CONTROLLER 2 IS DEGRADED'
+                  priority: WARNING
+                -
+                  uuid: 56c034850cb04b47a4bde7738837c045
+                  expression: 'last(/LUANCS - Dell Compellent/scCtlrPowerStatus2[{#SNMPVALUE}])=2'
+                  name: 'STATUS {#SNMPVALUE} CONTROLLER 2 IS DOWN'
+                  priority: DISASTER
+        -
+          uuid: a27541ba8228484c955f49208ab59cfc
+          name: 'CONTROLLER TEMPERATURE'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.4.1.16139.2.19.1.4]'
+          key: scCtlrTempName
+          delay: '86400'
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: 124b635a4e884ee1a5810f2b24484f47
+              name: 'Temp of Sensor "{#SNMPVALUE}" in Controller 1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.19.1.5.{#SNMPINDEX}'
+              key: 'scCtlrTempCurrentC1[{#SNMPVALUE}]'
+              delay: '308'
+              history: 30d
+              trends: 180d
+              units: C
+              tags:
+                -
+                  tag: Application
+                  value: Temperature
+              trigger_prototypes:
+                -
+                  uuid: 4fed9df371ab4c58bf30095e6eb93978
+                  expression: 'last(/LUANCS - Dell Compellent/scCtlrTempCurrentC1[{#SNMPVALUE}])>65'
+                  name: 'TEMPERATURE SENSOR {#SNMPVALUE} CONTROLLER 1 > $1'
+                  priority: HIGH
+            -
+              uuid: e5278a2914cd4a2f8b0c87ad50a06a24
+              name: 'Temp of Sensor "{#SNMPVALUE}" in Controller 2'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.19.1.5.{#SNMPINDEX}'
+              key: 'scCtlrTempCurrentC2[{#SNMPVALUE}]'
+              delay: '309'
+              history: 30d
+              trends: 180d
+              units: C
+              tags:
+                -
+                  tag: Application
+                  value: Temperature
+              trigger_prototypes:
+                -
+                  uuid: 110747d4208d4984bb9f03626b3063f1
+                  expression: 'last(/LUANCS - Dell Compellent/scCtlrTempCurrentC2[{#SNMPVALUE}])>65'
+                  name: 'TEMPERATURE SENSOR {#SNMPVALUE} CONTROLLER 2 > $1'
+                  priority: HIGH
+            -
+              uuid: 79a13de2805a46eb82fad8bcad6d4b3a
+              name: 'Status of Sensor "{#SNMPVALUE}" in Controller 1'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.16139.2.19.1.3.{#SNMPINDEX}'
+              key: 'scCtlrTempStatus1[{#SNMPVALUE}]'
+              delay: '306'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scScStatus
+              tags:
+                -
+                  tag: Application
+                  value: Temperature
+              trigger_prototypes:
+                -
+                  uuid: 58c55bdef64442c9898c6421c2df9ab1
+                  expression: 'last(/LUANCS - Dell Compellent/scCtlrTempStatus1[{#SNMPVALUE}])=3'
+                  name: 'STATUS SENSOR {#SNMPVALUE} CONTROLLER 1 IS DEGRADED'
+                  priority: WARNING
+                -
+                  uuid: 781233435765431c9cc7e9afcbeed581
+                  expression: 'last(/LUANCS - Dell Compellent/scCtlrTempStatus1[{#SNMPVALUE}])=2'
+                  name: 'STATUS SENSOR {#SNMPVALUE} CONTROLLER 1 IS DOWN'
+                  priority: DISASTER
+            -
+              uuid: 458fa81f01a94049998d3cfdf19ad8e7
+              name: 'Status of Sensor "{#SNMPVALUE}" in Controller 2'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.19.1.3.{#SNMPINDEX}'
+              key: 'scCtlrTempStatus2[{#SNMPVALUE}]'
+              delay: '307'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scScStatus
+              tags:
+                -
+                  tag: Application
+                  value: Temperature
+              trigger_prototypes:
+                -
+                  uuid: 81be859e2d9749fab6ecc921a8985cd2
+                  expression: 'last(/LUANCS - Dell Compellent/scCtlrTempStatus2[{#SNMPVALUE}])=3'
+                  name: 'STATUS SENSOR {#SNMPVALUE} CONTROLLER 2 IS DEGRADED'
+                  priority: WARNING
+                -
+                  uuid: b88d55a5b5b64d24b3ed75fc0994b891
+                  expression: 'last(/LUANCS - Dell Compellent/scCtlrTempStatus2[{#SNMPVALUE}])=2'
+                  name: 'STATUS SENSOR {#SNMPVALUE} CONTROLLER 2 IS DOWN'
+                  priority: DISASTER
+          graph_prototypes:
+            -
+              uuid: 10273e16f23c4178b28abc392c4d8f5b
+              name: 'Temperature of Sensor "{#SNMPVALUE}" in Controller 1'
+              graph_items:
+                -
+                  color: DD0000
+                  item:
+                    host: 'LUANCS - Dell Compellent'
+                    key: 'scCtlrTempCurrentC1[{#SNMPVALUE}]'
+            -
+              uuid: 1a15769d5e3a40b6917fadbc045c63db
+              name: 'Temperature of Sensor "{#SNMPVALUE}" in Controller 2'
+              graph_items:
+                -
+                  color: DD0000
+                  item:
+                    host: 'LUANCS - Dell Compellent'
+                    key: 'scCtlrTempCurrentC2[{#SNMPVALUE}]'
+        -
+          uuid: 3b53d934301041c4ad3fdf9c37fc981d
+          name: CONTROLLER
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.4.1.16139.2.13.1.4]'
+          key: scCtrlName
+          delay: '86400'
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: b0f0ca4b1c15401293679134e6a7c65f
+              name: '$1 IP address'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.13.1.5.{#SNMPINDEX}'
+              key: 'scCtrlIpAddr[{#SNMPVALUE}]'
+              delay: '86400'
+              history: 30d
+              trends: '0'
+              value_type: CHAR
+              tags:
+                -
+                  tag: Application
+                  value: Controllers
+            -
+              uuid: fd51651ae4ff428fbf823bb19374ba2d
+              name: '$1 controller id'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.13.1.2.{#SNMPINDEX}'
+              key: 'scCtrlNbr[{#SNMPVALUE}]'
+              delay: '86400'
+              history: 30d
+              trends: 180d
+              tags:
+                -
+                  tag: Application
+                  value: Controllers
+            -
+              uuid: b127e89e018946f1b0db5b22c67c8600
+              name: '$1 controller status'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.13.1.3.{#SNMPINDEX}'
+              key: 'scCtrlStatus[{#SNMPVALUE}]'
+              delay: '605'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scItemStatus
+              tags:
+                -
+                  tag: Application
+                  value: Controllers
+              trigger_prototypes:
+                -
+                  uuid: d10c499e7738477e845f4d2161b51cac
+                  expression: 'last(/LUANCS - Dell Compellent/scCtrlStatus[{#SNMPVALUE}])=3'
+                  name: 'Controller {#SNMPVALUE} is degraded on {HOST.NAME}'
+                  priority: AVERAGE
+                -
+                  uuid: 647d5406ed3c49e4be9dc0b8dfd85983
+                  expression: 'last(/LUANCS - Dell Compellent/scCtrlStatus[{#SNMPVALUE}])=2'
+                  name: 'Controller {#SNMPVALUE} is down on {HOST.NAME}'
+                  priority: DISASTER
+        -
+          uuid: 10edab1d874841c8a03669af41750249
+          name: DISKS
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.4.1.16139.2.14.1.2]'
+          key: scDiskNbr
+          delay: '86400'
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: f4fcb1da435642e68be51d0cf05d33cb
+              name: 'Disk $1 Model'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.45.1.6.{#SNMPINDEX}'
+              key: 'scDiskConfigModel[{#SNMPVALUE}]'
+              delay: '86400'
+              trends: '0'
+              value_type: CHAR
+              tags:
+                -
+                  tag: Application
+                  value: Disks
+            -
+              uuid: 15fa32ebec114a4fb70c2776ef4b9452
+              name: 'Health of Disk $1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.14.1.5.{#SNMPINDEX}'
+              key: 'scDiskHealthy[{#SNMPVALUE}]'
+              delay: '3600'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scDiskHealthy
+              tags:
+                -
+                  tag: Application
+                  value: Disks
+              trigger_prototypes:
+                -
+                  uuid: b31fe39e6c6646d4ac4e318eb97162ff
+                  expression: 'last(/LUANCS - Dell Compellent/scDiskHealthy[{#SNMPVALUE}])=2'
+                  name: 'Disk {#SNMPVALUE} is not healthy in {HOST.NAME}'
+                  priority: WARNING
+            -
+              uuid: cc9799615bc34c0a96dd5586681a633d
+              name: 'Type of Disk $1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.14.1.10.{#SNMPINDEX}'
+              key: 'scDiskIoPortType[{#SNMPVALUE}]'
+              delay: '86400'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scDiskType
+              tags:
+                -
+                  tag: Application
+                  value: Disks
+            -
+              uuid: d1c3e2bfcbf4498fa31ef3ab468e5719
+              name: 'Position for disk $1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.14.1.4.{#SNMPINDEX}'
+              key: 'scDiskPosition[{#SNMPVALUE}]'
+              delay: '3600'
+              history: 30d
+              trends: '0'
+              value_type: CHAR
+              tags:
+                -
+                  tag: Application
+                  value: Disks
+            -
+              uuid: afc163cdc6e2429795df9bc9ca1de0b4
+              name: 'Size of Disk $1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.14.1.9.{#SNMPINDEX}'
+              key: 'scDiskSize[{#SNMPVALUE}]'
+              delay: '86400'
+              history: 30d
+              trends: 180d
+              units: B
+              preprocessing:
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '1073741824'
+              tags:
+                -
+                  tag: Application
+                  value: Disks
+            -
+              uuid: 8808f73b7cb44b53b6d854f14077504a
+              name: 'Status message for disk $1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.14.1.6.{#SNMPINDEX}'
+              key: 'scDiskStatusMessage[{#SNMPVALUE}]'
+              delay: '3600'
+              history: 30d
+              trends: '0'
+              value_type: CHAR
+              tags:
+                -
+                  tag: Application
+                  value: Disks
+            -
+              uuid: 0b11afb324f5453c83360f2693c1431f
+              name: 'Status for disk $1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.14.1.3.{#SNMPINDEX}'
+              key: 'scDiskStatus[{#SNMPVALUE}]'
+              delay: '906'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scItemStatus
+              tags:
+                -
+                  tag: Application
+                  value: Disks
+              trigger_prototypes:
+                -
+                  uuid: 5c69bd897a3b4964ab7566865cdff719
+                  expression: 'last(/LUANCS - Dell Compellent/scDiskStatus[{#SNMPVALUE}])=3'
+                  name: 'Disk {#SNMPVALUE} is degraded  {HOST.NAME}'
+                  priority: AVERAGE
+                -
+                  uuid: d9a0d5c464954af3b4c6ddd38eded5c2
+                  expression: 'last(/LUANCS - Dell Compellent/scDiskStatus[{#SNMPVALUE}])=2'
+                  name: 'Disk {#SNMPVALUE} is down on {HOST.NAME}'
+                  priority: DISASTER
+        -
+          uuid: e08224d130014a6899577d1524aaced7
+          name: 'ENCLOSURE FANS'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.4.1.16139.2.20.1.4]'
+          key: scEnclFanLocation
+          delay: '86400'
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: b83fd9fa96ac4773b6696251b0e065f5
+              name: 'Status of Fan "$1" in Enclosure 1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.20.1.3.{#SNMPINDEX}'
+              key: 'scEnclFanStatus1[{#SNMPVALUE}]'
+              delay: '900'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scScStatus
+              tags:
+                -
+                  tag: Application
+                  value: Fans
+              trigger_prototypes:
+                -
+                  uuid: f8dc1b64e13e42dd9abc150dde90bfa4
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclFanStatus1[{#SNMPVALUE}])=3'
+                  name: 'STATUS FAN {#SNMPVALUE} ENCLOSURE 1 IS DEGRADED'
+                  priority: WARNING
+                -
+                  uuid: 60a35223e52743e7a2cc0e2dc3816db5
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclFanStatus1[{#SNMPVALUE}])=2'
+                  name: 'STATUS FAN {#SNMPVALUE} ENCLOSURE 1 IS DOWN'
+                  priority: DISASTER
+            -
+              uuid: 7dff636ba8ab4c6eb0b8d7f018c821bd
+              name: 'Status of Fan "$1" in Enclosure 2'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.20.1.3.{#SNMPINDEX}'
+              key: 'scEnclFanStatus2[{#SNMPVALUE}]'
+              delay: '900'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scScStatus
+              tags:
+                -
+                  tag: Application
+                  value: Fans
+              trigger_prototypes:
+                -
+                  uuid: b2f485a95061468ca5739670377271ae
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclFanStatus2[{#SNMPVALUE}])=3'
+                  name: 'STATUS FAN {#SNMPVALUE} ENCLOSURE 2 IS DEGRADED'
+                  priority: WARNING
+                -
+                  uuid: 51e7e62ac84c4eb7adbcbca6ab38f06c
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclFanStatus2[{#SNMPVALUE}])=2'
+                  name: 'STATUS FAN {#SNMPVALUE} ENCLOSURE 2 IS DOWN'
+                  priority: DISASTER
+        -
+          uuid: 0928954c5d964691aff72bea577a1f4b
+          name: ENCLOSURE
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.4.1.16139.2.15.1.4]'
+          key: scEnclName
+          delay: '86400'
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: d7428edf5c344b1a8cf0f85a6ce058dc
+              name: 'Status for Enclosure {#SNMPINDEX} named "{#SNMPVALUE}"'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.15.1.3.{#SNMPINDEX}'
+              key: 'scEnclStatus[{#SNMPVALUE}]'
+              delay: '635'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scItemStatus
+              tags:
+                -
+                  tag: Application
+                  value: Enclosures
+              trigger_prototypes:
+                -
+                  uuid: 7a46c579453c40c7a03a5256f8f15a5a
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclStatus[{#SNMPVALUE}])=3'
+                  name: 'Enclosure {#SNMPINDEX} named {#SNMPVALUE} is degraded on {HOST.NAME}'
+                  priority: AVERAGE
+                -
+                  uuid: c2d3c3970a714d2f8e43adeadeb161bc
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclStatus[{#SNMPVALUE}])=2'
+                  name: 'Enclosure {#SNMPINDEX} named {#SNMPVALUE} is down on {HOST.NAME}'
+                  priority: DISASTER
+        -
+          uuid: 807e9d828e8249398b1928825f3bd474
+          name: 'ENCLOSURE POWER SUPPLY'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.4.1.16139.2.21.1.4]'
+          key: scEnclPowerPosition
+          delay: '86400'
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: a87cb22f598b448f927764c1cd21bb02
+              name: 'Status of Power Supply 1 in Enclosure $1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.21.1.3.{#SNMPINDEX}'
+              key: 'scEnclPowerStatus1[{#SNMPVALUE}]'
+              delay: '900'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scScStatus
+              tags:
+                -
+                  tag: Application
+                  value: 'Power Supply'
+              trigger_prototypes:
+                -
+                  uuid: a1f7b1b472d24750bd3885be35a84bf0
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclPowerStatus1[{#SNMPVALUE}])=3'
+                  name: 'STATUS POWER SUPPLY 1 IN ENCLOSURE {#SNMPVALUE} IS DEGRADED'
+                  priority: WARNING
+                -
+                  uuid: ff6ada8e5818490c9ce47855fb3787a1
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclPowerStatus1[{#SNMPVALUE}])=2'
+                  name: 'STATUS POWER SUPPLY 1 IN ENCLOSURE {#SNMPVALUE} IS DOWN'
+                  priority: DISASTER
+            -
+              uuid: 6849f0e890424318bdd0f7e736ded2d1
+              name: 'Status of Power Supply 2 in Enclosure {#SNMPVALUE}'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.16139.2.21.1.3.{#SNMPINDEX}'
+              key: 'scEnclPowerStatus2[{#SNMPVALUE}]'
+              delay: '900'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scScStatus
+              tags:
+                -
+                  tag: Application
+                  value: 'Power Supply'
+              trigger_prototypes:
+                -
+                  uuid: 55c17be285b34328b2d1fd35ba61311d
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclPowerStatus2[{#SNMPVALUE}])=3'
+                  name: 'STATUS POWER SUPPLY 2 IN ENCLOSURE {#SNMPVALUE} IS DEGRADED'
+                  priority: WARNING
+                -
+                  uuid: 6a710c1e0908414b88fba25034c4d549
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclPowerStatus2[{#SNMPVALUE}])=2'
+                  name: 'STATUS POWER SUPPLY 2 IN ENCLOSURE {#SNMPVALUE} IS DOWN'
+                  priority: DISASTER
+        -
+          uuid: 2d7dd2e71431449b9ef2fd0d8107390b
+          name: 'ENCLOSURE TEMPERATURE'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.4.1.16139.2.23.1.4]'
+          key: scEnclTempLocation
+          delay: '86400'
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: 8f8812773ad94fdc86af3f83d48e50af
+              name: 'Temp of Sensor "{#SNMPVALUE}" in Enclosure 1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.23.1.5.{#SNMPINDEX}'
+              key: 'scEnclTempCurrentC1[{#SNMPVALUE}]'
+              delay: '303'
+              history: 30d
+              trends: 180d
+              units: C
+              tags:
+                -
+                  tag: Application
+                  value: Temperature
+              trigger_prototypes:
+                -
+                  uuid: 15287a8c5d2f43d697c56459044087dd
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclTempCurrentC1[{#SNMPVALUE}])>65'
+                  name: 'TEMPERATURE SENSOR {#SNMPVALUE} ENCLOSURE 1 >$1'
+                  priority: HIGH
+            -
+              uuid: 84f523f804fd47b38f1fd8a010e11986
+              name: 'Temp of Sensor "{#SNMPVALUE}" in Enclosure 2'
+              type: SNMP_AGENT
+              snmp_oid: '1.3.6.1.4.1.16139.2.23.1.5.{#SNMPINDEX}'
+              key: 'scEnclTempCurrentC2[{#SNMPVALUE}]'
+              delay: '304'
+              history: 30d
+              trends: 180d
+              units: C
+              tags:
+                -
+                  tag: Application
+                  value: Temperature
+              trigger_prototypes:
+                -
+                  uuid: d89322f3ebc242928213529f4d0c5abf
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclTempCurrentC2[{#SNMPVALUE}])>65'
+                  name: 'TEMPERATURE SENSOR {#SNMPVALUE} ENCLOSURE 2 >$1'
+                  priority: HIGH
+            -
+              uuid: 08b33c5ac73648eca86b2405d09f18dd
+              name: 'Status of Sensor "$1" in Enclosure 1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.23.1.3.{#SNMPINDEX}'
+              key: 'scEnclTempStatus1[{#SNMPVALUE}]'
+              delay: '301'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scScStatus
+              tags:
+                -
+                  tag: Application
+                  value: Temperature
+              trigger_prototypes:
+                -
+                  uuid: 6059a4c892114bcb8362cec62fbdc925
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclTempStatus1[{#SNMPVALUE}])=3'
+                  name: 'STATUS SENSOR {#SNMPVALUE} ENCLOSURE 1 IS DEGRADED'
+                  priority: WARNING
+                -
+                  uuid: 76d91067942d46748d227f90d9733e4f
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclTempStatus1[{#SNMPVALUE}])=2'
+                  name: 'STATUS SENSOR {#SNMPVALUE} ENCLOSURE 1 IS DOWN'
+                  priority: DISASTER
+            -
+              uuid: adc5dd1b7f9444f586758a97ceb267e8
+              name: 'Status of Sensor "$1" in Enclosure 2'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.23.1.3.{#SNMPINDEX}'
+              key: 'scEnclTempStatus2[{#SNMPVALUE}]'
+              delay: '302'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scScStatus
+              tags:
+                -
+                  tag: Application
+                  value: Temperature
+              trigger_prototypes:
+                -
+                  uuid: 4b2e24d9ebb84021a9c728b19b4c6d39
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclTempStatus2[{#SNMPVALUE}])=3'
+                  name: 'STATUS SENSOR {#SNMPVALUE} ENCLOSURE 2 IS DEGRADED'
+                  priority: WARNING
+                -
+                  uuid: 06fcde7a59c14045bb47785c9b4ce2e0
+                  expression: 'last(/LUANCS - Dell Compellent/scEnclTempStatus2[{#SNMPVALUE}])=2'
+                  name: 'STATUS SENSOR {#SNMPVALUE} ENCLOSURE 2 IS DOWN'
+                  priority: DISASTER
+          graph_prototypes:
+            -
+              uuid: 1f65fd63ebbe491eb5ad3f8580a727d7
+              name: 'Temp of Sensor "{#SNMPVALUE}" in Enclosure 1'
+              graph_items:
+                -
+                  color: DD0000
+                  item:
+                    host: 'LUANCS - Dell Compellent'
+                    key: 'scEnclTempCurrentC1[{#SNMPVALUE}]'
+            -
+              uuid: 621270b865a94d46bbce3bd4a4e0ea60
+              name: 'Temp of Sensor "{#SNMPVALUE}" in Enclosure 2'
+              graph_items:
+                -
+                  color: DD0000
+                  item:
+                    host: 'LUANCS - Dell Compellent'
+                    key: 'scEnclTempCurrentC2[{#SNMPVALUE}]'
+        -
+          uuid: 724d5c62632149fcbad66a261712263d
+          name: SERVERS
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.4.1.16139.2.27.1.4]'
+          key: scServerName
+          delay: '86400'
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: 0319f7c1c89d4a9a962ee8808d6e4f90
+              name: 'Connectivity for Server "$1"'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.27.1.5.{#SNMPINDEX}'
+              key: 'scServerCnctvy[{#SNMPVALUE}]'
+              delay: '310'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scServerCnctvy
+              tags:
+                -
+                  tag: Application
+                  value: Servers
+              trigger_prototypes:
+                -
+                  uuid: 5bc78f34a84f45a0b71fb0ad49024224
+                  expression: 'last(/LUANCS - Dell Compellent/scServerCnctvy[{#SNMPVALUE}])=2'
+                  name: 'Connectivity of server {#SNMPVALUE} is down on {HOST.NAME}'
+                  priority: DISASTER
+                -
+                  uuid: f15d72d68e8d4f9a9a016ab7a29eff5d
+                  expression: 'last(/LUANCS - Dell Compellent/scServerCnctvy[{#SNMPVALUE}])=3'
+                  name: 'Connectivity of server {#SNMPVALUE} is partial on {HOST.NAME}'
+                  priority: AVERAGE
+            -
+              uuid: a5449382bf554fccad7015e015c57783
+              name: 'Number of Path for Server "$1"'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.27.1.6.{#SNMPINDEX}'
+              key: 'scServerPathCount[{#SNMPVALUE}]'
+              delay: '625'
+              history: 30d
+              trends: 180d
+              tags:
+                -
+                  tag: Application
+                  value: Servers
+              trigger_prototypes:
+                -
+                  uuid: 774e8f2eae3d4c5c942943bbd4e37a4e
+                  expression: 'change(/LUANCS - Dell Compellent/scServerPathCount[{#SNMPVALUE}])<1'
+                  name: 'Server {#SNMPVALUE} has lost path(s) on {HOST.NAME}'
+                  priority: HIGH
+            -
+              uuid: f9f89274face450ca3ac46463259fc97
+              name: 'Status for Server "$1"'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.27.1.3.{#SNMPINDEX}'
+              key: 'scServerStatus[{#SNMPVALUE}]'
+              delay: '325'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scItemStatus
+              tags:
+                -
+                  tag: Application
+                  value: Servers
+              trigger_prototypes:
+                -
+                  uuid: 24d288892b264ba1a190d22b131e0ce2
+                  expression: 'last(/LUANCS - Dell Compellent/scServerStatus[{#SNMPVALUE}])=3'
+                  name: 'Server {#SNMPVALUE} is degraded on {HOST.NAME}'
+                  priority: AVERAGE
+                -
+                  uuid: 7bcafc1f5e20409c8af202a618d54335
+                  expression: 'last(/LUANCS - Dell Compellent/scServerStatus[{#SNMPVALUE}])=2'
+                  name: 'Server {#SNMPVALUE} is down on {HOST.NAME}'
+                  priority: DISASTER
+        -
+          uuid: 162c61ef331144379576eb2a5b4e5b32
+          name: VOLUMES
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},.1.3.6.1.4.1.16139.2.26.1.4]'
+          key: scVolumeName
+          delay: '86400'
+          lifetime: 1d
+          item_prototypes:
+            -
+              uuid: 732d9e59866f4bb397409760b3712073
+              name: 'Status for volume $1'
+              type: SNMP_AGENT
+              snmp_oid: '.1.3.6.1.4.1.16139.2.26.1.3.{#SNMPINDEX}'
+              key: 'scVolumeStatus[{#SNMPVALUE}]'
+              delay: '915'
+              history: 30d
+              trends: 180d
+              valuemap:
+                name: scItemStatus
+              tags:
+                -
+                  tag: Application
+                  value: Volumes
+              trigger_prototypes:
+                -
+                  uuid: 09ffe2c6d4b1449884562a5c91d35981
+                  expression: 'last(/LUANCS - Dell Compellent/scVolumeStatus[{#SNMPVALUE}])=3'
+                  name: 'Volume {#SNMPVALUE} is degraded on {HOST.NAME}'
+                  priority: AVERAGE
+                -
+                  uuid: 1aa220cc95c34aa1b2a14ad10e57f54b
+                  expression: 'last(/LUANCS - Dell Compellent/scVolumeStatus[{#SNMPVALUE}])=2'
+                  name: 'Volume {#SNMPVALUE} is down on {HOST.NAME}'
+                  priority: DISASTER
+      valuemaps:
+        -
+          uuid: 4ae3fd0de1634fa1b333d2ffdcddb9ea
+          name: scDiskHealthy
+          mappings:
+            -
+              value: '1'
+              newvalue: Healthy
+            -
+              value: '2'
+              newvalue: 'Not Healthy'
+            -
+              value: '3'
+              newvalue: Unknown
+        -
+          uuid: 6603703442d347f3a7ebdd74b7cd4265
+          name: scDiskType
+          mappings:
+            -
+              value: '1'
+              newvalue: FibreChannel
+            -
+              value: '2'
+              newvalue: iSCSI
+            -
+              value: '3'
+              newvalue: FibreChannelOverEthernet
+            -
+              value: '4'
+              newvalue: SAS
+            -
+              value: '5'
+              newvalue: Unknown
+        -
+          uuid: 96ae7e0b7b6047099d9499393461fb44
+          name: scHostStatus
+          mappings:
+            -
+              value: '1'
+              newvalue: Up
+            -
+              value: '2'
+              newvalue: Unreachable
+        -
+          uuid: efe26ab5d655442eb23dfb098b110858
+          name: scItemStatus
+          mappings:
+            -
+              value: '1'
+              newvalue: Up
+            -
+              value: '2'
+              newvalue: Down
+            -
+              value: '3'
+              newvalue: Degraded
+        -
+          uuid: d77d32ce16dd44068ffd2c021ce83287
+          name: scProductIDGlobalStatus
+          mappings:
+            -
+              value: '1'
+              newvalue: Other
+            -
+              value: '2'
+              newvalue: Unknown
+            -
+              value: '3'
+              newvalue: Ok
+            -
+              value: '4'
+              newvalue: Noncritical
+            -
+              value: '5'
+              newvalue: Critical
+            -
+              value: '6'
+              newvalue: Nonrecoverable
+        -
+          uuid: 8dc77a34ef49441e936fe2ce69a99c2d
+          name: scScStatus
+          mappings:
+            -
+              value: '1'
+              newvalue: Online
+            -
+              value: '2'
+              newvalue: Offline
+            -
+              value: '3'
+              newvalue: Unknown
+        -
+          uuid: 497d8a1e4789407582802e67d7e59024
+          name: scServerCnctvy
+          mappings:
+            -
+              value: '1'
+              newvalue: Up
+            -
+              value: '2'
+              newvalue: Down
+            -
+              value: '3'
+              newvalue: Partial
+        -
+          uuid: 67bf5b7ed9bb48e5963fa56f5b6522a4
+          name: SNMP_interface_status
+          mappings:
+            -
+              value: '1'
+              newvalue: Up
+            -
+              value: '2'
+              newvalue: Down
+            -
+              value: '3'
+              newvalue: Testing
+            -
+              value: '4'
+              newvalue: Unknown
+            -
+              value: '5'
+              newvalue: Dormant
+            -
+              value: '6'
+              newvalue: NotPresent
+            -
+              value: '7'
+              newvalue: LowerLayerDown
