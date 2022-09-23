@@ -1,0 +1,161 @@
+sudo apt update
+sudo apt upgrade
+
+Proxy instalation:
+
+-- Install proxy application
+
+wget https://repo.zabbix.com/zabbix/5.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.4-1+ubuntu$(lsb_release -rs)_all.deb
+sudo dpkg -i zabbix-release_5.4-1+ubuntu$(lsb_release -rs)_all.deb
+sudo apt update
+sudo apt -y install zabbix-proxy-mysql
+sudo apt -y install zabbix-sql-scripts
+
+-- Install DB
+
+sudo apt -y install mariadb-common
+sudo apt -y install mariadb-client-10.3
+sudo apt -y install mariadb-server-10.3
+
+sudo apt -y install mariadb-client
+sudo apt -y install mariadb-server
+
+-- MySQL initial configuration
+
+sudo mysql_secure_installation
+
+Enter current password for root: Press Enter
+Set root password? [Y/n]: Y
+New password: <Enter root DB password>
+Re-enter new password: <Repeat root DB password>
+Remove anonymous users? [Y/n]: Y
+Disallow root login remotely? [Y/n]: Y
+Remove test database and access to it? [Y/n]:  Y
+Reload privilege tables now? [Y/n]:  Y
+
+-- Create database
+
+sudo mysql -uroot -p'skyl!n&GTR!@'
+mysql> create database zabbix_proxy character set utf8 collate utf8_bin;
+mysql> grant all privileges on zabbix_proxy.* to zabbix@localhost identified by 'zabbixDBpass';
+mysql> quit;
+
+--Import initial database schema
+Import database shema for proxy server (could last up to 5 minutes):
+
+Zabbix 5.4 standard version
+zcat /usr/share/doc/zabbix-sql-scripts/mysql/schema.sql.gz | mysql -uzabbix -p'zabbixDBpass' zabbix_proxy
+
+sudo mysql -uroot -p
+
+-- Zabbix proxy configuration
+
+cd /etc/zabbix/
+sudo nano psk.key
+Paste: 26a87124d0cdb6c7f1a9583167df718b9bebdf06dca5d45b5481aa98ad99aa59
+
+sudo nano /etc/zabbix/zabbix_proxy.conf
+
+DBPassword=zabbixDBpass
+ConfigFrequency=120
+Server=10.25.5.6
+Hostname=HOSTNAME_PROXY
+TLSConnect=psk
+TLSAccept=psk
+TLSPSKIdentity=zabbix.olos.com.br
+TLSPSKFile=/etc/zabbix/psk.key
+
+- Tunning
+
+StartPollers=100
+StartPollersUnreachable=50
+StartPingers=50
+StartTrappers=10
+StartDiscoverers=15
+StartPreprocessors=15
+StartHTTPPollers=5
+
+sudo systemctl restart zabbix-proxy
+sudo systemctl enable zabbix-proxy
+
+-- Zabbix agent install
+
+sudo apt install zabbix-agent
+
+-- Zabbix agent configuration
+
+sudo nano /etc/zabbix/zabbix_agentd.conf
+
+Server=IP_DO_PROXY
+Serveravtive=IP_DO_PROXY
+HostMetadataItem=system.uname
+
+sudo systemctl restart zabbix-agent
+sudo systemctl enable zabbix-agent
+
+-- Installing ODBC
+
+sudo apt install unixodbc
+sudo apt install unixodbc-dev
+
+- MySQL connector
+
+sudo wget https://repo.mysql.com/apt/ubuntu/pool/mysql-8.0/m/mysql-community/mysql-community-client-plugins_8.0.27-1ubuntu20.04_amd64.deb
+sudo dpkg -i mysql-community-client-plugins_8.0.27-1ubuntu20.04_amd64.deb
+
+sudo wget https://dev.mysql.com/get/Downloads/Connector-ODBC/8.0/mysql-connector-odbc_8.0.27-1ubuntu20.04_amd64.deb
+sudo dpkg -i mysql-connector-odbc_8.0.27-1ubuntu20.04_amd64.deb
+
+sudo apt --fix-broken install
+
+sudo wget https://dev.mysql.com/get/Downloads/Connector-ODBC/8.0/mysql-connector-odbc_8.0.27-1ubuntu20.04_amd64.deb
+sudo dpkg -i mysql-connector-odbc_8.0.27-1ubuntu20.04_amd64.deb
+
+- SQL connector
+
+sudo su apt install curl
+curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+exit
+
+sudo apt update
+sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17
+
+-- Configure ODBC
+
+- Validade connectors
+sudo nano /etc/odbcinst.ini
+
+sudo nano /etc/odbc.ini
+
+[MSSQLSERVER]
+Driver = MSSQLSERVER17 # Deve bater com o que está no odbcinst.ini
+Description = ODBC SQL Server
+Trace = yes
+TraceFile = /tmp/odbc_sqlserver.log
+Server = 10.30.11.41\\MSSQLSERVER,1433
+User = Zabbix
+Password = Olos@123
+
+-- Configure SSL permission
+
+sudo nano /etc/ssl/openssl.cnf
+
+- Add this line at the top:
+openssl_conf = openssl_init
+
+- And add these lines at the end:
+[openssl_init]
+ssl_conf = ssl_sect
+
+[ssl_sect]
+system_default = system_default_sect
+
+[system_default_sect]
+CipherString = DEFAULT@SECLEVEL=1
+
+- Test
+
+isql -v MSSQLSERVER Zabbix Olos@123
+
+-- Configure macro in frontend - DSN
