@@ -1,0 +1,1872 @@
+{
+    "zabbix_export": {
+        "version": "5.4",
+        "date": "2022-09-23T17:54:24Z",
+        "groups": [
+            {
+                "uuid": "1c332b37724146839147775849bea49b",
+                "name": "Atendimento LUANCS"
+            },
+            {
+                "uuid": "91290fe175a04a15adff4015122fa0b6",
+                "name": "Templates/LUANCS"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "a6e7bd0e58b741ca80227b28f7584320",
+                "template": "Template SQL  Indicadores",
+                "name": "Template SQL  Indicadores",
+                "groups": [
+                    {
+                        "name": "Atendimento LUANCS"
+                    },
+                    {
+                        "name": "Templates/LUANCS"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "c6741f1d8e9b4e599237bacbe84b9d00",
+                        "name": "Gera dados tabela Indicadores lld",
+                        "type": "ODBC",
+                        "key": "db.odbc.discovery[Indicadores,{$DSN}]",
+                        "delay": "24h;wd1-7h1-2",
+                        "history": "0",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "params": "SELECT * FROM [Zabbix].[dbo].[Indicadores]",
+                        "username": "{$MSSQL_USER}",
+                        "password": "{$MSSQL_PASS}",
+                        "description": "wd1-7 - Dias da semana\n\nh1-2 - Horas que ir\u00e1 atualizar",
+                        "tags": [
+                            {
+                                "tag": "Aplication",
+                                "value": "indicadores"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ed46f4199c78456398788b7f3bb3468e",
+                        "name": "Gera dados tabela Indicadores",
+                        "type": "ODBC",
+                        "key": "db.odbc.get[Indicadores,{$DSN}]",
+                        "delay": "24h;wd1-7h1-2",
+                        "history": "0",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "params": "SELECT * FROM [Zabbix].[dbo].[Indicadores]",
+                        "username": "{$MSSQL_USER}",
+                        "password": "{$MSSQL_PASS}",
+                        "description": "wd1-7 - Dias da semana\n\nh1-2 - Horas que ir\u00e1 atualizar",
+                        "tags": [
+                            {
+                                "tag": "Aplication",
+                                "value": "indicadores"
+                            }
+                        ]
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "6aa90c6626194fb9b1e664e72be5f84a",
+                        "name": "descobre campos",
+                        "type": "DEPENDENT",
+                        "key": "descobre.campos",
+                        "delay": "0",
+                        "lifetime": "7d",
+                        "item_prototypes": [
+                            {
+                                "uuid": "4a30541309bd48ae8e033e2b7f58e1c1",
+                                "name": "{#NOMEORGANIZACAO} - {#IDCAMPANHA} - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "campanha.id[{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "trends": "0",
+                                "value_type": "TEXT",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[?(@.IdCampanha == \"{#IDCAMPANHA}\")]"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "db.odbc.get[Indicadores,{$DSN}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores master"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "a9de1c0b93344bba99044c7d8b44f45d",
+                                "name": "AbortCustomerOnQueue - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.abortcustomeronqueue[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].AbortCustomerOnQueue"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "46a49abb0af544b58982f744856aa9c5",
+                                "name": "AfterAttemptTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.afterattempttime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].AfterAttemptTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "9d58beaba980426cad4304d3d36146a9",
+                                "name": "AgentDisconnected - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.agentdisconnected[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].AgentDisconnected"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "ccabea499913423a8869ef142307b80c",
+                                "name": "Announcement - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.announcement[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].Announcement"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "a5f3dbaf3c3146f492ea8a7bdee7dfcc",
+                                "name": "Atendidas - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.atendidas[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "units": "Atendida(s)",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].Atendidas"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "e39c06e533c24cfa87e40f576227fd22",
+                                "name": "BadLine - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.badline[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].BadLine"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "29fe67a43bf84d279662964c800eef23",
+                                "name": "BadNumber - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.badnumber[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].BadNumber"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "0ef88fca63dd44e7a72e3d713e86f12d",
+                                "name": "Busy - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.busy[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].Busy"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "4b4cbcd8cf2b4b7aadd22da0e16b0c7f",
+                                "name": "CancelDial - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.canceldial[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "units": "Atendida(s)",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].CancelDial"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "4a66c065acd24ec0987932bba8607a36",
+                                "name": "CarrierMessage - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.carriermessage[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].CarrierMessage"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "b84fe36a3f694722b6b9be6324335e23",
+                                "name": "ConferenceTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.conferencetime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].ConferenceTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "06df39c40c254b28b6c69589ca3f99ee",
+                                "name": "ConsultingTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.consultingtime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].ConsultingTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "f37d744f5b0f4264bcd94cafcd3a1f40",
+                                "name": "DeniedCall - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.deniedcall[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].DeniedCall"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "f528d9f9d4e24a5cbaa10b8924eeac17",
+                                "name": "EndingTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.endingtime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].EndingTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "3dcddfe2a9dd4a078ea850643e99f504",
+                                "name": "ExternalCongestion - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.externalcongestion[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].ExternalCongestion"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "1d0617a0445e4819af90b3f8af5dc73d",
+                                "name": "Falado - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.falado[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "units": "Falado",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].Falado"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "e31a41a66ba842d38958f138267e28d5",
+                                "name": "FAX - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.fax[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].FAX"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "74a6740cebc240e0bca03151dc7604a3",
+                                "name": "FilaGerada - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.filagerada[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].FilaGerada"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "26f41d1a720a4cdf88e0d4afedcc274c",
+                                "name": "HangUp - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.hangup[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].HangUp"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "23c04a29464a44568d2d876cb81694f7",
+                                "name": "HoldTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.holdtime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].HoldTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "9a0fc4f3d5e347dcacd093b52cce49b5",
+                                "name": "InternalCongestion - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.internalcongestion[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].InternalCongestion"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "82e123edc3f044de86eca847be8053ff",
+                                "name": "Logado - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.logado[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "units": "Logado",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].Logado"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "00e38f55665c4827affdea43fb4d7ef8",
+                                "name": "ManualCallTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.manualcalltime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].ManualCallTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "c7998f2979f64ed49b2e33cf8e41fc93",
+                                "name": "NoAgents - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.noagents[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].NoAgents"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "8b2e662ca02b4db4b849dfd6b972446b",
+                                "name": "NoAnswer - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.noanswer[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].NoAnswer"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "7629dea453c84b26a6d26df6ce29f1f0",
+                                "name": "NoDisposition - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.nodisposition[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].NoDisposition"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "80554929052b4dae8f289d1b15b267e2",
+                                "name": "Ocioso - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.ocioso[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "units": "Ocioso",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].Ocioso"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "54c89086f91a4995a49afe2506041450",
+                                "name": "OtherCampaignTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.othercampaigntime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].OtherCampaignTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "536ed88ad98a4acd922ba4d194e0bb7a",
+                                "name": "OutOfHours - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.outofhours[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].OutOfHours"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "75ace239981e4c598b8a607a3b843877",
+                                "name": "Pausas - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.pausas[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "units": "Pausas",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].Pausas"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "9befaf534bd942a7a45f095801fa2652",
+                                "name": "PersonalCallTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.personalcalltime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].PersonalCallTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "6e915d3a99cb464189789474792f10fe",
+                                "name": "PreviewAnalyzingTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.previewanalyzingtime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].PreviewAnalyzingTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "83fb2ff8bf9b4cdab6e0fc50d2f0f8c9",
+                                "name": "PreviewAttemptingTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.previewattemptingtime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].PreviewAttemptingTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "6164a645ee2e457fb4d74fa064cd829a",
+                                "name": "PrivateCallbackTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.privatecallbacktime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].PrivateCallbackTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "0969f0f47e4e4650b6dfdce176251d49",
+                                "name": "QtdeHC - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.qtdehc[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].QtdeHC"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "67e621d7534f42799a8b339ab873ead4",
+                                "name": "QueueMaximumLength - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.queuemaximumlength[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].QueueMaximumLength"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "2c2b0282314e4690984188476253885a",
+                                "name": "QueueMaximumTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.queuemaximumtime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].QueueMaximumTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "e01cfc076b934e02bd8301ea5f9f529f",
+                                "name": "RedialTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.redialtime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].RedialTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "9de591aa83944e6a8d53ea6e493c807a",
+                                "name": "Silence - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.silence[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].Silence"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "3b7773e1a19b49e38c838c060dcce020",
+                                "name": "SLAExceeded - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.slaexceeded[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].SLAExceeded"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "db0926c088824d0aaaba7324a44972fc",
+                                "name": "SMSFailed - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.smsfailed[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].SMSFailed"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "7d61152b56ec47e1a05b637c4ac1c592",
+                                "name": "SMSSent - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.smssent[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].SMSSent"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "852bd86773a44d51939b6708f761847a",
+                                "name": "SucessoNegocio - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.sucessonegocio[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].SucessoNegocio"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "60910cf7e0eb4069b72ae8c7c53d0610",
+                                "name": "Sucesso - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.sucesso[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].Sucesso"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "d49cd8eeecf7474cb2ff584e6bc77ad7",
+                                "name": "Tabulando - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.tabulando[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].Tabulando"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "4741dee065d847f18e91a21f4b692c9b",
+                                "name": "Tentativas - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.tentativas[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].Tentativas"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "a7b2a7570d5f4e1fa80e7baaffb7db28",
+                                "name": "ThirdPartyCampaignTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.thirdpartycampaigntime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].ThirdPartyCampaignTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "4d96e88ca74a4c94899929865c3e36a1",
+                                "name": "TMA - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.tma[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].TMA"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "b7646acf599e42c89817fb72565ae610",
+                                "name": "TMC - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.tmc[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].TMC"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "a95929ffe989472f9d3152ad0601418e",
+                                "name": "TransferModule - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.transfermodule[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].TransferModule"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "1f90b72c641640b5935814af87e3d154",
+                                "name": "TransferringTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.transferringtime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].TransferringTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "92a4855f3cf542cea5204b5af2e34cd2",
+                                "name": "WrapPersonalCallTime - {#IDORGANIZACAO} - {#NOMEORGANIZACAO} - {#IDCAMPANHA} - Campanha - {#NOMECAMPANHA}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores.wrappersonalcalltime[{#IDORGANIZACAO}-{#IDCAMPANHA}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[0].WrapPersonalCallTime"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "campanha.id[{#IDCAMPANHA}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores dados"
+                                    },
+                                    {
+                                        "tag": "campanha",
+                                        "value": "{#NOMECAMPANHA}"
+                                    },
+                                    {
+                                        "tag": "org",
+                                        "value": "{#NOMEORGANIZACAO}"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "210275304f8b42e4ae149888eda574b4",
+                                "name": "{#IDORGANIZACAO} - {#NOMEORGANIZACAO}",
+                                "type": "DEPENDENT",
+                                "key": "indicadores[{#IDORGANIZACAO}]",
+                                "delay": "0",
+                                "history": "60d",
+                                "trends": "0",
+                                "value_type": "TEXT",
+                                "preprocessing": [
+                                    {
+                                        "type": "JSONPATH",
+                                        "parameters": [
+                                            "$.[?(@.IdOrganizacao == \"{#IDORGANIZACAO}\")]"
+                                        ]
+                                    }
+                                ],
+                                "master_item": {
+                                    "key": "db.odbc.get[Indicadores,{$DSN}]"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Aplication",
+                                        "value": "indicadores master"
+                                    }
+                                ]
+                            }
+                        ],
+                        "master_item": {
+                            "key": "db.odbc.discovery[Indicadores,{$DSN}]"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
