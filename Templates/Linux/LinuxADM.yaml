@@ -1,0 +1,1108 @@
+LUANCS:
+  version: '5.4'
+  date: '2022-09-23T18:20:28Z'
+  groups:
+    -
+      uuid: e115692d9bc8436a910fa4d77e4f54dc
+      name: Templates/JLCP
+    -
+      uuid: 91290fe175a04a15adff4015122fa0b6
+      name: Templates/LUANCS
+  templates:
+    -
+      uuid: 5725196ecb6e49ac969844406cbd0350
+      template: 'LUANCS - SO Linux Active'
+      name: 'LUANCS - SO Linux Active'
+      groups:
+        -
+          name: Templates/JLCP
+        -
+          name: Templates/LUANCS
+      items:
+        -
+          uuid: 5c6915ead3fe491bb6676c35606683c5
+          name: 'Host name of zabbix_agentd running'
+          type: ZABBIX_ACTIVE
+          key: agent.hostname
+          delay: '600'
+          history: 30d
+          trends: '0'
+          value_type: CHAR
+          tags:
+            -
+              tag: Application
+              value: 'Zabbix agent'
+          triggers:
+            -
+              uuid: 085a894984574e29a9f6248f1af6763b
+              expression: '(last(/LUANCS - SO Linux Active/agent.hostname,#1)<>last(/LUANCS - SO Linux Active/agent.hostname,#2))>0'
+              name: '{HOST.NAME}: Host name of zabbix_agentd was changed - INFORMATION'
+              priority: INFO
+        -
+          uuid: 9dae369ffcc44391be569efd9843f0bc
+          name: 'Agent ping'
+          type: ZABBIX_ACTIVE
+          key: agent.ping
+          delay: '90'
+          history: 30d
+          description: 'The agent always returns 1 for this item. It could be used in combination with nodata() for availability check.'
+          valuemap:
+            name: 'Zabbix agent ping status'
+          tags:
+            -
+              tag: Application
+              value: 'Zabbix agent'
+          triggers:
+            -
+              uuid: 9e498a09665540ea8378cc833fb919b9
+              expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,30m)=1'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,5m)=0'
+              name: '{HOST.NAME}: Zabbix agent is unreachable - DISASTER'
+              priority: DISASTER
+        -
+          uuid: 8da7d533641743f8990c2288285d7ee8
+          name: 'Version of zabbix_agent(d) running'
+          type: ZABBIX_ACTIVE
+          key: agent.version
+          delay: '600'
+          history: 30d
+          trends: '0'
+          value_type: CHAR
+          tags:
+            -
+              tag: Application
+              value: 'Zabbix agent'
+          triggers:
+            -
+              uuid: 79a7591c98b64eb7a321c8b3b1d94e21
+              expression: '(last(/LUANCS - SO Linux Active/agent.version,#1)<>last(/LUANCS - SO Linux Active/agent.version,#2))>0'
+              name: '{HOST.NAME}: Version of zabbix_agent(d) was changed - INFORMATION'
+              priority: INFO
+        -
+          uuid: 050c32f99960469797ab1d27a6845a1f
+          name: 'ICMP ping'
+          type: SIMPLE
+          key: icmpping
+          delay: '60'
+          history: 30d
+          valuemap:
+            name: 'Service state'
+          tags:
+            -
+              tag: Application
+              value: ICMP
+          triggers:
+            -
+              uuid: de8dae9ff79e4aa7bce5707e1382addd
+              expression: 'nodata(/LUANCS - SO Linux Active/icmpping,5m)=1'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'nodata(/LUANCS - SO Linux Active/icmpping,10m)=0'
+              name: '{HOST.NAME}: Stopped recieving data (PING) - DISASTER'
+              priority: DISASTER
+        -
+          uuid: 3035d1bb6aae41ac93b13ace4e37e48c
+          name: 'ICMP ping loss'
+          type: SIMPLE
+          key: icmppingloss
+          delay: '60'
+          history: 30d
+          value_type: FLOAT
+          units: '%'
+          tags:
+            -
+              tag: Application
+              value: ICMP
+        -
+          uuid: 484bff9d85194b8a8454b7eb1c3dca80
+          name: 'ICMP response time'
+          type: SIMPLE
+          key: icmppingsec
+          delay: '60'
+          history: 30d
+          value_type: FLOAT
+          units: s
+          tags:
+            -
+              tag: Application
+              value: ICMP
+        -
+          uuid: 53a3a705debd4758a4a5bd0dc401191e
+          name: 'Number of running processes'
+          type: ZABBIX_ACTIVE
+          key: 'proc.num[,,run]'
+          delay: '300'
+          history: 30d
+          description: 'Number of processes in running state.'
+          tags:
+            -
+              tag: Application
+              value: Processes
+        -
+          uuid: 5fc591f7559e49ab91265b15bbc12fc1
+          name: 'Number of processes'
+          type: ZABBIX_ACTIVE
+          key: 'proc.num[]'
+          delay: '300'
+          history: 30d
+          description: 'Total number of processes in any state.'
+          tags:
+            -
+              tag: Application
+              value: Processes
+        -
+          uuid: 81b4e174e938426e9ccd34841ff61992
+          name: 'Processor load (1 min average)'
+          type: ZABBIX_ACTIVE
+          key: 'system.cpu.load[percpu,avg1]'
+          delay: '60'
+          history: 30d
+          value_type: FLOAT
+          tags:
+            -
+              tag: Application
+              value: CPU
+          triggers:
+            -
+              uuid: 01cdeaed60c24bce86aad8e51815ca73
+              expression: 'min(/LUANCS - SO Linux Active/system.cpu.load[percpu,avg1],10m)>=200'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'max(/LUANCS - SO Linux Active/system.cpu.load[percpu,avg1],10m)<200'
+              name: '{HOSTNAME} - Processor load is above 200 for more than 10 minutes - DISASTER'
+              priority: DISASTER
+            -
+              uuid: 03c7ffa1eec542c086cffee602324277
+              expression: 'avg(/LUANCS - SO Linux Active/system.cpu.load[percpu,avg1],1h)>10'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/system.cpu.load[percpu,avg1],10m)<=10'
+              name: '{HOSTNAME} - Processor load is more than 10 for more than 1 hour - AVERAGE'
+              priority: AVERAGE
+            -
+              uuid: 3848a5bc9b214425b65d50206beefff2
+              expression: 'avg(/LUANCS - SO Linux Active/system.cpu.load[percpu,avg1],1h)>80'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/system.cpu.load[percpu,avg1],10m)<=80'
+              name: '{HOSTNAME} - Processor load is more than 80 for more than 1 hour - HIGH'
+              priority: HIGH
+            -
+              uuid: cb9c2e118df54888a995e613420db919
+              expression: 'avg(/LUANCS - SO Linux Active/system.cpu.load[percpu,avg1],30m)>100'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/system.cpu.load[percpu,avg1],10m)<=100'
+              name: '{HOSTNAME} - Processor load is more than 100 for more than 30 minutes - DISASTER'
+              priority: DISASTER
+        -
+          uuid: afb9bc87701d4522bb1b0fca25099d52
+          name: 'Processor load (5 min average)'
+          type: ZABBIX_ACTIVE
+          key: 'system.cpu.load[percpu,avg5]'
+          delay: '60'
+          history: 30d
+          value_type: FLOAT
+          tags:
+            -
+              tag: Application
+              value: CPU
+        -
+          uuid: 949130618df04fff97867f22cd8fb454
+          name: 'Processor load (15 min average)'
+          type: ZABBIX_ACTIVE
+          key: 'system.cpu.load[percpu,avg15]'
+          delay: '60'
+          history: 30d
+          value_type: FLOAT
+          tags:
+            -
+              tag: Application
+              value: CPU
+        -
+          uuid: d5efcfcf150346279d00f84b49d1d078
+          name: 'CPU Number'
+          type: ZABBIX_ACTIVE
+          key: system.cpu.num
+          delay: '600'
+          history: 30d
+          preprocessing:
+            -
+              type: MULTIPLIER
+              parameters:
+                - '1'
+          tags:
+            -
+              tag: Application
+              value: CPU
+        -
+          uuid: 994030f70d0845aebf7a9a383c374653
+          name: 'CPU Usage in %'
+          type: ZABBIX_ACTIVE
+          key: system.cpu.util
+          delay: '60'
+          history: 30d
+          value_type: FLOAT
+          units: '%'
+          tags:
+            -
+              tag: Application
+              value: CPU
+          triggers:
+            -
+              uuid: e92a19a6b9d04e8188cc80d4970a67b1
+              expression: 'min(/LUANCS - SO Linux Active/system.cpu.util,10m)>=95'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'max(/LUANCS - SO Linux Active/system.cpu.util,10m)<95'
+              name: 'HOSTNAME} - CPU usage is above 95% for more than 10 minutes - DISASTER'
+              priority: DISASTER
+            -
+              uuid: f7978c32d9be43dd8f61c8d8c060a4cf
+              expression: 'nodata(/LUANCS - SO Linux Active/system.cpu.util,30m)=1'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'nodata(/LUANCS - SO Linux Active/system.cpu.util,5m)=0'
+              name: '{HOST.NAME}: Stopped recieving data (CPU) - DISASTER'
+              priority: DISASTER
+            -
+              uuid: c50f11f4bbb84458b69ae41d1bfcf0c3
+              expression: 'avg(/LUANCS - SO Linux Active/system.cpu.util,8h)>50'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/system.cpu.util,10m)<=50'
+              name: '{HOSTNAME} - Average CPU usage is more than 50% for more than 8 hours - AVERAGE'
+              priority: AVERAGE
+            -
+              uuid: 7876c8ae83404f2d9f744663da6ae431
+              expression: 'avg(/LUANCS - SO Linux Active/system.cpu.util,1h)>80'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/system.cpu.util,10m)<=80'
+              name: '{HOSTNAME} - Average CPU usage is more than 80% for more than 1 hour - HIGH'
+              priority: HIGH
+            -
+              uuid: eb255eb8d4d94d349a2c57bc938be614
+              expression: 'avg(/LUANCS - SO Linux Active/system.cpu.util,1h)>90'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/system.cpu.util,10m)<=90'
+              name: '{HOSTNAME} - Average CPU usage is more than 90% for more than 1 hour - DISASTER'
+              priority: DISASTER
+        -
+          uuid: 5c46ffde534d4290ae478be798b59b2f
+          name: 'CPU iowait time'
+          type: ZABBIX_ACTIVE
+          key: 'system.cpu.util[,iowait]'
+          delay: '300'
+          history: 30d
+          value_type: FLOAT
+          units: '%'
+          tags:
+            -
+              tag: Application
+              value: CPU
+        -
+          uuid: 9c55e9c54ae64c9fbd3808da7f237feb
+          name: 'Computer name'
+          type: ZABBIX_ACTIVE
+          key: system.hostname
+          delay: '300'
+          history: 30d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: NAME
+          tags:
+            -
+              tag: Application
+              value: System
+        -
+          uuid: 7b1787cbab4542bab79349743513e4ab
+          name: 'Current time'
+          type: ZABBIX_ACTIVE
+          key: system.localtime
+          delay: '300'
+          history: 30d
+          units: unixtime
+          tags:
+            -
+              tag: Application
+              value: System
+          triggers:
+            -
+              uuid: e30e63aeeb404cb1ba47235d5aaccaee
+              expression: 'fuzzytime(/LUANCS - SO Linux Active/system.localtime,180s)=0'
+              name: '{HOST.NAME} time is not synchronized with Zabbix Server - AVERAGE'
+              priority: AVERAGE
+        -
+          uuid: 526f872d1c324439bad9034cd653687a
+          name: 'Free swap memory'
+          type: ZABBIX_ACTIVE
+          key: 'system.swap.size[,free]'
+          delay: '300'
+          history: 30d
+          units: B
+          tags:
+            -
+              tag: Application
+              value: Memory
+        -
+          uuid: 3707be36bf1c4dcd9cf4af722cc0ba67
+          name: 'Free swap memory in %'
+          type: ZABBIX_ACTIVE
+          key: 'system.swap.size[,pfree]'
+          delay: '300'
+          history: 30d
+          value_type: FLOAT
+          units: '%'
+          tags:
+            -
+              tag: Application
+              value: Memory
+        -
+          uuid: 4be65214b9ff496e81126bd01e98b2e0
+          name: 'Total swap memory'
+          type: ZABBIX_ACTIVE
+          key: 'system.swap.size[,total]'
+          delay: '300'
+          history: 30d
+          units: B
+          tags:
+            -
+              tag: Application
+              value: Memory
+        -
+          uuid: 67ffb46dddc54b8996ada380d288b1bd
+          name: 'Swap memory usage in %'
+          type: CALCULATED
+          key: 'system.swap.size[pused]'
+          delay: '300'
+          history: 30d
+          value_type: FLOAT
+          units: '%'
+          params: '100-last(//system.swap.size[,pfree])'
+          tags:
+            -
+              tag: Application
+              value: Memory
+          triggers:
+            -
+              uuid: d627a1b05a2e481c8a64b6b01253d16c
+              expression: 'avg(/LUANCS - SO Linux Active/system.swap.size[pused],1h)>50'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/system.swap.size[pused],10m)<=50'
+              name: '{HOSTNAME} - Average SWAP usage is more than 50% for more than 8 hours - AVERAGE'
+              priority: AVERAGE
+              description: |
+                [Informações adicionais]
+                Provavelmente significa que os sistema requer mais memória física.
+            -
+              uuid: 60edcf858f574073865b7b37b2637ad8
+              expression: 'avg(/LUANCS - SO Linux Active/system.swap.size[pused],1h)>80'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/system.swap.size[pused],10m)<=80'
+              name: '{HOSTNAME} - Average SWAP usage is more than 80% for more than 1 hour - HIGH'
+              priority: HIGH
+              description: |
+                [Informações adicionais]
+                Provavelmente significa que os sistema requer mais memória física.
+            -
+              uuid: a65f76c7ec8d46b6a3fee486992b2d2e
+              expression: 'avg(/LUANCS - SO Linux Active/system.swap.size[pused],10m)>80'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/system.swap.size[pused],10m)<=80'
+              name: '{HOSTNAME} - Average SWAP usage is more than 80% for more than 10 minutes - DISASTER'
+              priority: DISASTER
+              description: |
+                [Informações adicionais]
+                Provavelmente significa que os sistema requer mais memória física.
+        -
+          uuid: 1c0fce9988294f3f9fb20a8c3cf41131
+          name: 'System Information'
+          type: ZABBIX_ACTIVE
+          key: system.uname
+          delay: '3600'
+          history: 30d
+          trends: '0'
+          value_type: CHAR
+          inventory_link: OS
+          tags:
+            -
+              tag: Application
+              value: System
+        -
+          uuid: 1c986f45482d4c1fb5022b8d935b6183
+          name: 'System Uptime'
+          type: ZABBIX_ACTIVE
+          key: system.uptime
+          delay: '60'
+          history: 30d
+          units: uptime
+          tags:
+            -
+              tag: Application
+              value: System
+          triggers:
+            -
+              uuid: 9afc9345fe3340f384b3e3a112a3f0d3
+              expression: 'last(/LUANCS - SO Linux Active/system.uptime)<10m'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/LUANCS - SO Linux Active/system.uptime)>=8h'
+              name: '{HOST.NAME}: has just been restarted - DISASTER'
+              priority: DISASTER
+            -
+              uuid: 7f35eac75d2744c9b7d883cbef38f90a
+              expression: 'nodata(/LUANCS - SO Linux Active/system.uptime,30m)=1'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'nodata(/LUANCS - SO Linux Active/system.uptime,5m)=0'
+              name: '{HOST.NAME}: Stopped recieving data (UPTIME) - DISASTER'
+              priority: DISASTER
+        -
+          uuid: ff4e49e4de764d8086613b9c88b0f1dc
+          name: 'Number of users logged in'
+          type: ZABBIX_ACTIVE
+          key: system.users.num
+          delay: '300'
+          history: 30d
+          description: 'Number of users who are currently logged in.'
+          tags:
+            -
+              tag: Application
+              value: System
+        -
+          uuid: 3f5f4b54d9b5442b8fe9d0f954b6dc12
+          name: 'Available memory'
+          type: ZABBIX_ACTIVE
+          key: 'vm.memory.size[available]'
+          delay: '300'
+          history: 30d
+          units: B
+          tags:
+            -
+              tag: Application
+              value: Memory
+        -
+          uuid: 0640f840404b42bfaad608e64c474cc1
+          name: 'Total cache memory'
+          type: ZABBIX_ACTIVE
+          key: 'vm.memory.size[cached]'
+          delay: '300'
+          history: 30d
+          units: B
+          tags:
+            -
+              tag: Application
+              value: Memory
+        -
+          uuid: 8abb9aa4d8e24662bdc94fa0c88e2532
+          name: 'Available memory in %'
+          type: ZABBIX_ACTIVE
+          key: 'vm.memory.size[pavailable]'
+          delay: '60'
+          history: 30d
+          value_type: FLOAT
+          units: '%'
+          tags:
+            -
+              tag: Application
+              value: Memory
+        -
+          uuid: dc190a654231412eb7ec4b8784fe21d3
+          name: 'Memory cache usage in %'
+          type: CALCULATED
+          key: 'vm.memory.size[pcached]'
+          delay: '300'
+          history: 30d
+          value_type: FLOAT
+          units: '%'
+          params: '100*last(//vm.memory.size[cached])/last(//vm.memory.size[total])'
+          tags:
+            -
+              tag: Application
+              value: Memory
+          triggers:
+            -
+              uuid: ccb99284f94c405dab53c2eb805982ad
+              expression: 'avg(/LUANCS - SO Linux Active/vm.memory.size[pcached],8h)>50'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/vm.memory.size[pcached],10m)<=50'
+              name: '{HOSTNAME} - Average CACHE usage is more than 50% for more than 8 hours - AVERAGE'
+              priority: AVERAGE
+            -
+              uuid: e43a2945229241508fd36dd4b515f268
+              expression: 'avg(/LUANCS - SO Linux Active/vm.memory.size[pcached],1h)>80'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/vm.memory.size[pcached],10m)<=80'
+              name: '{HOSTNAME} - Average CACHE usage is more than 80% for more than 1 hour - HIGH'
+              priority: HIGH
+            -
+              uuid: 71f9180620164b048a27caa6edbab8b4
+              expression: 'avg(/LUANCS - SO Linux Active/vm.memory.size[pcached],10m)>90'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/vm.memory.size[pcached],10m)<=90'
+              name: '{HOSTNAME} - Average CACHE usage is more than 90% for more than 10 minutes - DISASTER'
+              priority: DISASTER
+        -
+          uuid: f5d17af8248e489c8f09c8f6c90ad39d
+          name: 'Memory usage in %'
+          type: CALCULATED
+          key: 'vm.memory.size[pused]'
+          delay: '60'
+          history: 30d
+          value_type: FLOAT
+          units: '%'
+          params: '100-last(//vm.memory.size[pavailable])'
+          tags:
+            -
+              tag: Application
+              value: Memory
+          triggers:
+            -
+              uuid: d63859c8702b4c45947a3edbd7e11e05
+              expression: 'avg(/LUANCS - SO Linux Active/vm.memory.size[pused],8h)>80'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/vm.memory.size[pused],10m)<=80'
+              name: '{HOSTNAME} - Average MEM usage is more than 80% for more than 8h hours - AVERAGE'
+              priority: AVERAGE
+            -
+              uuid: 2f4eb63044964c47b1ecdf762a80dc4c
+              expression: 'avg(/LUANCS - SO Linux Active/vm.memory.size[pused],1h)>90'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/vm.memory.size[pused],10m)<=90'
+              name: '{HOSTNAME} - Average MEM usage is more than 90% for more than 1 hour - HIGH'
+              priority: HIGH
+            -
+              uuid: 66ecd96c85c64131acf40368b646b612
+              expression: 'avg(/LUANCS - SO Linux Active/vm.memory.size[pused],10m)>95'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'avg(/LUANCS - SO Linux Active/vm.memory.size[pused],10m)<=95'
+              name: '{HOSTNAME} - Average MEM usage is more than 95% for more than 10 minutes - DISASTER'
+              priority: DISASTER
+            -
+              uuid: a7c4065dfc6c46ad8d42659db273409e
+              expression: 'min(/LUANCS - SO Linux Active/vm.memory.size[pused],10m)>=99'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'max(/LUANCS - SO Linux Active/vm.memory.size[pused],10m)<99'
+              name: '{HOSTNAME} - MEM usage is above 99% for more than 10 minutes - DISASTER'
+              priority: DISASTER
+        -
+          uuid: 45bab4f3bd10464ab3b88bc9c5c47b47
+          name: 'Total memory'
+          type: ZABBIX_ACTIVE
+          key: 'vm.memory.size[total]'
+          delay: '300'
+          history: 30d
+          units: B
+          tags:
+            -
+              tag: Application
+              value: Memory
+        -
+          uuid: 3e55148014cb48418ea960f007a17169
+          name: 'Memory usage'
+          type: CALCULATED
+          key: 'vm.memory.size[used]'
+          delay: '300'
+          history: 30d
+          units: B
+          params: 'last(//vm.memory.size[total])-last(//vm.memory.size[available])'
+          tags:
+            -
+              tag: Application
+              value: Memory
+      discovery_rules:
+        -
+          uuid: fe8094eb983c48a6be7e458511a941b4
+          name: 'Network interface discovery'
+          type: ZABBIX_ACTIVE
+          key: net.if.discovery
+          delay: '1800'
+          filter:
+            conditions:
+              -
+                macro: '{#IFNAME}'
+                value: '@Network interfaces for discovery'
+                formulaid: A
+          lifetime: 7d
+          item_prototypes:
+            -
+              uuid: 663d28ce735249988e12ecae78e9ed23
+              name: 'Incoming network traffic on {#IFNAME}'
+              type: ZABBIX_ACTIVE
+              key: 'net.if.in[{#IFNAME}]'
+              delay: '300'
+              history: 8d
+              trends: 8d
+              units: bps
+              preprocessing:
+                -
+                  type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '8'
+              tags:
+                -
+                  tag: Application
+                  value: Network
+            -
+              uuid: 8e43d09bc35e42b49b0de7b02692f678
+              name: 'Outgoing network traffic o {#IFNAME}'
+              type: ZABBIX_ACTIVE
+              key: 'net.if.out[{#IFNAME}]'
+              delay: '300'
+              history: 8d
+              trends: 8d
+              units: bps
+              preprocessing:
+                -
+                  type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '8'
+              tags:
+                -
+                  tag: Application
+                  value: Network
+          graph_prototypes:
+            -
+              uuid: c3f599496d694c18be2f5dcea9daee3a
+              name: 'Network traffic in {#IFNAME}'
+              show_work_period: 'NO'
+              ymin_type_1: FIXED
+              graph_items:
+                -
+                  color: C80000
+                  item:
+                    host: 'LUANCS - SO Linux Active'
+                    key: 'net.if.in[{#IFNAME}]'
+                -
+                  sortorder: '1'
+                  color: 00C800
+                  item:
+                    host: 'LUANCS - SO Linux Active'
+                    key: 'net.if.out[{#IFNAME}]'
+        -
+          uuid: 3599a0a0cb774773b83c7fae3f3e1fb1
+          name: 'Mounted filesystem discovery'
+          type: ZABBIX_ACTIVE
+          key: vfs.fs.discovery
+          delay: '1800'
+          filter:
+            conditions:
+              -
+                macro: '{#FSTYPE}'
+                value: '@File systems for discovery'
+                formulaid: A
+          lifetime: 7d
+          item_prototypes:
+            -
+              uuid: e643b81bbaee43508951aebd992b24d8
+              name: 'Free disk space on {#FSNAME}'
+              type: ZABBIX_ACTIVE
+              key: 'vfs.fs.size[{#FSNAME},free]'
+              delay: '300'
+              history: 8d
+              trends: 8d
+              units: B
+              tags:
+                -
+                  tag: Application
+                  value: Disk
+            -
+              uuid: 5fc4a60e7ff8425db86057615995743c
+              name: 'Free disk space on {#FSNAME} in %'
+              type: ZABBIX_ACTIVE
+              key: 'vfs.fs.size[{#FSNAME},pfree]'
+              delay: '300'
+              history: 8d
+              trends: 8d
+              value_type: FLOAT
+              units: '%'
+              tags:
+                -
+                  tag: Application
+                  value: Disk
+              trigger_prototypes:
+                -
+                  uuid: bd2d3faf40514b1da53b2d0f66a6c218
+                  expression: 'nodata(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree],1h)=1'
+                  recovery_mode: RECOVERY_EXPRESSION
+                  recovery_expression: 'nodata(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree],10m)=0'
+                  name: '{HOST.NAME}: Stopped recieving data (HDD)'
+                  priority: DISASTER
+                  dependencies:
+                    -
+                      name: '{HOST.NAME}: Zabbix agent is unreachable - DISASTER'
+                      expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,30m)=1'
+                      recovery_expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,5m)=0'
+            -
+              uuid: 0c713bb2025a429dbc30753f788aceb3
+              name: 'Total disk space on {#FSNAME}'
+              type: ZABBIX_ACTIVE
+              key: 'vfs.fs.size[{#FSNAME},total]'
+              delay: '600'
+              history: 8d
+              trends: 8d
+              units: B
+              tags:
+                -
+                  tag: Application
+                  value: Disk
+            -
+              uuid: f8c04df019764314bb39fdbc8ce8e9af
+              name: 'Used disk space on {#FSNAME}'
+              type: ZABBIX_ACTIVE
+              key: 'vfs.fs.size[{#FSNAME},used]'
+              delay: '300'
+              history: 8d
+              trends: 8d
+              units: B
+              tags:
+                -
+                  tag: Application
+                  value: Disk
+          trigger_prototypes:
+            -
+              uuid: 399b0e7c813f430ea9948b3c462017bb
+              expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},free])>=0'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])>1'
+              name: '{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER'
+              priority: DISASTER
+              dependencies:
+                -
+                  name: '{HOST.NAME}: Zabbix agent is unreachable - DISASTER'
+                  expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,30m)=1'
+                  recovery_expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,5m)=0'
+            -
+              uuid: 6c0c70add575454fb6a58015f6ed93ac
+              expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},free])>=0'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])>2'
+              name: '{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER'
+              priority: DISASTER
+              dependencies:
+                -
+                  name: '{HOST.NAME}: Zabbix agent is unreachable - DISASTER'
+                  expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,30m)=1'
+                  recovery_expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,5m)=0'
+            -
+              uuid: 758a023bcad64accb39860ba295d3836
+              expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},free])>=0'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])>3'
+              name: '{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER'
+              priority: DISASTER
+              dependencies:
+                -
+                  name: '{HOST.NAME}: Zabbix agent is unreachable - DISASTER'
+                  expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,30m)=1'
+                  recovery_expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,5m)=0'
+            -
+              uuid: 2cc2abda88024bad9a1b9dd76a246617
+              expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},free])>=0'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])>4'
+              name: '{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER'
+              priority: DISASTER
+              dependencies:
+                -
+                  name: '{HOST.NAME}: Zabbix agent is unreachable - DISASTER'
+                  expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,30m)=1'
+                  recovery_expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,5m)=0'
+            -
+              uuid: f7de3a58d71b409e950b7b4e37b867ed
+              expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},free])>=0'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])>5'
+              name: '{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER'
+              priority: DISASTER
+              dependencies:
+                -
+                  name: '{HOST.NAME}: Zabbix agent is unreachable - DISASTER'
+                  expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,30m)=1'
+                  recovery_expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,5m)=0'
+            -
+              uuid: e1541335743e4259bee8582b31d0ba42
+              expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])<=10 and last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},free])>=0'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])>10'
+              name: '{HOSTNAME} - Free disk space is less than 10% on partition: {#FSNAME} - HIGH'
+              priority: HIGH
+              dependencies:
+                -
+                  name: '{HOST.NAME}: Zabbix agent is unreachable - DISASTER'
+                  expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,30m)=1'
+                  recovery_expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,5m)=0'
+            -
+              uuid: 2c8de3f2e44849f3a54bebae379a9b9d
+              expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])<=20 and last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},free])>=0'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])>20'
+              name: '{HOSTNAME} - Free disk space is less than 20% on partition: {#FSNAME} - HIGH'
+              priority: HIGH
+              dependencies:
+                -
+                  name: '{HOST.NAME}: Zabbix agent is unreachable - DISASTER'
+                  expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,30m)=1'
+                  recovery_expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,5m)=0'
+            -
+              uuid: 732f7069d2da4372adf9763c05a6bc08
+              expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])<=30 and last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},free])>=0'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])>30'
+              name: '{HOSTNAME} - Free disk space is less than 30% on partition: {#FSNAME} - AVERAGE'
+              priority: AVERAGE
+              dependencies:
+                -
+                  name: '{HOST.NAME}: Zabbix agent is unreachable - DISASTER'
+                  expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,30m)=1'
+                  recovery_expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,5m)=0'
+            -
+              uuid: b6d3a35bd19747f9a05f9b06774555ce
+              expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])<=50 and last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},free])>=0'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])>50'
+              name: '{HOSTNAME} - Free disk space is less than 50% on partition: {#FSNAME} - WARNING'
+              priority: WARNING
+              dependencies:
+                -
+                  name: '{HOST.NAME}: Zabbix agent is unreachable - DISASTER'
+                  expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,30m)=1'
+                  recovery_expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,5m)=0'
+            -
+              uuid: b43d403b5a1a4411b68852ae57f23172
+              expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])=0 and last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},free])>=0'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/LUANCS - SO Linux Active/vfs.fs.size[{#FSNAME},pfree])>0'
+              name: '{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER'
+              priority: DISASTER
+              dependencies:
+                -
+                  name: '{HOST.NAME}: Zabbix agent is unreachable - DISASTER'
+                  expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,30m)=1'
+                  recovery_expression: 'nodata(/LUANCS - SO Linux Active/agent.ping,5m)=0'
+          graph_prototypes:
+            -
+              uuid: 328af218676b4262b96a2bc8923c79c0
+              name: 'Disk space usage history in % on the partition: {#FSNAME}'
+              width: '500'
+              ymin_type_1: FIXED
+              ymax_type_1: ITEM
+              ymax_item_1:
+                host: 'LUANCS - SO Linux Active'
+                key: 'vfs.fs.size[{#FSNAME},pfree]'
+              graph_items:
+                -
+                  sortorder: '1'
+                  drawtype: GRADIENT_LINE
+                  color: 1A7C11
+                  item:
+                    host: 'LUANCS - SO Linux Active'
+                    key: 'vfs.fs.size[{#FSNAME},pfree]'
+            -
+              uuid: f569a684c8644370a5d9cc19f8fde6c2
+              name: 'Disk space usage history on the partition: {#FSNAME}'
+              width: '500'
+              ymin_type_1: FIXED
+              ymax_type_1: ITEM
+              ymax_item_1:
+                host: 'LUANCS - SO Linux Active'
+                key: 'vfs.fs.size[{#FSNAME},total]'
+              graph_items:
+                -
+                  sortorder: '1'
+                  drawtype: GRADIENT_LINE
+                  color: 1A7C11
+                  item:
+                    host: 'LUANCS - SO Linux Active'
+                    key: 'vfs.fs.size[{#FSNAME},used]'
+            -
+              uuid: 8aa95bb599684231a25a9af45a11831d
+              name: 'Disk space usage on partition(teste): {#FSNAME}'
+              width: '500'
+              yaxismax: '0'
+              show_work_period: 'NO'
+              show_triggers: 'NO'
+              type: PIE
+              show_3d: 'YES'
+              graph_items:
+                -
+                  sortorder: '1'
+                  color: 00C800
+                  item:
+                    host: 'LUANCS - SO Linux Active'
+                    key: 'vfs.fs.size[{#FSNAME},total]'
+                -
+                  sortorder: '2'
+                  color: C80000
+                  item:
+                    host: 'LUANCS - SO Linux Active'
+                    key: 'vfs.fs.size[{#FSNAME},used]'
+            -
+              uuid: a9dd0fef39244198a5750fa4ea97eaea
+              name: 'Disk space usage on partition: {#FSNAME}'
+              width: '500'
+              yaxismax: '0'
+              show_work_period: 'NO'
+              show_triggers: 'NO'
+              type: PIE
+              show_3d: 'YES'
+              graph_items:
+                -
+                  sortorder: '1'
+                  color: 00C800
+                  item:
+                    host: 'LUANCS - SO Linux Active'
+                    key: 'vfs.fs.size[{#FSNAME},total]'
+                -
+                  sortorder: '2'
+                  color: C80000
+                  item:
+                    host: 'LUANCS - SO Linux Active'
+                    key: 'vfs.fs.size[{#FSNAME},free]'
+      macros:
+        -
+          macro: '{$CACHE_THRESHOLD}'
+          value: '85'
+        -
+          macro: '{$CACHE_TIME}'
+          value: 5m
+        -
+          macro: '{$CPU_AVERAGE_0}'
+          value: '85'
+        -
+          macro: '{$CPU_AVERAGE_1}'
+          value: '82'
+        -
+          macro: '{$CPU_DISASTER_0}'
+          value: '95'
+        -
+          macro: '{$CPU_DISASTER_1}'
+          value: '92'
+        -
+          macro: '{$CPU_HIGH_0}'
+          value: '90'
+        -
+          macro: '{$CPU_HIGH_1}'
+          value: '87'
+        -
+          macro: '{$CPU_LOAD}'
+          value: '2'
+        -
+          macro: '{$CPU_TIME}'
+          value: 5m
+        -
+          macro: '{$FS_AVERAGE_0}'
+          value: '15'
+        -
+          macro: '{$FS_DISASTER_0}'
+          value: '5'
+        -
+          macro: '{$FS_HIGH_0}'
+          value: '10'
+        -
+          macro: '{$FS_TIME}'
+          value: 5m
+        -
+          macro: '{$ICMP_TIME}'
+          value: 3m
+        -
+          macro: '{$MEM_AVERAGE_0}'
+          value: '85'
+        -
+          macro: '{$MEM_AVERAGE_1}'
+          value: '82'
+        -
+          macro: '{$MEM_DISASTER_0}'
+          value: '95'
+        -
+          macro: '{$MEM_DISASTER_1}'
+          value: '92'
+        -
+          macro: '{$MEM_HIGH_0}'
+          value: '90'
+        -
+          macro: '{$MEM_HIGH_1}'
+          value: '87'
+        -
+          macro: '{$MEM_TIME}'
+          value: 5m
+        -
+          macro: '{$NET_THRESHOLD}'
+          value: '90'
+        -
+          macro: '{$NET_TIME}'
+          value: 5m
+        -
+          macro: '{$PROCRUN_THRESHOLD}'
+          value: '100'
+        -
+          macro: '{$PROCRUN_TIME}'
+          value: 5m
+        -
+          macro: '{$PROC_THRESHOLD}'
+          value: '300'
+        -
+          macro: '{$PROC_TIME}'
+          value: 5m
+        -
+          macro: '{$SWAP_THRESHOLD}'
+          value: '50'
+        -
+          macro: '{$SWAP_TIME}'
+          value: 5m
+      valuemaps:
+        -
+          uuid: 36655fae594b4cefaba513e802b9f9dc
+          name: 'Service state'
+          mappings:
+            -
+              value: '0'
+              newvalue: Down
+            -
+              value: '1'
+              newvalue: Up
+        -
+          uuid: 31b3130a92e44ecb85a505f764ddca01
+          name: 'Zabbix agent ping status'
+          mappings:
+            -
+              value: '1'
+              newvalue: Up
+  graphs:
+    -
+      uuid: 9978ab22489d4b4f8dc777ddbb1965ee
+      name: 'Performance overview'
+      show_work_period: 'NO'
+      show_triggers: 'NO'
+      ymin_type_1: FIXED
+      ymax_type_1: FIXED
+      graph_items:
+        -
+          drawtype: BOLD_LINE
+          color: C80000
+          item:
+            host: 'LUANCS - SO Linux Active'
+            key: system.cpu.util
+        -
+          sortorder: '1'
+          color: 00C800
+          item:
+            host: 'LUANCS - SO Linux Active'
+            key: 'vm.memory.size[pused]'
+        -
+          sortorder: '2'
+          color: DAA520
+          item:
+            host: 'LUANCS - SO Linux Active'
+            key: 'vm.memory.size[pcached]'
+        -
+          sortorder: '3'
+          color: A54F10
+          item:
+            host: 'LUANCS - SO Linux Active'
+            key: 'system.cpu.load[percpu,avg1]'
+        -
+          sortorder: '4'
+          color: FC6EA3
+          item:
+            host: 'LUANCS - SO Linux Active'
+            key: 'system.swap.size[pused]'
