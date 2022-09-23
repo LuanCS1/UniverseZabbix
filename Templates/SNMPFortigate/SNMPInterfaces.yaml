@@ -1,0 +1,189 @@
+LUANCS:
+  version: '5.4'
+  date: '2022-09-23T18:21:00Z'
+  groups:
+    -
+      uuid: 91290fe175a04a15adff4015122fa0b6
+      name: Templates/LUANCS
+  templates:
+    -
+      uuid: 7ed7c71574bb4fb6971d19a6f7eda33c
+      template: 'LUANCS - SNMP v2c Interfaces'
+      name: 'LUANCS - SNMP v2c Interfaces'
+      groups:
+        -
+          name: Templates/LUANCS
+      items:
+        -
+          uuid: 3094cd14f6de49e39fb28246cb90ebe7
+          name: 'Number of interfaces'
+          type: SNMP_AGENT
+          snmp_oid: 'IF-MIB::ifNumber.0'
+          key: ifNumber
+          delay: 10m
+          history: 8d
+          trends: 8d
+          tags:
+            -
+              tag: Application
+              value: 'Network Interfaces'
+      discovery_rules:
+        -
+          uuid: 548b39a868144d2ea973efc51c917ad1
+          name: 'Network interfaces'
+          type: SNMP_AGENT
+          snmp_oid: 'discovery[{#SNMPVALUE},IF-MIB::ifName,{#IFALIAS},IF-MIB::ifAlias]'
+          key: ifName
+          delay: '3600'
+          filter:
+            conditions:
+              -
+                macro: '{#SNMPVALUE}'
+                value: '@SNMP interfaces for discovery'
+                formulaid: A
+          lifetime: '0'
+          item_prototypes:
+            -
+              uuid: 70f84e2c341e4e41b396eb6582bbbf5e
+              name: 'Admin status of interface {#SNMPVALUE} - {#IFALIAS}'
+              type: SNMP_AGENT
+              snmp_oid: 'IF-MIB::ifAdminStatus.{#SNMPINDEX}'
+              key: 'ifAdminStatus[{#SNMPVALUE}]'
+              delay: 10m
+              history: 8d
+              trends: 8d
+              valuemap:
+                name: 'SNMP interface status (ifAdminStatus)'
+              tags:
+                -
+                  tag: Application
+                  value: 'Admin Status Interface'
+            -
+              uuid: 0a57d4e5de9e46f88e67ca0fb56503a5
+              name: 'Incoming traffic on the interface {#SNMPVALUE} - {#IFALIAS}'
+              type: SNMP_AGENT
+              snmp_oid: 'IF-MIB::ifHCInOctets.{#SNMPINDEX}'
+              key: 'ifHCInOctets[{#SNMPVALUE}]'
+              delay: 5m
+              history: 8d
+              trends: 8d
+              units: bps
+              preprocessing:
+                -
+                  type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '8'
+              tags:
+                -
+                  tag: Application
+                  value: 'Incoming traffic'
+            -
+              uuid: 880ccbec87ec4806afd052ec6a15246f
+              name: 'Outbound traffic on the interface {#SNMPVALUE} - {#IFALIAS}'
+              type: SNMP_AGENT
+              snmp_oid: 'IF-MIB::ifHCOutOctets.{#SNMPINDEX}'
+              key: 'ifHCOutOctets[{#SNMPVALUE}]'
+              delay: 5m
+              history: 8d
+              trends: 8d
+              units: bps
+              preprocessing:
+                -
+                  type: CHANGE_PER_SECOND
+                  parameters:
+                    - ''
+                -
+                  type: MULTIPLIER
+                  parameters:
+                    - '8'
+              tags:
+                -
+                  tag: Application
+                  value: 'Outgoing traffic'
+            -
+              uuid: 5bbb3ce7348847debe66c3507544da6d
+              name: 'Operational status of interface {#SNMPVALUE} - {#IFALIAS}'
+              type: SNMP_AGENT
+              snmp_oid: 'IF-MIB::ifOperStatus.{#SNMPINDEX}'
+              key: 'ifOperStatus[{#SNMPVALUE}]'
+              delay: 5m
+              history: 8d
+              trends: 8d
+              valuemap:
+                name: 'SNMP interface status (ifOperStatus)'
+              tags:
+                -
+                  tag: Application
+                  value: 'Operational Status of interface'
+          trigger_prototypes:
+            -
+              uuid: e42cd278ec3d4a0e8bc99212f053bf39
+              expression: 'last(/LUANCS - SNMP v2c Interfaces/ifOperStatus[{#SNMPVALUE}])=2 and last(/LUANCS - SNMP v2c Interfaces/ifAdminStatus[{#SNMPVALUE}])=1'
+              name: 'Operational status changed in {HOST.NAME} interface {#SNMPVALUE} - {#IFALIAS}'
+              priority: DISASTER
+          graph_prototypes:
+            -
+              uuid: fdd7d8f1585d406fbf0073ef2b998d0f
+              name: 'Tráfego na interface {#SNMPVALUE}'
+              show_work_period: 'NO'
+              graph_items:
+                -
+                  drawtype: GRADIENT_LINE
+                  color: 00AA00
+                  item:
+                    host: 'LUANCS - SNMP v2c Interfaces'
+                    key: 'ifHCInOctets[{#SNMPVALUE}]'
+                -
+                  sortorder: '1'
+                  drawtype: GRADIENT_LINE
+                  color: 3333FF
+                  item:
+                    host: 'LUANCS - SNMP v2c Interfaces'
+                    key: 'ifHCOutOctets[{#SNMPVALUE}]'
+      macros:
+        -
+          macro: '{$SNMP_COMMUNITY}'
+          value: public
+      valuemaps:
+        -
+          uuid: 8235d5fc0794414f8285d6369e03cc99
+          name: 'SNMP interface status (ifAdminStatus)'
+          mappings:
+            -
+              value: '1'
+              newvalue: up
+            -
+              value: '2'
+              newvalue: down
+            -
+              value: '3'
+              newvalue: testing
+        -
+          uuid: e0e0fd38f9714339b945745121a5e29c
+          name: 'SNMP interface status (ifOperStatus)'
+          mappings:
+            -
+              value: '1'
+              newvalue: up
+            -
+              value: '2'
+              newvalue: down
+            -
+              value: '3'
+              newvalue: testing
+            -
+              value: '4'
+              newvalue: unknown
+            -
+              value: '5'
+              newvalue: dormant
+            -
+              value: '6'
+              newvalue: notPresent
+            -
+              value: '7'
+              newvalue: lowerLayerDown
