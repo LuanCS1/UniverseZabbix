@@ -1,0 +1,113 @@
+LUANCS:
+  version: '5.4'
+  date: '2022-09-23T18:12:35Z'
+  groups:
+    -
+      uuid: e115692d9bc8436a910fa4d77e4f54dc
+      name: Templates/JLCP
+    -
+      uuid: 91290fe175a04a15adff4015122fa0b6
+      name: Templates/LUANCS
+  templates:
+    -
+      uuid: a1fc7b490a16405294e452f63dcc3b41
+      template: 'LUANCS - SO Linux - Process LUANCS BOT'
+      name: 'LUANCS - SO Linux - Process LUANCS BOT'
+      groups:
+        -
+          name: Templates/JLCP
+        -
+          name: Templates/LUANCS
+      items:
+        -
+          uuid: 894c92dee3cc409bb9facb7e933947ad
+          name: 'Process bot-engine'
+          type: ZABBIX_ACTIVE
+          key: 'proc.num[bot-engine,LUANCS]'
+          delay: 3m
+          tags:
+            -
+              tag: Application
+              value: Processes
+          triggers:
+            -
+              uuid: 2fe4ad2665fe459f963a6a6817ab938c
+              expression: 'last(/LUANCS - SO Linux - Process LUANCS BOT/proc.num[bot-engine,LUANCS])=0'
+              name: '{HOST.NAME}: Process bot-engine is not running'
+              priority: DISASTER
+        -
+          uuid: 15ce79390ff2428fa616f2e64b63facb
+          name: 'Process bot-receiver'
+          type: ZABBIX_ACTIVE
+          key: 'proc.num[bot-receiver]'
+          delay: 3m
+          tags:
+            -
+              tag: Application
+              value: Processes
+          triggers:
+            -
+              uuid: 243a25b2ebbe47c985bc8f02e7597f3b
+              expression: 'last(/LUANCS - SO Linux - Process LUANCS BOT/proc.num[bot-receiver])=0'
+              name: '{HOST.NAME}: Process bot-receiver is not running'
+              priority: DISASTER
+        -
+          uuid: 2a5044b3b834409cb52f2abe10a360f7
+          name: 'Process dialogs'
+          type: ZABBIX_ACTIVE
+          key: 'proc.num[dialogs]'
+          delay: 3m
+          tags:
+            -
+              tag: Application
+              value: Processes
+          triggers:
+            -
+              uuid: e129d918de0f42c79a3d3c0f76f1a874
+              expression: 'last(/LUANCS - SO Linux - Process LUANCS BOT/proc.num[dialogs])=0'
+              name: '{HOST.NAME}: Process dialogs is not running'
+              priority: DISASTER
+        -
+          uuid: 3b7e1d5f7e674577bfd1712deaa900e6
+          name: 'Process mab'
+          type: ZABBIX_ACTIVE
+          key: 'proc.num[mab]'
+          delay: 3m
+          tags:
+            -
+              tag: Application
+              value: Processes
+          triggers:
+            -
+              uuid: 4a07ceb1856c4eb58123ff75161e8190
+              expression: 'last(/LUANCS - SO Linux - Process LUANCS BOT/proc.num[mab])=0'
+              name: '{HOST.NAME}: Process mab is not running'
+              priority: DISASTER
+        -
+          uuid: f563584c3be8420d9314eccfbb4e8442
+          name: 'Process mas'
+          type: ZABBIX_ACTIVE
+          key: 'proc.num[mas]'
+          delay: 3m
+          tags:
+            -
+              tag: Application
+              value: Processes
+          triggers:
+            -
+              uuid: 5ca8bbeff81643a2a54825abd1d186ba
+              expression: 'last(/LUANCS - SO Linux - Process LUANCS BOT/proc.num[mas])=0'
+              name: '{HOST.NAME}: Process mas is not running'
+              priority: DISASTER
+        -
+          uuid: c167c5d21df448238e8963aebeef2033
+          name: 'Process bot-engine info'
+          type: ZABBIX_ACTIVE
+          key: 'service.info[bot-engine]'
+          delay: 3m
+          trends: '0'
+          value_type: TEXT
+          tags:
+            -
+              tag: Application
+              value: Processes

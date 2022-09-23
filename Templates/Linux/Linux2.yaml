@@ -1,0 +1,33 @@
+LUANCS:
+  version: '5.4'
+  date: '2022-09-23T18:14:01Z'
+  groups:
+    -
+      uuid: e115692d9bc8436a910fa4d77e4f54dc
+      name: Templates/JLCP
+    -
+      uuid: 91290fe175a04a15adff4015122fa0b6
+      name: Templates/LUANCS
+  templates:
+    -
+      uuid: e8945c78b9a44de59fce1925b4308d65
+      template: 'LUANCS - SO Linux - Process LUANCS VPL'
+      name: 'LUANCS - SO Linux - Process LUANCS VPL'
+      groups:
+        -
+          name: Templates/JLCP
+        -
+          name: Templates/LUANCS
+      items:
+        -
+          uuid: 04cc34c8d1024551ad924f3cd958ccf4
+          name: 'Process LUANCS_vpl'
+          type: ZABBIX_ACTIVE
+          key: 'proc.num[LUANCS_vpl]'
+          delay: 3m
+          triggers:
+            -
+              uuid: da1fa37bda68468d96da857363fd07ac
+              expression: 'last(/LUANCS - SO Linux - Process LUANCS VPL/proc.num[LUANCS_vpl])=0'
+              name: '{HOST.NAME}: Process LUANCS_vpl is not running'
+              priority: DISASTER
