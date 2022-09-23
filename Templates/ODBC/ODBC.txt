@@ -1,0 +1,31 @@
+-- PARTE 01
+USE [master];
+IF (SUSER_ID('Zabbix') IS NOT NULL)
+DROP LOGIN [Zabbix];
+CREATE LOGIN [Zabbix] WITH PASSWORD = 0X02004D87566F35F8EBED34A0BF27BCCBE12D40481D3DA70CFEC58546B75BB09024EDDAB949AB145D6470F73C2D8B2C663672C509A0613846FD41A42DBE8B50D2E30BF0C45245 HASHED, DEFAULT_DATABASE=[master], DEFAULT_LANGUAGE = [us_english], CHECK_POLICY = OFF, CHECK_EXPIRATION = OFF;
+
+-- PARTE 02
+USE [master]; GRANT CONNECT SQL TO [Zabbix];
+USE [master]; GRANT VIEW SERVER STATE TO [Zabbix];
+DECLARE @create_user VARCHAR(MAX) = ''
+SELECT @create_user = @create_user + 'USE [' + name + ']; IF EXISTS(SELECT * FROM sys.database_principals WHERE name = ''Zabbix'') DROP USER [Zabbix]; CREATE USER [Zabbix] FOR LOGIN [Zabbix];
+'
+FROM sys.databases
+EXEC(@create_user)
+USE [msdb]; ALTER ROLE [db_datareader] ADD MEMBER [Zabbix]
+USE [master];ALTER ROLE [db_datareader] ADD MEMBER [Zabbix]
+USE [CampaignControl]
+GO
+GRANT SELECT ON [dbo].[CallControl] TO [Zabbix]
+GO
+
+-- PARTE 03 
+USE CampaignControl
+
+ALTER USER Zabbix WITH LOGIN = Zabbix
+
+Start automático do Zabbix-Agent no Linux
+sudo systemctl enable zabbix-agent
+:
+
+isql -v OLOSKNSSPODTB01 Zabbix Olos@123

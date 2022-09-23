@@ -1,0 +1,29 @@
+SELECT * FROM sys.databases WITH(NOLOCK) WHERE name = 'CampaignControl') BEGIN SET @ReiniciarCallID = (SELECT TOP 1 1 FROM [CampaignControl].[dbo].[CallControl] WITH(NOLOCK) WHERE CallId >= 2000000000
+   
+SELECT TOP 1 1 FROM [CampaignControl].[dbo].[CallControl] WITH(NOLOCK) WHERE CallId >= 2000000000
+
+DECLARE @ReiniciarCallID  BIT IF EXISTS(SELECT * FROM sys.databases WITH(NOLOCK) WHERE name = 'CampaignControl') BEGIN SET @ReiniciarCallID = (SELECT TOP 1 1 FROM [CampaignControl].[dbo].[CallControl] WITH(NOLOCK) WHERE CallId >= 2000000000)  END SELECT ISNULL(@ReiniciarCallID, 0) AS ZerarCallID
+
+use [CampaignControl]
+GO
+GRANT SELECT ON [dbo].[CallControl] TO [Zabbix]
+GO
+
+zabbix_proxy -R config_cache_reload
+
+chkconfig zabbix-agent on 
+systemctl enable zabbix-agent 
+
+Especificações da máquina para conhecimento:
+4vCores
+4GbRAM
+50Gb disco
+
+Dados GlobalCob
+10.9.1.100
+10.9.1.101
+10.9.1.102
+10.9.1.103
+10.9.1.104
+
+isql -v OLOSKNSSPODTB01 Zabbix Olos@123
