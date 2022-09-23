@@ -1,0 +1,359 @@
+Server instalation:
+
+-- Install Zabbix server, frontend, and agent
+
+sudo wget https://repo.zabbix.com/zabbix/5.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.4-1+ubuntu$(lsb_release -rs)_all.deb
+sudo dpkg -i zabbix-release_5.4-1+ubuntu$(lsb_release -rs)_all.deb
+sudo apt update
+sudo apt -y install zabbix-server-mysql
+sudo apt -y install zabbix-frontend-php
+sudo apt -y install zabbix-apache-conf
+sudo apt -y install zabbix-sql-scripts
+sudo apt -y install zabbix-agent
+
+--- START OF CONFIG ON THE DB MACHINE ---
+
+-- Configure database
+
+- Install MariaDB on the DB machine
+
+sudo apt -y install mariadb-common
+sudo apt -y install mariadb-client-10.3
+sudo apt -y install mariadb-server-10.3
+
+sudo apt -y install mariadb-client
+sudo apt -y install mariadb-server
+
+-- MySQL initial configuration
+
+sudo mysql_secure_installation
+
+Enter current password for root: Press Enter
+Set root password? [Y/n]: Y
+New password: <Enter root DB password>
+Re-enter new password: <Repeat root DB password>
+Remove anonymous users? [Y/n]: Y
+Disallow root login remotely? [Y/n]: Y
+Remove test database and access to it? [Y/n]:  Y
+Reload privilege tables now? [Y/n]:  Y
+
+-- Configure data location
+
+- Create folder
+sudo mkdir /datadrive/mysql
+sudo chown -R mysql:mysql /datadrive/mysql
+
+- Default validation
+mysql -u root -p
+mysql> SELECT @@datadir;
+mysql> quit
+
+- Stop service
+sudo systemctl stop mariadb
+sudo systemctl is-active mariadb
+
+- Copy default database
+sudo cp -R -p /var/lib/mysql/* /datadrive/mysql
+
+- Change configuration
+sudo nano /etc/mysql/my.cnf
+
+Use:
+https://gist.github.com/Ishotihadus/1cdce4509819cabda983055dc25af26d
+
+- Start service 
+sudo systemctl stop mariadb
+sudo systemctl is-active mariadb
+
+- Validate new dir
+mysql -u root -p
+mysql> SELECT @@datadir;
+mysql> quit
+
+-- Create database
+
+sudo mysql -uroot -p'skyl!n&GTR!@'
+mysql> create database zabbix character set utf8 collate utf8_bin;
+mysql> grant all privileges on zabbix.* to zabbix@localhost identified by 'zabbixDBpass';
+mysql> grant all privileges on *.* to root@10.25.5.5 identified by 'skyl!n&GTR!@';
+
+- For monitoring
+
+mysql> CREATE USER 'zbx_monitor'@'%' IDENTIFIED BY 'skyl!n&GTR!@';
+mysql> GRANT USAGE,REPLICATION CLIENT,PROCESS,SHOW DATABASES,SHOW VIEW ON *.* TO 'zbx_monitor'@'%';
+mysql> quit;
+
+-- Import initial database schema
+- Temporary disable strict mode (ZBX-16465) to avoid MySQL error “ERROR 1118 (42000) at line 1284: Row size too large (> 8126)” :
+
+sudo mysql -uroot -p'skyl!n&GTR!@'
+mysql> set global innodb_strict_mode='OFF';
+mysql> quit;
+
+- Import database shema for proxy server (could last up to 5 minutes):
+
+- Zabbix 5.4 standard version
+sudo zcat /usr/share/doc/zabbix-sql-scripts/mysql/create.sql.gz | mysql -uzabbix -p'zabbixDBpass' zabbix
+
+sudo wget https://repo.zabbix.com/zabbix/5.4/ubuntu/pool/main/z/zabbix-release/zabbix-release_5.4-1+ubuntu$(lsb_release -rs)_all.deb
+sudo dpkg -i zabbix-release_5.4-1+ubuntu$(lsb_release -rs)_all.deb
+sudo apt update
+sudo apt -y install zabbix-sql-scripts
+sudo apt -y install zabbix-agent
+
+- Zabbix agent configuration
+
+sudo nano /etc/zabbix/zabbix_agentd.conf
+
+Server=IP_DO_SERVER
+Serveravtive=IP_DO_SERVER
+HostMetadataItem=system.uname
+
+sudo systemctl restart zabbix-agent
+sudo systemctl enable zabbix-agent
+
+- Enable strict mode 
+
+sudo mysql -uroot -p'skyl!n&GTR!@'
+mysql> set global innodb_strict_mode='ON';
+mysql> quit;
+
+-- Optimizing MySQL / MariaDB database
+
+- Change "* Fine tuning" fot this below
+
+event_scheduler                = ON
+max_connections                = 404
+innodb_buffer_pool_size        = 4G
+innodb-log-file-size           = 128M
+innodb-log-buffer-size         = 128M
+innodb-file-per-table          = 1
+innodb_buffer_pool_instances   = 8
+innodb_old_blocks_time         = 1000
+innodb_stats_on_metadata       = off
+innodb-flush-method            = O_DIRECT
+innodb-log-files-in-group      = 2
+innodb-flush-log-at-trx-commit = 2
+tmp-table-size                 = 96M
+max-heap-table-size            = 96M
+open_files_limit               = 65535
+max_connect_errors             = 1000000
+connect_timeout                = 60
+wait_timeout                   = 28800
+
+- Comment the line
+bind-address          = 127.0.0.1
+
+- Observation
+max_connections must be larger than the total number of all Zabbix proxy processes plus 150
+
+To get the value:
+root@ubuntu:~ $ egrep "^Start.+=[0-9]"  /etc/zabbix/zabbix_server.conf  |  awk -F "=" '{s+=$2} END {print s+150}'
+
+innodb_buffer_pool_size should set that parameter to 70% of system memory if only database is installed on server
+
+Note that if you follow this configuration, you will receive “Too many processes on the Zabbix server” alarm in
+Zabbix frontend due to the new Zabbix configuration. It is safe to increase the trigger threshold or turn off that alarm
+
+-- Partitioning MariaDB database Tables
+- Download SQL script for partitioning
+
+sudo wget http://bestmonitoringtools.com/dl/zbx_db_partitiong.tar.gz
+sudo tar -zxvf zbx_db_partitiong.tar.gz
+
+Configured to keep 7 days of history data and 365 days of trend data
+If you want to change days for trends or history then open file “zbx_db_partitiong.sql“
+
+- Create partitioning procedures with the SQL script
+
+mysql -u 'zabbix' -p'zabbixDBpass' zabbix < zbx_db_partitiong.sql
+
+- Run partitioning procedures automatically
+
+sudo mysql -uroot -p'skyl!n&GTR!@'
+mysql> SHOW VARIABLES LIKE 'event_scheduler';
+exit
+
+mysql -u 'zabbix' -p'zabbixDBpass' zabbix -e "CREATE EVENT zbx_partitioning ON SCHEDULE EVERY 12 HOUR DO CALL partition_maintenance_all('zabbix');"
+
+- To check if its working (After at least 12h)
+
+sudo mysql -uroot -p'skyl!n&GTR!@'
+mysql> SELECT * FROM INFORMATION_SCHEMA.events\G
+
+sudo systemctl restart mysql
+
+-- Optional
+
+- If tunning innodb dosent work:
+
+sudo mysql -uroot -p'skyl!n&GTR!@'
+mysql> SET GLOBAL innodb_buffer_pool_size=2133333333; (2Gb)
+mysql> quit;
+
+- Change partitioning settings (days for history and trends)
+If set too many or too little days for history and trends for the Zabbix database - 30 days e 365 days example:
+
+- Create a new partitioning procedure
+sudo mysql -uroot -p'skyl!n&GTR!@'
+
+DELIMITER $$
+CREATE PROCEDURE partition_maintenance_all_30and365(SCHEMA_NAME VARCHAR(32))
+BEGIN
+CALL partition_maintenance(SCHEMA_NAME, 'history', 30, 24, 3);
+CALL partition_maintenance(SCHEMA_NAME, 'history_log', 30, 24, 3);
+CALL partition_maintenance(SCHEMA_NAME, 'history_str', 30, 24, 3);
+CALL partition_maintenance(SCHEMA_NAME, 'history_text', 30, 24, 3);
+CALL partition_maintenance(SCHEMA_NAME, 'history_uint', 30, 24, 3);
+CALL partition_maintenance(SCHEMA_NAME, 'trends', 365, 24, 3);
+CALL partition_maintenance(SCHEMA_NAME, 'trends_uint', 365, 24, 3);
+END$$
+DELIMITER ;
+
+- Update MySQL event scheduler or Crontab
+
+sudo mysql -uroot -p'skyl!n&GTR!@'
+mysql> ALTER EVENT zbx_partitioning ON SCHEDULE EVERY 12 HOUR DO CALL partition_maintenance_all_30and400('zabbix');
+
+-- END OF CONFIG ON THE DB MACHINE ---
+
+-- Zabbix server configuration
+
+sudo nano /etc/zabbix/zabbix_server.conf
+
+DBHost=10.25.5.7
+DBName=zabbix
+DBUser=zabbix
+DBPassword=skyl!n&GTR!@
+
+AlertScriptsPath=/usr/lib/zabbix/alertscripts
+ExternalScripts=/usr/lib/zabbix/externalscripts
+
+- Tunning 
+
+sudo nano /etc/zabbix/zabbix_server.conf”
+
+StartPollers=100
+StartPollersUnreachable=50
+StartPingers=50
+StartTrappers=10
+StartDiscoverers=15
+StartPreprocessors=15
+StartHTTPPollers=5
+StartAlerters=5
+StartTimers=2
+StartEscalators=2
+
+CacheSize=128M = 1 (Base)
+HistoryCacheSize=64M = /2 (Metade)
+HistoryIndexCacheSize=32M = /4 (Quarto)
+TrendCacheSize=32M /4 (Quarto)
+ValueCacheSize=256M = x2 (Dobro)
+
+sudo systemctl stop zabbix-server
+sudo systemctl start zabbix-server
+
+-- Configure firewall
+
+sudo ufw status
+ufw allow 10050/tcp
+ufw allow 10051/tcp
+ufw allow 80/tcp
+ufw reload
+
+-- Zabbix agent configuration
+
+sudo nano /etc/zabbix/zabbix_agentd.conf
+
+Server=IP_DO_SERVER
+Serveravtive=IP_DO_SERVER
+HostMetadataItem=system.uname
+
+sudo systemctl restart zabbix-agent
+sudo systemctl enable zabbix-agent
+
+-- Configure Zabbix frontend
+
+sudo nano /etc/zabbix/apache.conf
+
+php_value date.timezone America/Sao_Paulo
+
+sudo systemctl restart apache2
+sudo systemctl enable apache2
+
+- Configure web frontend
+
+http://10.25.5.6/zabbix to initiate the Zabbix installation wizard
+
+- Login to frontend
+
+http://10.25.5.6/zabbix
+Admin
+zabbix
+
+-- Configure Housekeeping on Zabbix frontend
+Remove "Enable internal housekeeping" on history and trends
+
+-- Installing ODBC
+
+sudo apt install unixodbc
+sudo apt install unixodbc-dev
+
+- MySQL connector
+
+sudo wget https://repo.mysql.com/apt/ubuntu/pool/mysql-8.0/m/mysql-community/mysql-community-client-plugins_8.0.27-1ubuntu20.04_amd64.deb
+sudo dpkg -i mysql-community-client-plugins_8.0.27-1ubuntu20.04_amd64.deb
+
+sudo apt --fix-broken install
+
+sudo wget https://dev.mysql.com/get/Downloads/Connector-ODBC/8.0/mysql-connector-odbc_8.0.27-1ubuntu20.04_amd64.deb
+sudo dpkg -i mysql-connector-odbc_8.0.27-1ubuntu20.04_amd64.deb
+
+- MSSQL connector
+
+sudo su
+curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+exit
+
+sudo apt update
+sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17
+
+-- Configure ODBC
+
+- Validade connectors
+sudo nano /etc/odbcinst.ini
+
+sudo nano /etc/odbc.ini
+
+[MSSQLSERVER]
+Driver = MSSQLSERVER17
+Description = ODBC SQL Server
+Trace = yes
+TraceFile = /tmp/odbc_sqlserver.log
+Server = 10.30.11.41\\MSSQLSERVER,1433
+User = Zabbix
+Password = Olos@123
+
+- Test
+
+isql -v MSSQLSERVER Zabbix Olos@123
+
+-- Configure macro in frontend - DSN
+
+-- For DB monitoring
+
+Set the user name and password in host macros {$MYSQL.USER} and {$MYSQL.PASSWORD}.
+{$MYSQL.DSN} = OLOSPRDAZRZBXDB01
+{$MYSQL.USER} = zbx_monitor
+{$MYSQL.PASSWORD} = skyl!n&GTR!@
+
+-- Upgrade between minor versions
+Run every week
+
+sudo apt install --only-upgrade 'zabbix.*'
+
+-- Agent encryption
+
+Identifier: zabbix.olos.com.br
+Key: 26a87124d0cdb6c7f1a9583167df718b9bebdf06dca5d45b5481aa98ad99aa59
