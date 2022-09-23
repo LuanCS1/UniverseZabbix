@@ -1,0 +1,134 @@
+{
+    "zabbix_export": {
+        "version": "5.4",
+        "date": "2022-09-23T17:57:12Z",
+        "groups": [
+            {
+                "uuid": "e115692d9bc8436a910fa4d77e4f54dc",
+                "name": "Templates/JLCP"
+            },
+            {
+                "uuid": "91290fe175a04a15adff4015122fa0b6",
+                "name": "Templates/LUANCS"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "7e44c538c760489daabf5f3ddd4632db",
+                "template": "LUANCS - SO Windows - Services LUANCS",
+                "name": "LUANCS - SO Windows - Services LUANCS",
+                "description": "Monitorando os servi\u00e7os LUANCS dos Servidores.",
+                "groups": [
+                    {
+                        "name": "Templates/JLCP"
+                    },
+                    {
+                        "name": "Templates/LUANCS"
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "e5ab6b70f59d41f9a663cedf0b0f5e1d",
+                        "name": "[LLD] Windows Services LUANCS",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "service.discovery",
+                        "delay": "1h",
+                        "filter": {
+                            "conditions": [
+                                {
+                                    "macro": "{#SERVICE.DISPLAYNAME}",
+                                    "value": "@Windows Service LUANCS",
+                                    "formulaid": "A"
+                                },
+                                {
+                                    "macro": "{#SERVICE.STARTUPNAME}",
+                                    "value": "@Windows service startup states for discovery",
+                                    "formulaid": "B"
+                                }
+                            ]
+                        },
+                        "lifetime": "0d",
+                        "description": "Descoberta servi\u00e7os LUANCS, configurado via express\u00e3o regulares",
+                        "item_prototypes": [
+                            {
+                                "uuid": "97538fd3bd0c4344953b260bd35c0ccc",
+                                "name": "Service Status: {#SERVICE.DISPLAYNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "service.info[{#SERVICE.DISPLAYNAME},state]",
+                                "delay": "60s",
+                                "history": "14d",
+                                "trends": "30d",
+                                "valuemap": {
+                                    "name": "Windows service state"
+                                },
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Windows Services LUANCS"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "79838dd2672340b68a97d72782e0101d",
+                                        "expression": "last(/LUANCS - SO Windows - Services LUANCS/service.info[{#SERVICE.DISPLAYNAME},state])<>0",
+                                        "name": "The Service {#SERVICE.DISPLAYNAME} is ENABLED but NOT RUNNING - DISASTER",
+                                        "priority": "DISASTER"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "macros": [
+                    {
+                        "macro": "{$TCP_PORT}"
+                    }
+                ],
+                "valuemaps": [
+                    {
+                        "uuid": "9df600034d5a4bd1925b2a7800baae06",
+                        "name": "Windows service state",
+                        "mappings": [
+                            {
+                                "value": "0",
+                                "newvalue": "Running"
+                            },
+                            {
+                                "value": "1",
+                                "newvalue": "Paused"
+                            },
+                            {
+                                "value": "2",
+                                "newvalue": "Start pending"
+                            },
+                            {
+                                "value": "3",
+                                "newvalue": "Pause pending"
+                            },
+                            {
+                                "value": "4",
+                                "newvalue": "Continue pending"
+                            },
+                            {
+                                "value": "5",
+                                "newvalue": "Stop pending"
+                            },
+                            {
+                                "value": "6",
+                                "newvalue": "Stopped"
+                            },
+                            {
+                                "value": "7",
+                                "newvalue": "Unknown"
+                            },
+                            {
+                                "value": "255",
+                                "newvalue": "No such service"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

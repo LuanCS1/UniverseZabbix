@@ -1,0 +1,1495 @@
+{
+    "zabbix_export": {
+        "version": "5.4",
+        "date": "2022-09-23T17:57:47Z",
+        "groups": [
+            {
+                "uuid": "e115692d9bc8436a910fa4d77e4f54dc",
+                "name": "Templates/JLCP"
+            },
+            {
+                "uuid": "91290fe175a04a15adff4015122fa0b6",
+                "name": "Templates/LUANCS"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "912126f8ed974ea1aeadee89e7f53a38",
+                "template": "LUANCS - SO Windows Active - APP",
+                "name": "LUANCS - SO Windows Active - APP",
+                "groups": [
+                    {
+                        "name": "Templates/JLCP"
+                    },
+                    {
+                        "name": "Templates/LUANCS"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "c8a1a22c350249ff82bb94fa2d66e4ef",
+                        "name": "Host name of zabbix_agentd running",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "agent.hostname",
+                        "delay": "600",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix agent"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "ea61b831e2fa49549cc887e3d8e79ab2",
+                                "expression": "(last(/LUANCS - SO Windows Active - APP/agent.hostname,#1)<>last(/LUANCS - SO Windows Active - APP/agent.hostname,#2))>0",
+                                "name": "{HOSTNAME}: Host name of zabbix_agentd was changed - INFORMATION",
+                                "priority": "INFO"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "d6926c09c68743e5b3b19dd7fe795db2",
+                        "name": "Agent ping",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "agent.ping",
+                        "delay": "90",
+                        "history": "30d",
+                        "description": "The agent always returns 1 for this item. It could be used in combination with nodata() for availability check.",
+                        "valuemap": {
+                            "name": "Zabbix agent ping status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix agent"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "7755d190fd824af58282b42a921b8b05",
+                                "expression": "nodata(/LUANCS - SO Windows Active - APP/agent.ping,10m)=1",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "nodata(/LUANCS - SO Windows Active - APP/agent.ping,10m)=0",
+                                "name": "{HOSTNAME}: Zabbix agent is unreachable - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ca627a1a9e1b4975b1e0f43361c060a8",
+                        "name": "Version of zabbix_agent(d) running",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "agent.version",
+                        "delay": "600",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix agent"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "00c4033c9ea345fcb8e492ddaab0034d",
+                                "expression": "(last(/LUANCS - SO Windows Active - APP/agent.version,#1)<>last(/LUANCS - SO Windows Active - APP/agent.version,#2))>0",
+                                "name": "{HOSTNAME}: Version of zabbix_agent(d) was changed - INFORMATION",
+                                "priority": "INFO"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "675a2fcfac4b44c0b7b02147ec6273b5",
+                        "name": "Event Viewer LUANCS",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "eventlog[Application,LUANCS,,,,,]",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Event Viewer"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "881d2f4fbc8b460b8d87e7ec1855b4da",
+                        "name": "Event Viewer LUANCS - Threads",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "eventlog[Application,ThreadAvailable = 0,,,,,]",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Event Viewer"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "dd154b0f725343c18343525b3d010161",
+                                "expression": "count(/LUANCS - SO Windows Active - APP/eventlog[Application,ThreadAvailable = 0,,,,,],1m,,\"ThreadAvailable = 0\")>1",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "nodata(/LUANCS - SO Windows Active - APP/eventlog[Application,ThreadAvailable = 0,,,,,],1h)=1",
+                                "name": "{HOSTNAME} - Event Viewer - {ITEM.VALUE} 1x in the last minute - HIGH",
+                                "priority": "HIGH"
+                            },
+                            {
+                                "uuid": "b22c77007e2841a28633558c105e878d",
+                                "expression": "count(/LUANCS - SO Windows Active - APP/eventlog[Application,ThreadAvailable = 0,,,,,],1m,,\"ThreadAvailable = 0\")>10",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "nodata(/LUANCS - SO Windows Active - APP/eventlog[Application,ThreadAvailable = 0,,,,,],1h)=1",
+                                "name": "{HOSTNAME} - Event Viewer - {ITEM.VALUE} more than 10x in the last minute - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e1a1f817e2514721ae1fddc4eecb0867",
+                        "name": "ICMP ping",
+                        "type": "SIMPLE",
+                        "key": "icmpping",
+                        "delay": "60",
+                        "history": "30d",
+                        "valuemap": {
+                            "name": "Service state"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "ICMP"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "81d2a9303d954dad88580396cd1c1028",
+                        "name": "ICMP ping loss",
+                        "type": "SIMPLE",
+                        "key": "icmppingloss",
+                        "delay": "60",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "ICMP"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ecc32003bde3440f808c82f84e15deb3",
+                        "name": "ICMP response time",
+                        "type": "SIMPLE",
+                        "key": "icmppingsec",
+                        "delay": "60",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "s",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "ICMP"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "a6e7dba9899d4fa0b222eb8dd723d3ad",
+                        "name": "PhysicalDisk: Avg. Disk Queue Length",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "perf_counter[\\234(_Total)\\1400]",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Disk"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "94248d2c048341dc8e6bb59c03ca203f",
+                                "expression": "min(/LUANCS - SO Windows Active - APP/perf_counter[\\234(_Total)\\1400],1h)>=20",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - APP/perf_counter[\\234(_Total)\\1400],30m)<20",
+                                "name": "{HOSTNAME} - Disk Queue Length is above 20 for more than 1 hour - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Disk Queue Length is above 50 for more than 1 hour - HIGH",
+                                        "expression": "min(/LUANCS - SO Windows Active - APP/perf_counter[\\234(_Total)\\1400],1h)>=50",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - APP/perf_counter[\\234(_Total)\\1400],30m)<50"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Disk Queue Length is above 200 for more than 30 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - APP/perf_counter[\\234(_Total)\\1400],30m)>=200",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - APP/perf_counter[\\234(_Total)\\1400],15m)<200"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "22eb56d4527c4465b8c63c551cacd314",
+                                "expression": "min(/LUANCS - SO Windows Active - APP/perf_counter[\\234(_Total)\\1400],1h)>=50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - APP/perf_counter[\\234(_Total)\\1400],30m)<50",
+                                "name": "{HOSTNAME} - Disk Queue Length is above 50 for more than 1 hour - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Disk Queue Length is above 200 for more than 30 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - APP/perf_counter[\\234(_Total)\\1400],30m)>=200",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - APP/perf_counter[\\234(_Total)\\1400],15m)<200"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "9d4e9019125b42e190b0a19aaeb76ef7",
+                                "expression": "min(/LUANCS - SO Windows Active - APP/perf_counter[\\234(_Total)\\1400],30m)>=200",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - APP/perf_counter[\\234(_Total)\\1400],15m)<200",
+                                "name": "{HOSTNAME} - Disk Queue Length is above 200 for more than 30 minutes - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "9b35490ab9df4d85b9a0993328edbdda",
+                        "name": "PhysicalDisk: Avg. Disk Read Queue Length",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "perf_counter[\\234(_Total)\\1402]",
+                        "delay": "180",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Disk"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "48ffce82210d451a8c6804de3540add5",
+                        "name": "PhysicalDisk: Avg. Disk Write Queue Length",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "perf_counter[\\234(_Total)\\1404]",
+                        "delay": "180",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "description": "Full counter name: \\PhysicalDisk(_Total)\\Avg. Disk Write Queue Length",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Disk"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "98a4b32411324ea0a68b24a48feef5da",
+                        "name": "Paging File: % Usage",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "perf_counter[\\700(_Total)\\702]",
+                        "delay": "300",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "87174c6c40764e8fb3058c127ed133dd",
+                                "expression": "avg(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],8h)>50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],10m)<=50",
+                                "name": "{HOSTNAME} - Average pagefile usage is more than 50% for more than 8 hours - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average pagefile usage is more than 90% for more then 1 hour - DISASTER",
+                                        "expression": "avg(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],1h)>90",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],30m)<=90"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Average pagefile usage is than 70% for more then 1 hour - HIGH",
+                                        "expression": "avg(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],1h)>70",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],10m)<=70"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "980a55dc25e84d479b291a7d12285ae9",
+                                "expression": "avg(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],1h)>90",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],30m)<=90",
+                                "name": "{HOSTNAME} - Average pagefile usage is more than 90% for more then 1 hour - DISASTER",
+                                "priority": "DISASTER",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Pagefile above 95% for more then 10 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],10m)>=95",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],10m)<95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "c7f16322e114401580f3b47ea66b05a4",
+                                "expression": "avg(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],1h)>70",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],10m)<=70",
+                                "name": "{HOSTNAME} - Average pagefile usage is than 70% for more then 1 hour - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average pagefile usage is more than 90% for more then 1 hour - DISASTER",
+                                        "expression": "avg(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],1h)>90",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],30m)<=90"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "d72428e731894713a3d0616dd41a4fac",
+                                "expression": "min(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],10m)>=95",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - APP/perf_counter[\\700(_Total)\\702],10m)<95",
+                                "name": "{HOSTNAME} - Pagefile above 95% for more then 10 minutes - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "d0fcef77b8d7407cb302b8e8b394c035",
+                        "name": "Processor load (1 min average)",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.cpu.load[percpu,avg1]",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "description": "Carga de sistema geral",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "CPU"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "f553f6d241fd4735a07fbeb3fddaa7b1",
+                                "expression": "min(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],10m)>=100",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],10m)<100",
+                                "name": "{HOSTNAME} - Processor load is above 100 for more than 10 minutes - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "747e287bf8d143c192209198b1efe203",
+                                "expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],8h)>25",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],1h)<=25",
+                                "name": "{HOSTNAME} - Processor load is more than 25 for more than 8 hours - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Processor load is more than 50 for more than 1 hour - HIGH",
+                                        "expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],1h)>50",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],10m)<=50"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Processor load is more than 50 for more than 8 hours - DISASTER",
+                                        "expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],8h)>50",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],1h)<=50"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "c0cc6a027bee418dabb0c1b1173efa31",
+                                "expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],1h)>50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],10m)<=50",
+                                "name": "{HOSTNAME} - Processor load is more than 50 for more than 1 hour - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Processor load is more than 50 for more than 8 hours - DISASTER",
+                                        "expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],8h)>50",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],1h)<=50"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "af690c065dfd4110a616346a0792ee4b",
+                                "expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],8h)>50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],1h)<=50",
+                                "name": "{HOSTNAME} - Processor load is more than 50 for more than 8 hours - DISASTER",
+                                "priority": "DISASTER",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Processor load is above 100 for more than 10 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],10m)>=100",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - APP/system.cpu.load[percpu,avg1],10m)<100"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "56203352890a44e29378a462a3546969",
+                        "name": "CPU Number",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.cpu.num",
+                        "delay": "600",
+                        "history": "30d",
+                        "description": "N\u00famero de CPU f\u00edsicas e l\u00f3gicas.",
+                        "preprocessing": [
+                            {
+                                "type": "MULTIPLIER",
+                                "parameters": [
+                                    "1"
+                                ]
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "CPU"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "06253d75cc1941cca90cdc86470e8dfb",
+                        "name": "CPU Usage in %",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.cpu.util",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "CPU"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "fd812ebd635f4c3ebf9f9293c4b1d3ca",
+                                "expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.util,24h)>50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.util,1h)<=50",
+                                "name": "{HOSTNAME} - Average CPU usage is more than 50% for more than 24 hours - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average CPU usage is more than 80% for more than 8 hour - HIGH",
+                                        "expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.util,8h)>80",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.util,1h)<=80"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Average CPU usage is more than 90% for more than 1 hour - DISASTER",
+                                        "expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.util,1h)>90",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.util,1h)<=90"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - CPU usage is above 95% for more than 10 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - APP/system.cpu.util,10m)>=95",
+                                        "recovery_expression": "min(/LUANCS - SO Windows Active - APP/system.cpu.util,10m)<95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "79a58a5b7f1149d8a5acffeae844145b",
+                                "expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.util,8h)>80",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.util,1h)<=80",
+                                "name": "{HOSTNAME} - Average CPU usage is more than 80% for more than 8 hour - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - CPU usage is above 95% for more than 10 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - APP/system.cpu.util,10m)>=95",
+                                        "recovery_expression": "min(/LUANCS - SO Windows Active - APP/system.cpu.util,10m)<95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "240fbe30e9df41f788fa521ec0d29a1c",
+                                "expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.util,1h)>90",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/system.cpu.util,1h)<=90",
+                                "name": "{HOSTNAME} - Average CPU usage is more than 90% for more than 1 hour - DISASTER",
+                                "priority": "DISASTER",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - CPU usage is above 95% for more than 10 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - APP/system.cpu.util,10m)>=95",
+                                        "recovery_expression": "min(/LUANCS - SO Windows Active - APP/system.cpu.util,10m)<95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "3c58b406d5c8403e9edf10eb5d8593b8",
+                                "expression": "min(/LUANCS - SO Windows Active - APP/system.cpu.util,10m)>=95",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "min(/LUANCS - SO Windows Active - APP/system.cpu.util,10m)<95",
+                                "name": "{HOSTNAME} - CPU usage is above 95% for more than 10 minutes - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "b408d4bdd3bc4c8e82fb70feab657a61",
+                                "expression": "nodata(/LUANCS - SO Windows Active - APP/system.cpu.util,10m)=1",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "nodata(/LUANCS - SO Windows Active - APP/system.cpu.util,10m)=0",
+                                "name": "{HOSTNAME}: Stopped recieving data (CPU) - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "427bef4b2cae4efb938503c058211eac",
+                        "name": "Computer name",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.hostname",
+                        "delay": "300",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "inventory_link": "NAME",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "System"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "fe4f32ee952f46f4a641fbee5a51fc2a",
+                        "name": "Current time",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.localtime",
+                        "delay": "300",
+                        "history": "30d",
+                        "units": "unixtime",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "System"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "156d240a533a403491dcbb4aec49cde3",
+                                "expression": "fuzzytime(/LUANCS - SO Windows Active - APP/system.localtime,180s)=0",
+                                "name": "{HOSTNAME} time is not synchronized with Zabbix Server - AVERAGE",
+                                "priority": "AVERAGE"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "64c80d132fd44e018a77fb01592da599",
+                        "name": "Windows Status Active",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.run[\"c:\\Windows\\System32\\cscript.exe /nologo c:\\Windows\\System32\\slmgr.vbs /xpr\"]",
+                        "delay": "1d",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Active Status"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "b2df5853fe0f45c7a47923a8cc975308",
+                                "expression": "find(/LUANCS - SO Windows Active - APP/system.run[\"c:\\Windows\\System32\\cscript.exe /nologo c:\\Windows\\System32\\slmgr.vbs /xpr\"],,\"like\",\"Notification mode\")=1",
+                                "name": "{HOSTNAME}: Windows is not Activated - INFORMATION",
+                                "priority": "INFO"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e441ed5bc92449348dc26eaee4f2896c",
+                        "name": "System Information",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.uname",
+                        "delay": "3600",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "inventory_link": "OS",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "System"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "553138b227b9439085d1360517488b3b",
+                        "name": "System Uptime",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.uptime",
+                        "delay": "60",
+                        "history": "30d",
+                        "units": "uptime",
+                        "inventory_link": "HARDWARE_FULL",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "System"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "758d7b320fdf43eda87f134c10eddc9a",
+                                "expression": "last(/LUANCS - SO Windows Active - APP/system.uptime)<10m",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - APP/system.uptime)>=8h",
+                                "name": "{HOST.NAME} - has just been restarted - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "438f520acdc54da5a2d4cd476536a7c8",
+                        "name": "Available memory",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vm.memory.size[available]",
+                        "history": "30d",
+                        "units": "B",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "919769014f1247d098f43fd458f91ead",
+                        "name": "Available memory in %",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vm.memory.size[pavailable]",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "1ec9886522bb413d9ee51ac8809a2a56",
+                        "name": "Memory usage in %",
+                        "type": "CALCULATED",
+                        "key": "vm.memory.size[pused]",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "params": "100-last(//vm.memory.size[pavailable])",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "3488494fdbf44afa964065955c850056",
+                                "expression": "avg(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],24h)>50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],1h)<=50",
+                                "name": "{HOSTNAME} - Average MEM usage is more than 50% for more than 24h hours - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average MEM usage is more than 80% for more than 8 hours - HIGH",
+                                        "expression": "avg(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],8h)>80",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],1h)<=80"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Average MEM usage is more than 90% for more than 1 hour - DISASTER",
+                                        "expression": "avg(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],1h)>90",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],30m)<=90"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "0292e424ce594252a1c561b013c54640",
+                                "expression": "avg(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],8h)>80",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],1h)<=80",
+                                "name": "{HOSTNAME} - Average MEM usage is more than 80% for more than 8 hours - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average MEM usage is more than 90% for more than 1 hour - DISASTER",
+                                        "expression": "avg(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],1h)>90",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],30m)<=90"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "2021ab2079bf414c8352663e6c7e00ce",
+                                "expression": "avg(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],1h)>90",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],30m)<=90",
+                                "name": "{HOSTNAME} - Average MEM usage is more than 90% for more than 1 hour - DISASTER",
+                                "priority": "DISASTER",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - MEM usage is above 95% for more than 10 minutes - DISASTER",
+                                        "expression": "min(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],10m)>=95",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],10m)<95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "958000cf07de490c957050b84ac6a5b2",
+                                "expression": "min(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],10m)>=95",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - APP/vm.memory.size[pused],10m)<95",
+                                "name": "{HOSTNAME} - MEM usage is above 95% for more than 10 minutes - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "0858be1e1be34f83a1fa2ce56f448404",
+                        "name": "Total memory",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vm.memory.size[total]",
+                        "delay": "300",
+                        "history": "30d",
+                        "units": "B",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "93ba0acc557542c29a5df19f742d00e9",
+                        "name": "Memory usage",
+                        "type": "CALCULATED",
+                        "key": "vm.memory.size[used]",
+                        "history": "30d",
+                        "units": "B",
+                        "params": "last(//vm.memory.size[total])-last(//vm.memory.size[available])",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ]
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "6777cacb60fe44f3b91b74e239d8ae3a",
+                        "name": "Network interface discovery",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "net.if.discovery",
+                        "delay": "1800",
+                        "filter": {
+                            "conditions": [
+                                {
+                                    "macro": "{#IFNAME}",
+                                    "value": "@Network interfaces for discovery",
+                                    "formulaid": "A"
+                                }
+                            ]
+                        },
+                        "lifetime": "7d",
+                        "item_prototypes": [
+                            {
+                                "uuid": "1eeaf5d242a84904a64f426779fec987",
+                                "name": "Incoming network traffic on {#IFNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "net.if.in[{#IFNAME}]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "bps",
+                                "preprocessing": [
+                                    {
+                                        "type": "CHANGE_PER_SECOND",
+                                        "parameters": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "type": "MULTIPLIER",
+                                        "parameters": [
+                                            "8"
+                                        ]
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Network"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "8f16cb77563f46af877c481aaec40310",
+                                "name": "Outgoing network traffic o {#IFNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "net.if.out[{#IFNAME}]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "bps",
+                                "preprocessing": [
+                                    {
+                                        "type": "CHANGE_PER_SECOND",
+                                        "parameters": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "type": "MULTIPLIER",
+                                        "parameters": [
+                                            "8"
+                                        ]
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Network"
+                                    }
+                                ]
+                            }
+                        ],
+                        "graph_prototypes": [
+                            {
+                                "uuid": "a7e80ce8cf6b4199955bc1365e0587b2",
+                                "name": "Network traffic in {#IFNAME}",
+                                "show_work_period": "NO",
+                                "ymin_type_1": "FIXED",
+                                "graph_items": [
+                                    {
+                                        "color": "C80000",
+                                        "item": {
+                                            "host": "LUANCS - SO Windows Active - APP",
+                                            "key": "net.if.in[{#IFNAME}]"
+                                        }
+                                    },
+                                    {
+                                        "sortorder": "1",
+                                        "color": "00C800",
+                                        "item": {
+                                            "host": "LUANCS - SO Windows Active - APP",
+                                            "key": "net.if.out[{#IFNAME}]"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "318f95a776184ccdbff1dea4c7e92364",
+                        "name": "Mounted filesystem discovery",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vfs.fs.discovery",
+                        "delay": "1800",
+                        "filter": {
+                            "conditions": [
+                                {
+                                    "macro": "{#FSTYPE}",
+                                    "value": "@File systems for discovery",
+                                    "formulaid": "A"
+                                }
+                            ]
+                        },
+                        "lifetime": "0",
+                        "item_prototypes": [
+                            {
+                                "uuid": "a8a080b0c4504c419b29e8d5d9c6004b",
+                                "name": "Free disk space on {#FSNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "vfs.fs.size[{#FSNAME},free]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "B",
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Disk"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "33cda731c8424b8ea12a7a851a8a73ae",
+                                "name": "Free disk space on {#FSNAME} in %",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "vfs.fs.size[{#FSNAME},pfree]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "value_type": "FLOAT",
+                                "units": "%",
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Disk"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "cb760cf43d0144e984d5880328223030",
+                                        "expression": "nodata(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree],1h)=1",
+                                        "recovery_mode": "RECOVERY_EXPRESSION",
+                                        "recovery_expression": "nodata(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree],10m)=0",
+                                        "name": "{HOST.NAME}: Stopped recieving data (HDD) - DISASTER",
+                                        "priority": "DISASTER"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "ec9a48302e2349e2a4cce785adc7f867",
+                                "name": "Total disk space on {#FSNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "vfs.fs.size[{#FSNAME},total]",
+                                "delay": "600",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "B",
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Disk"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "7bf3879d146c4656a0f2c530a2c7b9c8",
+                                "name": "Used disk space on {#FSNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "vfs.fs.size[{#FSNAME},used]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "B",
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Disk"
+                                    }
+                                ]
+                            }
+                        ],
+                        "trigger_prototypes": [
+                            {
+                                "uuid": "8d177a17481d48e59ef34fffa2364a2a",
+                                "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>1",
+                                "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "5cdc8cfe448d459aac4e9e6970c3ec17",
+                                "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>2",
+                                "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "6d156b6df0b049dd8bcc2f54f354026e",
+                                "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>3",
+                                "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "7fa3f21a437d418db1be8a761a074c8a",
+                                "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>4",
+                                "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "34e5cfa4cfd6407796495de2abac08e2",
+                                "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>5",
+                                "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "d4f593c33820456fb873c4af7aff556f",
+                                "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=10 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>10",
+                                "name": "{HOSTNAME} - Free disk space is less than 10% on partition: {#FSNAME} - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>1"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>2"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>3"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>4"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>5"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])=0 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>0"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "6557252644b4451d8b95d1418bc7e075",
+                                "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=20 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>20",
+                                "name": "{HOSTNAME} - Free disk space is less than 20% on partition: {#FSNAME} - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>1"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>2"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>3"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>4"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>5"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])=0 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>0"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "e1814af67aa74251a01f5b2a2d57be60",
+                                "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=30 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>30",
+                                "name": "{HOSTNAME} - Free disk space is less than 30% on partition: {#FSNAME} - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>1"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>2"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>3"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>4"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>5"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 10% on partition: {#FSNAME} - HIGH",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=10 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>10"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 20% on partition: {#FSNAME} - HIGH",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=20 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>20"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])=0 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>0"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "6f0b54a07c7743b0882f42fa3586711c",
+                                "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=50 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>50",
+                                "name": "{HOSTNAME} - Free disk space is less than 50% on partition: {#FSNAME} - WARNING",
+                                "priority": "WARNING",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>1"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>2"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>3"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>4"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>5"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 10% on partition: {#FSNAME} - HIGH",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=10 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>10"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 20% on partition: {#FSNAME} - HIGH",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=20 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>20"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 30% on partition: {#FSNAME} - AVERAGE",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])<=30 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>30"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])=0 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>0"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "1ee93fad914d4557a5caefd85100d506",
+                                "expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])=0 and last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/LUANCS - SO Windows Active - APP/vfs.fs.size[{#FSNAME},pfree])>0",
+                                "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ],
+                        "graph_prototypes": [
+                            {
+                                "uuid": "8397a44156c84f1a8e150d9ed8ef8dc6",
+                                "name": "Disk space usage history in % on the partition: {#FSNAME}",
+                                "width": "500",
+                                "ymin_type_1": "FIXED",
+                                "ymax_type_1": "ITEM",
+                                "ymax_item_1": {
+                                    "host": "LUANCS - SO Windows Active - APP",
+                                    "key": "vfs.fs.size[{#FSNAME},pfree]"
+                                },
+                                "graph_items": [
+                                    {
+                                        "drawtype": "BOLD_LINE",
+                                        "color": "1A7C11",
+                                        "item": {
+                                            "host": "LUANCS - SO Windows Active - APP",
+                                            "key": "vfs.fs.size[{#FSNAME},pfree]"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "6f1d5b1314a24267acad71a4187480d3",
+                                "name": "Disk space usage history on the partition: {#FSNAME}",
+                                "width": "500",
+                                "ymin_type_1": "FIXED",
+                                "ymax_type_1": "ITEM",
+                                "ymax_item_1": {
+                                    "host": "LUANCS - SO Windows Active - APP",
+                                    "key": "vfs.fs.size[{#FSNAME},total]"
+                                },
+                                "graph_items": [
+                                    {
+                                        "drawtype": "BOLD_LINE",
+                                        "color": "1A7C11",
+                                        "item": {
+                                            "host": "LUANCS - SO Windows Active - APP",
+                                            "key": "vfs.fs.size[{#FSNAME},used]"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "511cf34f828e455bbe3962cb7883cda7",
+                                "name": "Disk space usage on partition: {#FSNAME}",
+                                "width": "500",
+                                "yaxismax": "0",
+                                "show_work_period": "NO",
+                                "show_triggers": "NO",
+                                "type": "PIE",
+                                "show_3d": "YES",
+                                "graph_items": [
+                                    {
+                                        "color": "00C800",
+                                        "item": {
+                                            "host": "LUANCS - SO Windows Active - APP",
+                                            "key": "vfs.fs.size[{#FSNAME},total]"
+                                        }
+                                    },
+                                    {
+                                        "sortorder": "1",
+                                        "color": "C80000",
+                                        "item": {
+                                            "host": "LUANCS - SO Windows Active - APP",
+                                            "key": "vfs.fs.size[{#FSNAME},free]"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "macros": [
+                    {
+                        "macro": "{$CPU_AVERAGE}",
+                        "value": "80"
+                    },
+                    {
+                        "macro": "{$CPU_DISASTER}",
+                        "value": "95"
+                    },
+                    {
+                        "macro": "{$CPU_HIGH_0}",
+                        "value": "90"
+                    },
+                    {
+                        "macro": "{$CPU_HIGH_1}",
+                        "value": "85"
+                    },
+                    {
+                        "macro": "{$CPU_TIME}",
+                        "value": "10m"
+                    },
+                    {
+                        "macro": "{$FS_AVERAGE_0}",
+                        "value": "15"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0}",
+                        "value": "5"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0: \"C:\"}",
+                        "value": "50"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0: \"D:\"}",
+                        "value": "50"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0: \"E:\"}",
+                        "value": "20"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0: \"F:\"}",
+                        "value": "20"
+                    },
+                    {
+                        "macro": "{$FS_HIGH_0}",
+                        "value": "10"
+                    },
+                    {
+                        "macro": "{$FS_TIME}",
+                        "value": "5m"
+                    },
+                    {
+                        "macro": "{$ICMP_TIME}",
+                        "value": "5m"
+                    },
+                    {
+                        "macro": "{$MEM_AVERAGE}",
+                        "value": "50"
+                    },
+                    {
+                        "macro": "{$MEM_DISASTER}",
+                        "value": "80"
+                    },
+                    {
+                        "macro": "{$MEM_TIME}",
+                        "value": "10m"
+                    },
+                    {
+                        "macro": "{$NET_THRESHOLD}",
+                        "value": "90"
+                    },
+                    {
+                        "macro": "{$NET_TIME}",
+                        "value": "5m"
+                    },
+                    {
+                        "macro": "{$PAGEFILE_THRESHOLD}",
+                        "value": "75"
+                    },
+                    {
+                        "macro": "{$PAGEFILE_TIME}",
+                        "value": "5m"
+                    }
+                ],
+                "valuemaps": [
+                    {
+                        "uuid": "4599c192dee242bf81f2ce5e7fec88a8",
+                        "name": "Service state",
+                        "mappings": [
+                            {
+                                "value": "0",
+                                "newvalue": "Down"
+                            },
+                            {
+                                "value": "1",
+                                "newvalue": "Up"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "6878802a0a684993b0f79310e1814827",
+                        "name": "Zabbix agent ping status",
+                        "mappings": [
+                            {
+                                "value": "1",
+                                "newvalue": "Up"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "triggers": [
+            {
+                "uuid": "a79226e00328434988bc07b30b1aef21",
+                "expression": "nodata(/LUANCS - SO Windows Active - APP/system.uptime,10m)=1",
+                "recovery_mode": "RECOVERY_EXPRESSION",
+                "recovery_expression": "nodata(/LUANCS - SO Windows Active - APP/system.cpu.util,10m)=0",
+                "name": "{HOSTNAME}: Stopped recieving data (UPTIME) - DISASTER",
+                "priority": "DISASTER"
+            }
+        ],
+        "graphs": [
+            {
+                "uuid": "dd6d7c91892843e2b3e83dc84dee6ebe",
+                "name": "Performance overview",
+                "show_work_period": "NO",
+                "show_triggers": "NO",
+                "ymin_type_1": "FIXED",
+                "graph_items": [
+                    {
+                        "drawtype": "BOLD_LINE",
+                        "color": "C80000",
+                        "item": {
+                            "host": "LUANCS - SO Windows Active - APP",
+                            "key": "system.cpu.util"
+                        }
+                    },
+                    {
+                        "sortorder": "1",
+                        "color": "00C800",
+                        "item": {
+                            "host": "LUANCS - SO Windows Active - APP",
+                            "key": "vm.memory.size[pused]"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "0000EE",
+                        "item": {
+                            "host": "LUANCS - SO Windows Active - APP",
+                            "key": "perf_counter[\\700(_Total)\\702]"
+                        }
+                    },
+                    {
+                        "sortorder": "3",
+                        "color": "DAA520",
+                        "item": {
+                            "host": "LUANCS - SO Windows Active - APP",
+                            "key": "system.cpu.load[percpu,avg1]"
+                        }
+                    },
+                    {
+                        "sortorder": "4",
+                        "color": "6C59DC",
+                        "item": {
+                            "host": "LUANCS - SO Windows Active - APP",
+                            "key": "perf_counter[\\234(_Total)\\1400]"
+                        }
+                    },
+                    {
+                        "sortorder": "5",
+                        "color": "FF33FF",
+                        "item": {
+                            "host": "LUANCS - SO Windows Active - APP",
+                            "key": "perf_counter[\\234(_Total)\\1402]"
+                        }
+                    },
+                    {
+                        "sortorder": "6",
+                        "color": "FFFF33",
+                        "item": {
+                            "host": "LUANCS - SO Windows Active - APP",
+                            "key": "perf_counter[\\234(_Total)\\1404]"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
