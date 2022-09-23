@@ -1,0 +1,803 @@
+zabbix_export:
+  version: '5.4'
+  date: '2022-09-23T16:52:06Z'
+  groups:
+    -
+      uuid: e115692d9bc8436a910fa4d77e4f54dc
+      name: Templates/JLCP
+    -
+      uuid: 91290fe175a04a15adff4015122fa0b6
+      name: Templates/Olos
+  templates:
+    -
+      uuid: 05dbae63d1554332966f92859ff8f7d9
+      template: 'Olos - MS SQL Server - ODBC - Com JOB'
+      name: 'Olos - MS SQL Server - ODBC - Com JOB'
+      groups:
+        -
+          name: Templates/JLCP
+        -
+          name: Templates/Olos
+      items:
+        -
+          uuid: 5e91f1e8a6e64ea7a3aee53afbb67f61
+          name: 'MS SQL Server: Buffer cache hit ratio in %'
+          type: ODBC
+          key: 'db.odbc.select[buffer_cache_hit_radio,{$DSN}]'
+          delay: '300'
+          history: 30d
+          value_type: FLOAT
+          units: '%'
+          params: 'SELECT CONVERT(int,(a.cntr_value * 1.0 / b.cntr_value) * 100) as BufferCacheHitRatio FROM sys.dm_os_performance_counters  a JOIN  (SELECT cntr_value,OBJECT_NAME FROM sys.dm_os_performance_counters  WHERE counter_name = ''Buffer cache hit ratio base'' AND OBJECT_NAME like ''%:Buffer Manager%'') b ON  a.OBJECT_NAME = b.OBJECT_NAME WHERE a.counter_name = ''Buffer cache hit ratio'' AND a.OBJECT_NAME like ''%:Buffer Manager%'''
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          description: 'Monitoring the buffer cache hit raio in %'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+          triggers:
+            -
+              uuid: e534e4736d604026afaf268c65c96215
+              expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[buffer_cache_hit_radio,{$DSN}])<90'
+              name: '{HOST.NAME}: Buffer cache hit radio - {ITEM.LASTVALUE}'
+              priority: HIGH
+        -
+          uuid: e06ece786d034194b66104c5be498cbc
+          name: 'MS SQL Server: callID number'
+          type: ODBC
+          key: 'db.odbc.select[callID_Number,{$DSN}]'
+          delay: 10m
+          history: 30d
+          value_type: FLOAT
+          params: 'SELECT MAX(CallId) FROM [CampaignControl].[dbo].[CallControl] with (nolock)'
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          description: 'Numero atual do CallID'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+          triggers:
+            -
+              uuid: 24bf46c3cbfc4f9ca557629c27176794
+              expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[callID_Number,{$DSN}])>=2000000000'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[callID_Number,{$DSN}])<2000000000'
+              name: '{HOST.NAME} - CallID number is {ITEM.VALUE} and need to be reset - DISASTER'
+              priority: DISASTER
+            -
+              uuid: 8b578155fc6b4e4780bbf71eff1aeaa6
+              expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[callID_Number,{$DSN}])>=2100000000'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[callID_Number,{$DSN}])<2100000000'
+              name: '{HOST.NAME} - CallID number is {ITEM.VALUE} and need to be reset IMMEDIATELY - DISASTER'
+              priority: DISASTER
+            -
+              uuid: fa84484b21f44a21bc195e62d083049e
+              expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[callID_Number,{$DSN}])>=1800000000'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[callID_Number,{$DSN}])<1800000000'
+              name: '{HOST.NAME} - CallID number is {ITEM.VALUE} and will exceed the limit soon - AVERAGE'
+              priority: AVERAGE
+            -
+              uuid: 7bb4f221f1de495eb38c2245bd1fb45c
+              expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[callID_Number,{$DSN}])>=1900000000'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[callID_Number,{$DSN}])<1900000000'
+              name: '{HOST.NAME} - CallID number is {ITEM.VALUE} and will exceed the limit soon - HIGH'
+              priority: HIGH
+            -
+              uuid: 8523618e1fd54a75ad445e7b1daca02a
+              expression: 'nodata(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[callID_Number,{$DSN}],1h)=1'
+              recovery_mode: RECOVERY_EXPRESSION
+              recovery_expression: 'nodata(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[callID_Number,{$DSN}],10m)=0'
+              name: '{HOST.NAME} - Stopped receiving data from CallID - DISASTER'
+              priority: DISASTER
+        -
+          uuid: 3ed8736497aa429db81f3ca99059d524
+          name: 'MS SQL Server: Check call_ID'
+          type: ODBC
+          key: 'db.odbc.select[check_call_ID,{$DSN}]'
+          delay: 10m
+          history: 30d
+          value_type: FLOAT
+          params: 'DECLARE @ReiniciarCallID  BIT IF EXISTS(SELECT * FROM sys.databases WITH(NOLOCK) WHERE name = ''CampaignControl'') BEGIN SET @ReiniciarCallID = (SELECT TOP 1 1 FROM [CampaignControl].[dbo].[CallControl] WITH(NOLOCK) WHERE CallId >= 2000000000)  END SELECT ISNULL(@ReiniciarCallID, 0) AS ZerarCallID'
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          description: 'Alerta de possível estouro de call_ID'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+          triggers:
+            -
+              uuid: 07ede6ed7bcc4220a3414149771e324a
+              expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[check_call_ID,{$DSN}])=1'
+              name: '{HOST.NAME}: CALL ID is exceeding the limit'
+              priority: HIGH
+        -
+          uuid: 6c9ecf3170ba45449a3162cab794bdeb
+          name: 'MS SQL Server: DB Uptime'
+          type: ODBC
+          key: 'db.odbc.select[db_uptime,{$DSN}]'
+          delay: '60'
+          history: 30d
+          units: s
+          params: 'select datediff(SECOND, crdate, getdate()) second from master.dbo.sysdatabases where name = ''tempdb'''
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          description: 'Monitors database uptime'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+          triggers:
+            -
+              uuid: 623cc433c211439687cebf665b6c60e8
+              expression: 'nodata(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[db_uptime,{$DSN}],10m)=1'
+              name: '{HOST.NAME}: {$DSN} Database is not responding'
+              priority: DISASTER
+        -
+          uuid: d42f0779f9814c209994007054e57bd3
+          name: 'MS SQL Server: Full Scans/sec'
+          type: ODBC
+          key: 'db.odbc.select[full_scans,{$DSN}]'
+          delay: '300'
+          history: 30d
+          params: 'select convert(dec(12,0),cntr_value) count from master.dbo.sysperfinfo where counter_name = ''Full Scans/sec'''
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+        -
+          uuid: 81cecb1fa83a43d58d2cc731821832dd
+          name: 'MS SQL Server: Instance name'
+          type: ODBC
+          key: 'db.odbc.select[instance_name,{$DSN}]'
+          delay: '3600'
+          history: 30d
+          trends: '0'
+          value_type: TEXT
+          params: 'select @@servername'
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+        -
+          uuid: 59dda74eac31424ca0ec793a6b919dcf
+          name: 'MS SQL Server: Latch Waits/sec'
+          type: ODBC
+          key: 'db.odbc.select[latch_waits,{$DSN}]'
+          delay: '300'
+          history: 30d
+          value_type: FLOAT
+          units: s
+          params: 'select convert(dec(12,0),cntr_value) count from master.dbo.sysperfinfo where counter_name = ''Latch Waits/sec'''
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+        -
+          uuid: 0db2ba746856422e8860cccfe4289aff
+          name: 'MS SQL Server: Locks'
+          type: ODBC
+          key: 'db.odbc.select[locks,{$DSN}]'
+          delay: '300'
+          history: 30d
+          value_type: FLOAT
+          params: 'select count(*) as Bloqueios from sysprocesses where blocked>0 and waittime/1000> 300 and blocked <> spid'
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+          triggers:
+            -
+              uuid: 1e413c49335c473bbb4e4da87e9b2598
+              expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[locks,{$DSN}])>0'
+              name: '{HOST.NAME}: Lock found'
+              priority: HIGH
+        -
+          uuid: e021885523374d0f9a4e948ecf945a3e
+          name: 'MS SQL Server: Long query text'
+          type: ODBC
+          key: 'db.odbc.select[long_query_text,{$DSN}]'
+          delay: '180'
+          history: 30d
+          trends: '0'
+          value_type: TEXT
+          params: 'With long_queries as (SELECT r.session_id spid, @@SERVERNAME instance_name,DB_NAME(s.database_id) dbname,s.login_name loginname, CONVERT(decimal(15,2),(convert(dec(15,2),r.total_elapsed_time)/1000)/60) elapsed_time, convert(varchar(255),isNull(SUBSTRING (st.text,1,255),''n/a'')) as sql_text FROM sys.dm_exec_sessions s, sys.dm_exec_requests r CROSS APPLY sys.dm_exec_sql_text(r.sql_handle) as st WHERE  s.session_id = r.session_id and r.status in (''running'',''runnable'') and s.session_id <> @@SPID ) select ''Instancia: ''+instance_name+''  SPID:''+CONVERT(VARCHAR,spid)+''  Login name:''+loginname+''  Database:''+dbname+''  Query:''+sql_text+''  esta em execucao a:''+CONVERT(varchar,elapsed_time)+'' minutos.'' from long_queries a'
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+        -
+          uuid: e609acb2e5494989a97cfd7e7130e6f6
+          name: 'MS SQL Server: Long query time'
+          type: ODBC
+          key: 'db.odbc.select[long_query_time,{$DSN}]'
+          delay: '180'
+          history: 30d
+          value_type: FLOAT
+          params: 'DECLARE @long_query_time int = 0 select top 1 @long_query_time = CONVERT(decimal(15,2),(convert(dec(15,2),r.total_elapsed_time)/1000)) FROM sys.dm_exec_sessions s, sys.dm_exec_requests r CROSS APPLY sys.dm_exec_sql_text(r.sql_handle) as st WHERE s.session_id = r.session_id and r.status in (''running'',''runnable'') and s.session_id <> @@SPID order by r.total_elapsed_time desc select case when @long_query_time > 14400 then 1 else 0 end as long_query_time'
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+          triggers:
+            -
+              uuid: 5dca2f7665d04d7a8a49c25caae1afe7
+              expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[long_query_time,{$DSN}])=1'
+              name: '{HOST.NAME}: Have an query is long more 4 hours'
+              priority: HIGH
+        -
+          uuid: fdaaf807918c48a3a75f1ff6c0ccbef7
+          name: 'MS SQL Server: Optimizer Memory'
+          type: ODBC
+          key: 'db.odbc.select[optimizer_memory,{$DSN}]'
+          delay: '300'
+          history: 30d
+          value_type: FLOAT
+          units: B
+          params: 'select convert(dec(12,0),cntr_value) count from master.dbo.sysperfinfo where counter_name = ''Optimizer Memory (KB)'''
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+        -
+          uuid: e4eac3e447df4a40ac4a67c6997a19cd
+          name: 'MS SQL Server: Page life expectancy'
+          type: ODBC
+          key: 'db.odbc.select[page_life_expectancy,{$DSN}]'
+          delay: '300'
+          history: 30d
+          value_type: FLOAT
+          params: 'SELECT cntr_value FROM sys.dm_os_performance_counters WHERE [object_name] LIKE ''%Buffer Manager%'' AND [counter_name] = ''Page life expectancy'''
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+        -
+          uuid: 90f95982074749d1ad86f37166b6d1f3
+          name: 'MS SQL Server: SQL Cache Memory'
+          type: ODBC
+          key: 'db.odbc.select[sqlcache_memory,{$DSN}]'
+          delay: '300'
+          history: 30d
+          value_type: FLOAT
+          units: B
+          params: 'select (cntr_value) count from master.sys.dm_os_performance_counters WHERE LTRIM(RTRIM(object_name)) LIKE ''%:Memory Manager'' AND LTRIM(RTRIM(counter_name)) = ''SQL Cache Memory (KB)'''
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+        -
+          uuid: 88b7b774603640499d76413ddd32e360
+          name: 'MS SQL Server: Total Memory'
+          type: ODBC
+          key: 'db.odbc.select[total_memory,{$DSN}]'
+          delay: '300'
+          history: 30d
+          value_type: FLOAT
+          units: B
+          params: 'select (select (cntr_value*1024) from sys.dm_os_performance_counters where LTRIM(RTRIM(object_name)) LIKE ''%:Memory Manager'' AND LTRIM(RTRIM(counter_name)) = ''Total Server Memory (KB)'') count'
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+        -
+          uuid: 789a3f8394d048159cd4b5d3a0244be4
+          name: 'MS SQL Server: User Connections'
+          type: ODBC
+          key: 'db.odbc.select[user_connections,{$DSN}]'
+          delay: '300'
+          history: 30d
+          params: 'select convert(dec(12,0),cntr_value) connections from master.dbo.sysperfinfo where counter_name =''User Connections'''
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+        -
+          uuid: bf568345105740a29ede825c57a8c75a
+          name: 'MS SQL Server: Version'
+          type: ODBC
+          key: 'db.odbc.select[version,{$DSN}]'
+          delay: '3600'
+          history: 30d
+          trends: '0'
+          value_type: TEXT
+          params: 'Select @@VERSION'
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          inventory_link: SOFTWARE_APP_A
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+        -
+          uuid: 1cb6a89a660d4c49ae4b88afb3f0b050
+          name: 'MS SQL Server: Maximum Workspace Memory (KB)'
+          type: ODBC
+          key: 'db.odbc.select[workspace_memory,{$DSN}]'
+          delay: '300'
+          history: 30d
+          units: B
+          params: 'select (select (cntr_value*1024) value from sys.dm_os_performance_counters WHERE LTRIM(RTRIM(object_name)) LIKE ''%:Memory Manager'' AND LTRIM(RTRIM(counter_name)) = ''Maximum Workspace Memory (KB)'') maximum'
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          tags:
+            -
+              tag: Application
+              value: 'MS SQL Server'
+        -
+          uuid: d16433f279004241a100184e200f09b2
+          name: 'MS SQL Server: Check Port $3'
+          type: SIMPLE
+          key: 'net.tcp.service[tcp,,{$MSSQLSERVER_PORT}]'
+          delay: '60'
+          history: 30d
+          valuemap:
+            name: 'Service state'
+          tags:
+            -
+              tag: Application
+              value: 'TCP Port'
+          triggers:
+            -
+              uuid: 89a54a841a7f406db60f28baeee32d6e
+              expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/net.tcp.service[tcp,,{$MSSQLSERVER_PORT}])=0'
+              name: '{HOST.NAME}: MS SQL Server Port {$MSSQLSERVER_PORT} is unavailable'
+              priority: HIGH
+      discovery_rules:
+        -
+          uuid: b4fa3205f5fd4f1f810470fe60eec030
+          name: 'Discovery Jobs SQL Server'
+          type: ODBC
+          key: 'db.odbc.discovery[discovery.jobs,{$DSN}]'
+          delay: '3600'
+          params: 'SELECT NAME FROM msdb.dbo.sysjobs where enabled = 1'
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          lifetime: '0'
+          item_prototypes:
+            -
+              uuid: 9f07c660ac404ccda2673c7749ae0bcf
+              name: 'MS SQL Server Jobs: Status of jobs {#NAME}'
+              type: ODBC
+              key: 'db.odbc.select[{#NAME}_job_status,{$DSN}]'
+              delay: '3600'
+              history: 8d
+              trends: 8d
+              params: 'WITH last_hist_rec AS(SELECT ROW_NUMBER() OVER (PARTITION BY job_id ORDER BY run_date DESC, run_time DESC) AS [RowNum], job_id, run_date AS [last_run_date], run_time AS [last_run_time], CASE run_status WHEN 0 THEN ''0''WHEN 1 THEN ''1'' WHEN 2 THEN ''2'' WHEN 3 THEN ''3'' WHEN 4 THEN ''4'' END AS [status] FROM msdb.dbo.sysjobhistory) SELECT hist.status FROM msdb.dbo.sysjobs jobs LEFT JOIN last_hist_rec hist ON hist.job_id = jobs.job_id AND hist.RowNum = 1 WHERE jobs.name = ''{#NAME}'''
+              username: '{$MSSQL_USER}'
+              password: '{$MSSQL_PASS}'
+              valuemap:
+                name: 'MS SQL Server - Job Status - EN'
+              tags:
+                -
+                  tag: Application
+                  value: 'MS SQL Server - Jobs'
+              trigger_prototypes:
+                -
+                  uuid: 5ba5de9d1df14966b697ec22aa762124
+                  expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[{#NAME}_job_status,{$DSN}])=0'
+                  name: '{HOST.NAME}: Job {#NAME} is FAILURE - HIGH'
+                  priority: HIGH
+                  dependencies:
+                    -
+                      name: '{HOST.NAME}: {$DSN} Database is not responding'
+                      expression: 'nodata(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[db_uptime,{$DSN}],10m)=1'
+            -
+              uuid: 1270d82fab3c46efac8e2e6b9559da59
+              name: 'MS SQL Server Jobs: Job time {#NAME}'
+              type: ODBC
+              key: 'db.odbc.select[{#NAME}_job_time,{$DSN}]'
+              delay: '3600'
+              history: 8d
+              trends: 8d
+              params: 'BEGIN DECLARE @job_interval INT, @job_time int SELECT @job_interval = CASE freq_subday_type WHEN 2 THEN freq_subday_interval WHEN 4 THEN freq_subday_interval * 60 WHEN 8 THEN freq_subday_interval * 3600 ELSE 0 END FROM msdb.dbo.sysjobs j INNER JOIN msdb.dbo.sysjobschedules js ON j.job_id = js.job_id INNER JOIN msdb.dbo.sysschedules ss ON js.schedule_id = ss.schedule_id WHERE j.name = ''{#NAME}'' AND freq_subday_type = 4 SET @job_interval = ISNULL(@job_interval, 14400) SELECT @job_time = DATEDIFF(SECOND,dms.last_request_start_time,GETDATE()) FROM sys.dm_exec_sessions dms INNER JOIN sys.dm_exec_sessions sp ON dms.session_id = sp.session_id INNER JOIN sys.dm_exec_requests rq ON sp.session_id = rq.session_id INNER JOIN msdb.dbo.sysjobs sj ON STUFF(REVERSE(SUBSTRING(REVERSE(RTRIM(sp.program_name)),11,16)),5,0,''-'') = RIGHT(sj.job_id, 17) WHERE sj.name = ''{#NAME}'' AND sp.session_id <> @@SPID AND sp.program_name LIKE ''SQLAgent - TSQL JobStep %'' SET @job_time  = ISNULL(@job_time, 0) SELECT CASE WHEN @job_time < (@job_interval * 1.4) THEN 1 ELSE 0 END AS Jobtimeok END'
+              username: '{$MSSQL_USER}'
+              password: '{$MSSQL_PASS}'
+              description: '/*Alerta se o job estiver acima de 40% do intervalo agendado*/'
+              valuemap:
+                name: 'Job DB Status'
+              tags:
+                -
+                  tag: Application
+                  value: 'MS SQL Server - Jobs'
+              trigger_prototypes:
+                -
+                  uuid: 4b001a9090c547b5b95c7b389754e18f
+                  expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[{#NAME}_job_time,{$DSN}])<>1'
+                  name: '{HOST.NAME}: Job time is long on {#NAME} - HIGH'
+                  priority: HIGH
+                  dependencies:
+                    -
+                      name: '{HOST.NAME}: {$DSN} Database is not responding'
+                      expression: 'nodata(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[db_uptime,{$DSN}],10m)=1'
+        -
+          uuid: 04555764f9db43ab9ff6f9c063166a43
+          name: 'Discovery Databases'
+          type: ODBC
+          key: 'db.odbc.discovery[discovery_databases,{$DSN}]'
+          delay: '3600'
+          params: 'select name as database_name from sys.databases'
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          lifetime: '0'
+          description: 'Discovery all databases from instance'
+          item_prototypes:
+            -
+              uuid: b907bb5adc504da99ad6baf970d1c1bf
+              name: 'MS SQL Server: Active Users on {#DATABASE_NAME}'
+              type: ODBC
+              key: 'db.odbc.select[{#DATABASE_NAME}_active_users,{$DSN}]'
+              delay: '300'
+              history: 8d
+              trends: 8d
+              params: 'select cntr_value active_connections from master.sys.dm_os_performance_counters WHERE LTRIM(RTRIM(object_name)) LIKE ''%:Databases'' AND LTRIM(RTRIM(counter_name)) = ''Active Transactions'' and instance_name = ''{#DATABASE_NAME}'''
+              username: '{$MSSQL_USER}'
+              password: '{$MSSQL_PASS}'
+              tags:
+                -
+                  tag: Application
+                  value: 'MS SQL Server - Database {#DATABASE_NAME}'
+            -
+              uuid: d600b5f246d5471aa031860530e2ae9c
+              name: 'MS SQL Server: Backup time status on {#DATABASE_NAME}'
+              type: ODBC
+              key: 'db.odbc.select[{#DATABASE_NAME}_backup_time_status,{$DSN}]'
+              delay: '300'
+              history: 8d
+              trends: 8d
+              params: 'BEGIN SELECT TOP 1 CASE WHEN ISNULL(ABS(DATEDIFF(HOUR, GetDate(), (backup_finish_date))), 0) < ISNULL((CASE WHEN b.name = ''PurgeData'' THEN 864 WHEN recovery_model = ''SIMPLE'' THEN 28 ELSE 180 END), 0) THEN 1 ELSE 0 END as backupok FROM master.dbo.sysdatabases B LEFT OUTER JOIN msdb.dbo.backupset A ON A.database_name = B.name AND A.type = ''D'' WHERE B.name = ''{#DATABASE_NAME}'' ORDER BY backup_finish_date DESC END'
+              username: '{$MSSQL_USER}'
+              password: '{$MSSQL_PASS}'
+              description: '/*Retorna se o tempo do ultimo backup esta ok: 28 horas (Simple), 180 hora (FULL) e 864 (base PurgeData)*/'
+              valuemap:
+                name: 'Backup DB Status'
+              tags:
+                -
+                  tag: Application
+                  value: 'MS SQL Server - Database {#DATABASE_NAME}'
+              trigger_prototypes:
+                -
+                  uuid: 5af73f7c5e4f4c0d8a83b3c141a7bf51
+                  expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[{#DATABASE_NAME}_backup_time_status,{$DSN}])<>1'
+                  name: '{HOST.NAME}: Backup time is not OK  {#DATABASE_NAME} - {ITEM.LASTVALUE}'
+                  priority: AVERAGE
+                  dependencies:
+                    -
+                      name: '{HOST.NAME}: Check state {#DATABASE_NAME}'
+                      expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[{#DATABASE_NAME}_database_state,{$DSN}])<>0'
+            -
+              uuid: 7b6ec3977ed34cab82fc390770775fac
+              name: 'MS SQL Server: Connections on {#DATABASE_NAME}'
+              type: ODBC
+              key: 'db.odbc.select[{#DATABASE_NAME}_connections,{$DSN}]'
+              delay: '300'
+              history: 8d
+              trends: 8d
+              status: DISABLED
+              params: 'DECLARE @AllConnections TABLE(SPID INT,Status VARCHAR(MAX),LOGIN VARCHAR(MAX),HostName VARCHAR(MAX),BlkBy VARCHAR(MAX),DBName VARCHAR(MAX),Command VARCHAR(MAX),CPUTime INT,DiskIO INT,LastBatch VARCHAR(MAX),ProgramName VARCHAR(MAX),SPID_1 INT,REQUESTID INT)INSERT INTO @AllConnections EXEC sp_who2 SELECT count(*) FROM @AllConnections WHERE DBName = ''{#DATABASE_NAME}'''
+              username: '{$MSSQL_USER}'
+              password: '{$MSSQL_PASS}'
+              tags:
+                -
+                  tag: Application
+                  value: 'MS SQL Server - Database {#DATABASE_NAME}'
+            -
+              uuid: 4d123a59eb1f435093e0e62233d1d8e5
+              name: 'MS SQL Server: Database state on {#DATABASE_NAME}'
+              type: ODBC
+              key: 'db.odbc.select[{#DATABASE_NAME}_database_state,{$DSN}]'
+              delay: '180'
+              history: 8d
+              trends: 8d
+              params: 'select state from master.sys.databases where name = ''{#DATABASE_NAME}'''
+              username: '{$MSSQL_USER}'
+              password: '{$MSSQL_PASS}'
+              valuemap:
+                name: 'MS SQL Server - Database Status - EN'
+              tags:
+                -
+                  tag: Application
+                  value: 'MS SQL Server - Database {#DATABASE_NAME}'
+              trigger_prototypes:
+                -
+                  uuid: a4c0c3a5d9404cffbdd2aea959f01e04
+                  expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[{#DATABASE_NAME}_database_state,{$DSN}])<>0'
+                  name: '{HOST.NAME}: Check state {#DATABASE_NAME}'
+                  priority: DISASTER
+                  dependencies:
+                    -
+                      name: '{HOST.NAME}: {$DSN} Database is not responding'
+                      expression: 'nodata(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[db_uptime,{$DSN}],10m)=1'
+                -
+                  uuid: 776244966d7b42a1aea9c10babc918b6
+                  expression: 'nodata(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[{#DATABASE_NAME}_database_state,{$DSN}],10m)=1'
+                  name: '{HOST.NAME}: {#DATABASE_NAME} Database is not responding'
+                  priority: DISASTER
+                  dependencies:
+                    -
+                      name: '{HOST.NAME}: Check state {#DATABASE_NAME}'
+                      expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[{#DATABASE_NAME}_database_state,{$DSN}])<>0'
+                    -
+                      name: '{HOST.NAME}: MS SQL Server Port {$MSSQLSERVER_PORT} is unavailable'
+                      expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/net.tcp.service[tcp,,{$MSSQLSERVER_PORT}])=0'
+            -
+              uuid: 46070be27e8e48f9ad790e7f43060fbc
+              name: 'MS SQL Server: DB Size on {#DATABASE_NAME}'
+              type: ODBC
+              key: 'db.odbc.select[{#DATABASE_NAME}_db_size,{$DSN}]'
+              delay: '120'
+              history: 8d
+              trends: 8d
+              value_type: FLOAT
+              units: B
+              params: 'select convert(dec(15,2),size)*8192  from {#DATABASE_NAME}.sys.database_files where type = 0'
+              username: '{$MSSQL_USER}'
+              password: '{$MSSQL_PASS}'
+              tags:
+                -
+                  tag: Application
+                  value: 'MS SQL Server - Database {#DATABASE_NAME}'
+            -
+              uuid: cd607b9a54684bb3a9674556098122f8
+              name: 'MS SQL Server: Differential Backup Status on {#DATABASE_NAME}'
+              type: ODBC
+              key: 'db.odbc.select[{#DATABASE_NAME}_differential_backup_status,{$DSN}]'
+              delay: '300'
+              history: 8d
+              trends: '0'
+              status: DISABLED
+              value_type: TEXT
+              params: 'SELECT ISNULL(Convert(char(10), MAX(backup_finish_date), 101), ''NEVER'') as last_backup FROM master.sys.databases B LEFT OUTER JOIN msdb.dbo.backupset A ON A.database_name = B.name AND A.type = ''I'' where B.name  = ''{#DATABASE_NAME}'' GROUP BY B.name ORDER BY B.name'
+              username: '{$MSSQL_USER}'
+              password: '{$MSSQL_PASS}'
+              tags:
+                -
+                  tag: Application
+                  value: 'MS SQL Server - Database {#DATABASE_NAME}'
+            -
+              uuid: 52b105a7991648cd948afe9dfabc169a
+              name: 'MS SQL Server: Log File Growths on {#DATABASE_NAME}'
+              type: ODBC
+              key: 'db.odbc.select[{#DATABASE_NAME}_log_file_growths,{$DSN}]'
+              delay: '300'
+              history: 8d
+              trends: 8d
+              params: 'select cntr_value count from master.sys.dm_os_performance_counters WHERE instance_name = ''{#DATABASE_NAME}'' and LTRIM(RTRIM(object_name)) LIKE ''%:Databases'' AND LTRIM(RTRIM(counter_name)) =''Log Growths'''
+              username: '{$MSSQL_USER}'
+              password: '{$MSSQL_PASS}'
+              tags:
+                -
+                  tag: Application
+                  value: 'MS SQL Server - Database {#DATABASE_NAME}'
+            -
+              uuid: e1fb95bfd7f84a1985df2a3e91718262
+              name: 'MS SQL Server: Log Shrinks on {#DATABASE_NAME}'
+              type: ODBC
+              key: 'db.odbc.select[{#DATABASE_NAME}_log_shrinks,{$DSN}]'
+              delay: '300'
+              history: 8d
+              trends: 8d
+              params: 'select cntr_value count  from master.dbo.sysperfinfo where counter_name = ''Log Shrinks'' and instance_name = ''{#DATABASE_NAME}'''
+              username: '{$MSSQL_USER}'
+              password: '{$MSSQL_PASS}'
+              description: 'Monitoring the usage (shrinking) of the transaction logs'
+              tags:
+                -
+                  tag: Application
+                  value: 'MS SQL Server - Database {#DATABASE_NAME}'
+            -
+              uuid: a086b1bb25624f9aab067cd2ac698afd
+              name: 'MS SQL Server: Suspect Pages on {#DATABASE_NAME}'
+              type: ODBC
+              key: 'db.odbc.select[{#DATABASE_NAME}_suspect_pages,{$DSN}]'
+              delay: '300'
+              history: 8d
+              trends: 8d
+              params: 'SELECT count (A.database_id) pdcount FROM msdb.dbo.suspect_pages A RIGHT OUTER JOIN master.sys.databases B ON A.database_id = B.database_id AND (event_type = 1 OR event_type = 2 OR event_type = 3) where B.name = ''{#DATABASE_NAME}'' GROUP BY B.name'
+              username: '{$MSSQL_USER}'
+              password: '{$MSSQL_PASS}'
+              tags:
+                -
+                  tag: Application
+                  value: 'MS SQL Server - Database {#DATABASE_NAME}'
+              trigger_prototypes:
+                -
+                  uuid: 4d66aa87739b484285a7762e1afdc7e6
+                  expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[{#DATABASE_NAME}_suspect_pages,{$DSN}])>0'
+                  name: '{HOST.NAME} Suspect Pages on {#DATABASE_NAME} - {ITEM.LASTVALUE}'
+                  priority: HIGH
+                  dependencies:
+                    -
+                      name: '{HOST.NAME}: Check state {#DATABASE_NAME}'
+                      expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[{#DATABASE_NAME}_database_state,{$DSN}])<>0'
+            -
+              uuid: f9e7343085814950942e00005ae6bb68
+              name: 'MS SQL Server: Transactions/sec on {#DATABASE_NAME}'
+              type: ODBC
+              key: 'db.odbc.select[{#DATABASE_NAME}_transactions,{$DSN}]'
+              delay: '600'
+              history: 8d
+              trends: 8d
+              params: 'select convert(dec(12,0),cntr_value) count from master.dbo.sysperfinfo where counter_name =''Transactions/sec'' and instance_name = ''{#DATABASE_NAME}'''
+              username: '{$MSSQL_USER}'
+              password: '{$MSSQL_PASS}'
+              tags:
+                -
+                  tag: Application
+                  value: 'MS SQL Server - Database {#DATABASE_NAME}'
+            -
+              uuid: 6607fe52cafb43d7a94ecfe555e6c6c5
+              name: 'MS SQL Server: Transaction backup Status on {#DATABASE_NAME}'
+              type: ODBC
+              key: 'db.odbc.select[{#DATABASE_NAME}_transaction_backup_status,{$DSN}]'
+              delay: '300'
+              history: 8d
+              trends: 8d
+              value_type: FLOAT
+              units: s
+              params: 'SELECT ISNULL(ABS(DATEDIFF(SECOND, GetDate(), MAX(backup_finish_date))), -1) as seconds FROM ( SELECT * from master.sys.databases C where C.recovery_model != 3 and name = ''{#DATABASE_NAME}'' ) B LEFT OUTER JOIN msdb.dbo.backupset A ON A.database_name = B.name AND A.type = ''L'' GROUP BY B.name ORDER BY B.name'
+              username: '{$MSSQL_USER}'
+              password: '{$MSSQL_PASS}'
+              tags:
+                -
+                  tag: Application
+                  value: 'MS SQL Server - Database {#DATABASE_NAME}'
+              trigger_prototypes:
+                -
+                  uuid: 724d4974cbbe42448b466c0eb6c020af
+                  expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[{#DATABASE_NAME}_transaction_backup_status,{$DSN}])>21600'
+                  name: '{HOST.NAME}: Transaction backup Status on {#DATABASE_NAME} - {ITEM.LASTVALUE}'
+                  priority: AVERAGE
+                  dependencies:
+                    -
+                      name: '{HOST.NAME}: Check state {#DATABASE_NAME}'
+                      expression: 'last(/Olos - MS SQL Server - ODBC - Com JOB/db.odbc.select[{#DATABASE_NAME}_database_state,{$DSN}])<>0'
+        -
+          uuid: e028a48436584338aa0dc8389e2dcd7b
+          name: 'Discovery Login Name'
+          type: ODBC
+          key: 'db.odbc.discovery[discovery_login_name,{$DSN}]'
+          delay: '3600'
+          params: 'select rtrim(login_name) loginname from sys.dm_exec_sessions  where host_name <> '''' and program_name <> '''' group by login_name'
+          username: '{$MSSQL_USER}'
+          password: '{$MSSQL_PASS}'
+          lifetime: '0'
+          item_prototypes:
+            -
+              uuid: bf7cdcc25d544b079c1e4bc5ed7dfb53
+              name: 'MS SQL Server: User CPU on {#LOGINNAME}'
+              type: ODBC
+              key: 'db.odbc.select[{#LOGINNAME}_user_cpu,{$DSN}]'
+              delay: '600'
+              history: 8d
+              trends: 8d
+              params: 'select sum(cpu_time) cpu_busy from sys.dm_exec_sessions where login_name = ''{#LOGINNAME}'' and host_name <> '''' and program_name <> '''' group by login_name'
+              username: '{$MSSQL_USER}'
+              password: '{$MSSQL_PASS}'
+              tags:
+                -
+                  tag: Application
+                  value: 'MS SQL Server'
+      macros:
+        -
+          macro: '{$DATABASE_NODATA}'
+          value: '420'
+        -
+          macro: '{$DSN}'
+        -
+          macro: '{$MSSQLSERVER_PORT}'
+          value: '1433'
+        -
+          macro: '{$MSSQL_PASS}'
+          value: Olos@123
+        -
+          macro: '{$MSSQL_USER}'
+          value: Zabbix
+      valuemaps:
+        -
+          uuid: 55a9fadea4314dd681722d743e4259ce
+          name: 'Backup DB Status'
+          mappings:
+            -
+              value: '0'
+              newvalue: PROBLEMA
+            -
+              value: '1'
+              newvalue: OK
+        -
+          uuid: 3383d424784f414da4151d51ec54c7dc
+          name: 'Job DB Status'
+          mappings:
+            -
+              value: '1'
+              newvalue: OK
+            -
+              value: o
+              newvalue: PROBLEMA
+        -
+          uuid: 4ce640b4e6d34810a08a53e4fc4e9723
+          name: 'MS SQL Server - Database Status - EN'
+          mappings:
+            -
+              value: '0'
+              newvalue: ONLINE
+            -
+              value: '1'
+              newvalue: RESTORING
+            -
+              value: '2'
+              newvalue: RECOVERING
+            -
+              value: '3'
+              newvalue: RECOVERY_PENDING
+            -
+              value: '4'
+              newvalue: SUSPECT
+            -
+              value: '5'
+              newvalue: EMERGENCY
+            -
+              value: '6'
+              newvalue: OFFLINE
+            -
+              value: '7'
+              newvalue: 'NOT EXIST'
+        -
+          uuid: a83081e84b744bf88899e05bf28e0005
+          name: 'MS SQL Server - Job Status - EN'
+          mappings:
+            -
+              value: '0'
+              newvalue: FAILURE
+            -
+              value: '1'
+              newvalue: SUCCESS
+            -
+              value: '2'
+              newvalue: REPEAT
+            -
+              value: '3'
+              newvalue: CANCELED
+            -
+              value: '4'
+              newvalue: 'IN PROGRESS'
+            -
+              value: '5'
+              newvalue: 'NEVER EXECUTED'
+        -
+          uuid: 7fe8ea41cb0d4335978e3836d93e1ef3
+          name: 'Service state'
+          mappings:
+            -
+              value: '0'
+              newvalue: Down
+            -
+              value: '1'
+              newvalue: Up

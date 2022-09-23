@@ -1,0 +1,1483 @@
+{
+    "zabbix_export": {
+        "version": "5.4",
+        "date": "2022-09-23T16:52:21Z",
+        "groups": [
+            {
+                "uuid": "e115692d9bc8436a910fa4d77e4f54dc",
+                "name": "Templates/JLCP"
+            },
+            {
+                "uuid": "91290fe175a04a15adff4015122fa0b6",
+                "name": "Templates/Olos"
+            }
+        ],
+        "templates": [
+            {
+                "uuid": "20d90f3b876646ad911407304a534651",
+                "template": "Olos - SO Windows Active - DTB01",
+                "name": "Olos - SO Windows Active - DTB01",
+                "groups": [
+                    {
+                        "name": "Templates/JLCP"
+                    },
+                    {
+                        "name": "Templates/Olos"
+                    }
+                ],
+                "items": [
+                    {
+                        "uuid": "0ecfa04205ee4fdc91c976cec9786703",
+                        "name": "Host name of zabbix_agentd running",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "agent.hostname",
+                        "delay": "600",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix agent"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "19d87465d8974fb093a3dab3d525498a",
+                                "expression": "(last(/Olos - SO Windows Active - DTB01/agent.hostname,#1)<>last(/Olos - SO Windows Active - DTB01/agent.hostname,#2))>0",
+                                "name": "{HOSTNAME}: Host name of zabbix_agentd was changed - INFORMATION",
+                                "priority": "INFO"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "9e998d82a8694c37b53c7e7944eac704",
+                        "name": "Agent ping",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "agent.ping",
+                        "delay": "90",
+                        "history": "30d",
+                        "description": "The agent always returns 1 for this item. It could be used in combination with nodata() for availability check.",
+                        "valuemap": {
+                            "name": "Zabbix agent ping status"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix agent"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "dfd6c1e4e6394a82b627c8f1043b8c8b",
+                                "expression": "nodata(/Olos - SO Windows Active - DTB01/agent.ping,10m)=1",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "nodata(/Olos - SO Windows Active - DTB01/agent.ping,10m)=0",
+                                "name": "{HOSTNAME}: Zabbix agent is unreachable - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "b18e145ac1db46cf829f7b443db93280",
+                        "name": "Version of zabbix_agent(d) running",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "agent.version",
+                        "delay": "600",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Zabbix agent"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "eb16de3a063b488ab240ee5696be9a75",
+                                "expression": "(last(/Olos - SO Windows Active - DTB01/agent.version,#1)<>last(/Olos - SO Windows Active - DTB01/agent.version,#2))>0",
+                                "name": "{HOSTNAME}: Version of zabbix_agent(d) was changed - INFORMATION",
+                                "priority": "INFO"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e646961deff645d288bf235b27a3759e",
+                        "name": "Event Viewer Olos",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "eventlog[Application,Olos,,,,,]",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Event Viewer"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ff905bffbd2a427ba11fc56e4da061a0",
+                        "name": "Event Viewer Olos - Threads",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "eventlog[Application,ThreadAvailable = 0,,,,,]",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Event Viewer"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "45e8b681f79a4ed38c6967761751389c",
+                                "expression": "count(/Olos - SO Windows Active - DTB01/eventlog[Application,ThreadAvailable = 0,,,,,],1m,,\"ThreadAvailable = 0\")>1",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "nodata(/Olos - SO Windows Active - DTB01/eventlog[Application,ThreadAvailable = 0,,,,,],1h)=1",
+                                "name": "{HOSTNAME} - Event Viewer - {ITEM.VALUE} 1x in the last minute - HIGH",
+                                "priority": "HIGH"
+                            },
+                            {
+                                "uuid": "ac781ad672c64334a63ea1941aed7914",
+                                "expression": "count(/Olos - SO Windows Active - DTB01/eventlog[Application,ThreadAvailable = 0,,,,,],1m,,\"ThreadAvailable = 0\")>10",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "nodata(/Olos - SO Windows Active - DTB01/eventlog[Application,ThreadAvailable = 0,,,,,],1h)=1",
+                                "name": "{HOSTNAME} - Event Viewer - {ITEM.VALUE} more than 10x in the last minute - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e926374773974ede8443238222a91909",
+                        "name": "ICMP ping",
+                        "type": "SIMPLE",
+                        "key": "icmpping",
+                        "delay": "60",
+                        "history": "30d",
+                        "valuemap": {
+                            "name": "Service state"
+                        },
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "ICMP"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "00a645ce7ebf4e36b6f34769767ece2b",
+                        "name": "ICMP ping loss",
+                        "type": "SIMPLE",
+                        "key": "icmppingloss",
+                        "delay": "60",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "ICMP"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "9a944e112075433991d3565279d62a53",
+                        "name": "ICMP response time",
+                        "type": "SIMPLE",
+                        "key": "icmppingsec",
+                        "delay": "60",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "s",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "ICMP"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "dbfe4960b76148188b0658159a22df5c",
+                        "name": "PhysicalDisk: Avg. Disk Queue Length",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "perf_counter[\\234(_Total)\\1400]",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Disk"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "aa12d53f38fb4fa8afce5fbf732d679b",
+                                "expression": "min(/Olos - SO Windows Active - DTB01/perf_counter[\\234(_Total)\\1400],1h)>=20",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/Olos - SO Windows Active - DTB01/perf_counter[\\234(_Total)\\1400],30m)<20",
+                                "name": "{HOSTNAME} - Disk Queue Length is above 20 for more than 1 hour - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Disk Queue Length is above 50 for more than 1 hour - HIGH",
+                                        "expression": "min(/Olos - SO Windows Active - DTB01/perf_counter[\\234(_Total)\\1400],1h)>=50",
+                                        "recovery_expression": "max(/Olos - SO Windows Active - DTB01/perf_counter[\\234(_Total)\\1400],30m)<50"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Disk Queue Length is above 200 for more than 30 minutes - DISASTER",
+                                        "expression": "min(/Olos - SO Windows Active - DTB01/perf_counter[\\234(_Total)\\1400],30m)>=200",
+                                        "recovery_expression": "max(/Olos - SO Windows Active - DTB01/perf_counter[\\234(_Total)\\1400],15m)<200"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "263d11a5cdcd4a81a4965ed6f2a6b5e5",
+                                "expression": "min(/Olos - SO Windows Active - DTB01/perf_counter[\\234(_Total)\\1400],1h)>=50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/Olos - SO Windows Active - DTB01/perf_counter[\\234(_Total)\\1400],30m)<50",
+                                "name": "{HOSTNAME} - Disk Queue Length is above 50 for more than 1 hour - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Disk Queue Length is above 200 for more than 30 minutes - DISASTER",
+                                        "expression": "min(/Olos - SO Windows Active - DTB01/perf_counter[\\234(_Total)\\1400],30m)>=200",
+                                        "recovery_expression": "max(/Olos - SO Windows Active - DTB01/perf_counter[\\234(_Total)\\1400],15m)<200"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "17504b8b52544cc98714d137955368f3",
+                                "expression": "min(/Olos - SO Windows Active - DTB01/perf_counter[\\234(_Total)\\1400],30m)>=200",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/Olos - SO Windows Active - DTB01/perf_counter[\\234(_Total)\\1400],15m)<200",
+                                "name": "{HOSTNAME} - Disk Queue Length is above 200 for more than 30 minutes - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "d601a9654b534da6ba7f2feffbbf4c80",
+                        "name": "PhysicalDisk: Avg. Disk Read Queue Length",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "perf_counter[\\234(_Total)\\1402]",
+                        "delay": "180",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Disk"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "03733f2461024c5caae1f640e799ee9e",
+                        "name": "PhysicalDisk: Avg. Disk Write Queue Length",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "perf_counter[\\234(_Total)\\1404]",
+                        "delay": "180",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "description": "Full counter name: \\PhysicalDisk(_Total)\\Avg. Disk Write Queue Length",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Disk"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e2408afefd704089ae3cd250c72434ca",
+                        "name": "Paging File: % Usage",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "perf_counter[\\700(_Total)\\702]",
+                        "delay": "300",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "89575b08a3bb47b5be297476e417db09",
+                                "expression": "avg(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],8h)>50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],1h)<=50",
+                                "name": "{HOSTNAME} - Average pagefile usage is more than 50% for more than 8 hours - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average pagefile usage is more than 90% for more then 1 hour - DISASTER",
+                                        "expression": "avg(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],1h)>90",
+                                        "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],30m)<=90"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Average pagefile usage is than 70% for more then 1 hour - HIGH",
+                                        "expression": "avg(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],1h)>70",
+                                        "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],10m)<=70"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "6f6c31f97539447e8c4eac6cefe68b3c",
+                                "expression": "avg(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],1h)>90",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],30m)<=90",
+                                "name": "{HOSTNAME} - Average pagefile usage is more than 90% for more then 1 hour - DISASTER",
+                                "priority": "DISASTER",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Pagefile above 95% for more then 10 minutes - DISASTER",
+                                        "expression": "min(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],10m)>=95",
+                                        "recovery_expression": "max(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],10m)<95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "7676db08b11f4befaeaf1a495ac789ee",
+                                "expression": "avg(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],1h)>70",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],10m)<=70",
+                                "name": "{HOSTNAME} - Average pagefile usage is than 70% for more then 1 hour - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average pagefile usage is more than 90% for more then 1 hour - DISASTER",
+                                        "expression": "avg(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],1h)>90",
+                                        "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],30m)<=90"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "284d8a2dc1574bcda08d163e0fef6a8d",
+                                "expression": "min(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],10m)>=95",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/Olos - SO Windows Active - DTB01/perf_counter[\\700(_Total)\\702],10m)<95",
+                                "name": "{HOSTNAME} - Pagefile above 95% for more then 10 minutes - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "adcd00ad648141c094d7f0d25130bf3e",
+                        "name": "Processor load (1 min average)",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.cpu.load[percpu,avg1]",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "description": "Carga de sistema geral",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "CPU"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "d19a2e37ae094e59877709e9b27ff28f",
+                                "expression": "min(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],10m)>=100",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],10m)<100",
+                                "name": "{HOSTNAME} - Processor load is above 100 for more than 10 minutes - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "21b0aab5cfab496c9cd2dbd53a8c7563",
+                                "expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],8h)>25",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],1h)<=25",
+                                "name": "{HOSTNAME} - Processor load is more than 25 for more than 8 hours - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Processor load is more than 50 for more than 1 hour - HIGH",
+                                        "expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],1h)>50",
+                                        "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],10m)<=50"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Processor load is more than 50 for more than 8 hours - DISASTER",
+                                        "expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],8h)>50",
+                                        "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],1h)<=50"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "95ba44a09b3c4197866b5141c53dd610",
+                                "expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],1h)>50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],10m)<=50",
+                                "name": "{HOSTNAME} - Processor load is more than 50 for more than 1 hour - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Processor load is more than 50 for more than 8 hours - DISASTER",
+                                        "expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],8h)>50",
+                                        "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],1h)<=50"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "48027e34c76d4056921aa65f9da66918",
+                                "expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],8h)>50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],1h)<=50",
+                                "name": "{HOSTNAME} - Processor load is more than 50 for more than 8 hours - DISASTER",
+                                "priority": "DISASTER",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Processor load is above 100 for more than 10 minutes - DISASTER",
+                                        "expression": "min(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],10m)>=100",
+                                        "recovery_expression": "max(/Olos - SO Windows Active - DTB01/system.cpu.load[percpu,avg1],10m)<100"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "f9b9ca5fec624e38970da3da527e57f2",
+                        "name": "CPU Number",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.cpu.num",
+                        "delay": "600",
+                        "history": "30d",
+                        "description": "N\u00famero de CPU f\u00edsicas e l\u00f3gicas.",
+                        "preprocessing": [
+                            {
+                                "type": "MULTIPLIER",
+                                "parameters": [
+                                    "1"
+                                ]
+                            }
+                        ],
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "CPU"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "06663de82d3a48a8926e74b8c9002d9b",
+                        "name": "CPU Usage in %",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.cpu.util",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "CPU"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "fe00ea1c2ff3439499106e49dec2d926",
+                                "expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.util,24h)>50",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.util,1h)<=50",
+                                "name": "{HOSTNAME} - Average CPU usage is more than 50% for more than 24 hours - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average CPU usage is more than 80% for more than 8 hour - HIGH",
+                                        "expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.util,8h)>80",
+                                        "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.util,1h)<=80"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - CPU usage is above 95% for more than 10 minutes - DISASTER",
+                                        "expression": "min(/Olos - SO Windows Active - DTB01/system.cpu.util,10m)>=95",
+                                        "recovery_expression": "max(/Olos - SO Windows Active - DTB01/system.cpu.util,10m)<95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "2138f02238204a6b80392844b3fc592d",
+                                "expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.util,8h)>80",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.util,1h)<=80",
+                                "name": "{HOSTNAME} - Average CPU usage is more than 80% for more than 8 hour - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - CPU usage is above 95% for more than 10 minutes - DISASTER",
+                                        "expression": "min(/Olos - SO Windows Active - DTB01/system.cpu.util,10m)>=95",
+                                        "recovery_expression": "max(/Olos - SO Windows Active - DTB01/system.cpu.util,10m)<95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "6c48691b5f174eca854107b8a0aed9da",
+                                "expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.util,1h)>90",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/system.cpu.util,1h)<=90",
+                                "name": "{HOSTNAME} - Average CPU usage is more than 90% for more than 1 hour - DISASTER",
+                                "priority": "DISASTER",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - CPU usage is above 95% for more than 10 minutes - DISASTER",
+                                        "expression": "min(/Olos - SO Windows Active - DTB01/system.cpu.util,10m)>=95",
+                                        "recovery_expression": "max(/Olos - SO Windows Active - DTB01/system.cpu.util,10m)<95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "b9935243edbe461b971f92fe350646a3",
+                                "expression": "min(/Olos - SO Windows Active - DTB01/system.cpu.util,10m)>=95",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/Olos - SO Windows Active - DTB01/system.cpu.util,10m)<95",
+                                "name": "{HOSTNAME} - CPU usage is above 95% for more than 10 minutes - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "8bb2edef944e459eadfef5a74adb4efd",
+                                "expression": "nodata(/Olos - SO Windows Active - DTB01/system.cpu.util,10m)=1",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "nodata(/Olos - SO Windows Active - DTB01/system.cpu.util,10m)=0",
+                                "name": "{HOSTNAME}: Stopped recieving data (CPU) - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "9cf96d504f5a4ba697b0d8f11b8bc4a0",
+                        "name": "Computer name",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.hostname",
+                        "delay": "300",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "inventory_link": "NAME",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "System"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "c77fb655776a4cfdb4d6effafa23398f",
+                        "name": "Current time",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.localtime",
+                        "delay": "300",
+                        "history": "30d",
+                        "units": "unixtime",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "System"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "ffa39f558acd4d839efd9a9b3f6bd312",
+                                "expression": "fuzzytime(/Olos - SO Windows Active - DTB01/system.localtime,180s)=0",
+                                "name": "{HOSTNAME} time is not synchronized with Zabbix Server - AVERAGE",
+                                "priority": "AVERAGE"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "fa5d9a7cf3e2408cb65cbd2387f754b5",
+                        "name": "Windows Status Active",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.run[\"c:\\Windows\\System32\\cscript.exe /nologo c:\\Windows\\System32\\slmgr.vbs /xpr\"]",
+                        "delay": "1d",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "TEXT",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Active Status"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "23927e667e0f46bb85b23d91d2bc5dab",
+                                "expression": "find(/Olos - SO Windows Active - DTB01/system.run[\"c:\\Windows\\System32\\cscript.exe /nologo c:\\Windows\\System32\\slmgr.vbs /xpr\"],,\"like\",\"Notification mode\")=1",
+                                "name": "{HOSTNAME}: Windows is not Activated - INFORMATION",
+                                "priority": "INFO"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "ea00761c391048ce874650d3e1ef6fe6",
+                        "name": "System Information",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.uname",
+                        "delay": "3600",
+                        "history": "30d",
+                        "trends": "0",
+                        "value_type": "CHAR",
+                        "inventory_link": "OS",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "System"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "03611c319ba94472bcb756fd5e22d203",
+                        "name": "System Uptime",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "system.uptime",
+                        "delay": "60",
+                        "history": "30d",
+                        "units": "uptime",
+                        "inventory_link": "HARDWARE_FULL",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "System"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "2983c26ae9974b92a5b71e5fc5661ede",
+                                "expression": "last(/Olos - SO Windows Active - DTB01/system.uptime)<10m",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/Olos - SO Windows Active - DTB01/system.uptime)>=8h",
+                                "name": "{HOST.NAME}: has just been restarted - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "4e16e3d812144e7eb6c5c62e6883d7ea",
+                        "name": "Available memory",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vm.memory.size[available]",
+                        "history": "30d",
+                        "units": "B",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "e6d7199972084d65925576c0b75aee5b",
+                        "name": "Available memory in %",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vm.memory.size[pavailable]",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "f53b704baf7540ddb2cafeab6bfe050c",
+                        "name": "Memory usage in %",
+                        "type": "CALCULATED",
+                        "key": "vm.memory.size[pused]",
+                        "history": "30d",
+                        "value_type": "FLOAT",
+                        "units": "%",
+                        "params": "100-last(//vm.memory.size[pavailable])",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ],
+                        "triggers": [
+                            {
+                                "uuid": "35bdf289a2b94fd4bfb36662bc11ad7e",
+                                "expression": "avg(/Olos - SO Windows Active - DTB01/vm.memory.size[pused],24h)>90",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/vm.memory.size[pused],1h)<=90",
+                                "name": "{HOSTNAME} - Average MEM usage is more than 90% for more than 8 hours - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average MEM usage is more than 95% for more than 8 hours - HIGH",
+                                        "expression": "avg(/Olos - SO Windows Active - DTB01/vm.memory.size[pused],8h)>95",
+                                        "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/vm.memory.size[pused],1h)<=95"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Average MEM usage is more than 95% for more than 24 hours - DISASTER",
+                                        "expression": "avg(/Olos - SO Windows Active - DTB01/vm.memory.size[pused],24h)>95",
+                                        "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/vm.memory.size[pused],1h)<=95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "95c76ef1cfa947868d1a3b5ce945faf1",
+                                "expression": "avg(/Olos - SO Windows Active - DTB01/vm.memory.size[pused],8h)>95",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/vm.memory.size[pused],1h)<=95",
+                                "name": "{HOSTNAME} - Average MEM usage is more than 95% for more than 8 hours - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Average MEM usage is more than 95% for more than 24 hours - DISASTER",
+                                        "expression": "avg(/Olos - SO Windows Active - DTB01/vm.memory.size[pused],24h)>95",
+                                        "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/vm.memory.size[pused],1h)<=95"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "edc6e9bd2a4f4a9fada7b82b9c11cc94",
+                                "expression": "avg(/Olos - SO Windows Active - DTB01/vm.memory.size[pused],24h)>95",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "avg(/Olos - SO Windows Active - DTB01/vm.memory.size[pused],1h)<=95",
+                                "name": "{HOSTNAME} - Average MEM usage is more than 95% for more than 24 hours - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "8ab17bc487fb40fba9b59b49e0c52498",
+                                "expression": "min(/Olos - SO Windows Active - DTB01/vm.memory.size[pused],10m)>=98",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "max(/Olos - SO Windows Active - DTB01/vm.memory.size[pused],10m)<98",
+                                "name": "{HOSTNAME} - MEM usage is above 98% for more than 1 hour - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "d12f7cd6ac704bd8aa6834a7a30fc76d",
+                        "name": "Total memory",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vm.memory.size[total]",
+                        "delay": "300",
+                        "history": "30d",
+                        "units": "B",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "3c41446eeae44efe8f0e87adab9fe945",
+                        "name": "Memory usage",
+                        "type": "CALCULATED",
+                        "key": "vm.memory.size[used]",
+                        "history": "30d",
+                        "units": "B",
+                        "params": "last(//vm.memory.size[total])-last(//vm.memory.size[available])",
+                        "tags": [
+                            {
+                                "tag": "Application",
+                                "value": "Memory"
+                            }
+                        ]
+                    }
+                ],
+                "discovery_rules": [
+                    {
+                        "uuid": "12eb2a1c2d314251a00923ca547565ab",
+                        "name": "Network interface discovery",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "net.if.discovery",
+                        "delay": "1800",
+                        "filter": {
+                            "conditions": [
+                                {
+                                    "macro": "{#IFNAME}",
+                                    "value": "@Network interfaces for discovery",
+                                    "formulaid": "A"
+                                }
+                            ]
+                        },
+                        "lifetime": "7d",
+                        "item_prototypes": [
+                            {
+                                "uuid": "ed2a82851b234709af2c4fea2464cac7",
+                                "name": "Incoming network traffic on {#IFNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "net.if.in[{#IFNAME}]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "bps",
+                                "preprocessing": [
+                                    {
+                                        "type": "CHANGE_PER_SECOND",
+                                        "parameters": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "type": "MULTIPLIER",
+                                        "parameters": [
+                                            "8"
+                                        ]
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Network"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "dd6911da3e574bb0b36616898b30790e",
+                                "name": "Outgoing network traffic o {#IFNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "net.if.out[{#IFNAME}]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "bps",
+                                "preprocessing": [
+                                    {
+                                        "type": "CHANGE_PER_SECOND",
+                                        "parameters": [
+                                            ""
+                                        ]
+                                    },
+                                    {
+                                        "type": "MULTIPLIER",
+                                        "parameters": [
+                                            "8"
+                                        ]
+                                    }
+                                ],
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Network"
+                                    }
+                                ]
+                            }
+                        ],
+                        "graph_prototypes": [
+                            {
+                                "uuid": "1acf95585b564735bdad960de9803b89",
+                                "name": "Network traffic in {#IFNAME}",
+                                "show_work_period": "NO",
+                                "ymin_type_1": "FIXED",
+                                "graph_items": [
+                                    {
+                                        "color": "C80000",
+                                        "item": {
+                                            "host": "Olos - SO Windows Active - DTB01",
+                                            "key": "net.if.in[{#IFNAME}]"
+                                        }
+                                    },
+                                    {
+                                        "sortorder": "1",
+                                        "color": "00C800",
+                                        "item": {
+                                            "host": "Olos - SO Windows Active - DTB01",
+                                            "key": "net.if.out[{#IFNAME}]"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "9dd2f698748a4108b7e0e02011665016",
+                        "name": "Mounted filesystem discovery",
+                        "type": "ZABBIX_ACTIVE",
+                        "key": "vfs.fs.discovery",
+                        "delay": "1800",
+                        "filter": {
+                            "conditions": [
+                                {
+                                    "macro": "{#FSTYPE}",
+                                    "value": "@File systems for discovery",
+                                    "formulaid": "A"
+                                }
+                            ]
+                        },
+                        "lifetime": "0",
+                        "item_prototypes": [
+                            {
+                                "uuid": "cd1039b684f8467889f105c60c82448c",
+                                "name": "Free disk space on {#FSNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "vfs.fs.size[{#FSNAME},free]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "B",
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Disk"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "8e0b07e49c0f4a70b9e400bf1291e3c1",
+                                "name": "Free disk space on {#FSNAME} in %",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "vfs.fs.size[{#FSNAME},pfree]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "value_type": "FLOAT",
+                                "units": "%",
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Disk"
+                                    }
+                                ],
+                                "trigger_prototypes": [
+                                    {
+                                        "uuid": "ff0abf32b7964ca1ab4ff8f84f668cbf",
+                                        "expression": "nodata(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree],1h)=1",
+                                        "recovery_mode": "RECOVERY_EXPRESSION",
+                                        "recovery_expression": "nodata(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree],10m)=0",
+                                        "name": "{HOST.NAME}: Stopped recieving data (HDD) - DISASTER",
+                                        "priority": "DISASTER"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "32c49e70702749ebb1dbae3f93795d8a",
+                                "name": "Total disk space on {#FSNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "vfs.fs.size[{#FSNAME},total]",
+                                "delay": "600",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "B",
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Disk"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "a832c342c1bc40f8bc44df2553582db4",
+                                "name": "Used disk space on {#FSNAME}",
+                                "type": "ZABBIX_ACTIVE",
+                                "key": "vfs.fs.size[{#FSNAME},used]",
+                                "delay": "300",
+                                "history": "8d",
+                                "trends": "8d",
+                                "units": "B",
+                                "tags": [
+                                    {
+                                        "tag": "Application",
+                                        "value": "Disk"
+                                    }
+                                ]
+                            }
+                        ],
+                        "trigger_prototypes": [
+                            {
+                                "uuid": "bcf3c8d1184043f2b2741285e81cba17",
+                                "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>1",
+                                "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "6f8fc363b8514aa2acbb66262bb0e3fc",
+                                "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>2",
+                                "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "c70c9a117d1f42f99ee349fbc396d2f1",
+                                "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>3",
+                                "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "a16e354abefa4f4684c2995fdb8803fa",
+                                "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>4",
+                                "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "b74b91baf65d40c8872be27b3f36ac4a",
+                                "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>5",
+                                "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            },
+                            {
+                                "uuid": "37c2614ec02b4a77917f8001f950e260",
+                                "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=10 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>10",
+                                "name": "{HOSTNAME} - Free disk space is less than 10% on partition: {#FSNAME} - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>1"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>2"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>3"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>4"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>5"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])=0 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>0"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "eb6a92e24e244f21ab1e96358bea2d67",
+                                "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=20 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>20",
+                                "name": "{HOSTNAME} - Free disk space is less than 20% on partition: {#FSNAME} - HIGH",
+                                "priority": "HIGH",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>1"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>2"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>3"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>4"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>5"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])=0 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>0"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "97c26856e295478b9c9d50886f28a11e",
+                                "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=30 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>30",
+                                "name": "{HOSTNAME} - Free disk space is less than 30% on partition: {#FSNAME} - AVERAGE",
+                                "priority": "AVERAGE",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>1"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>2"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>3"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>4"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>5"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 10% on partition: {#FSNAME} - HIGH",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=10 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>10"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 20% on partition: {#FSNAME} - HIGH",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=20 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>20"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])=0 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>0"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "efdc172c5a52471fbd81f1cfbda82d69",
+                                "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=50 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>50",
+                                "name": "{HOSTNAME} - Free disk space is less than 50% on partition: {#FSNAME} - WARNING",
+                                "priority": "WARNING",
+                                "dependencies": [
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=1 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>1"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=2 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>2"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=3 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>3"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=4 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>4"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=5 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>5"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 10% on partition: {#FSNAME} - HIGH",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=10 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>10"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 20% on partition: {#FSNAME} - HIGH",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=20 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>20"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - Free disk space is less than 30% on partition: {#FSNAME} - AVERAGE",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])<=30 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>30"
+                                    },
+                                    {
+                                        "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                        "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])=0 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                        "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>0"
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "75e5c050b6794d4d97d85b7540ede596",
+                                "expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])=0 and last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},free])>=0",
+                                "recovery_mode": "RECOVERY_EXPRESSION",
+                                "recovery_expression": "last(/Olos - SO Windows Active - DTB01/vfs.fs.size[{#FSNAME},pfree])>0",
+                                "name": "{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER",
+                                "priority": "DISASTER"
+                            }
+                        ],
+                        "graph_prototypes": [
+                            {
+                                "uuid": "e19a0a00a7f64eccb75bb9b83bca7047",
+                                "name": "Disk space usage history in % on the partition: {#FSNAME}",
+                                "width": "500",
+                                "ymin_type_1": "FIXED",
+                                "ymax_type_1": "ITEM",
+                                "ymax_item_1": {
+                                    "host": "Olos - SO Windows Active - DTB01",
+                                    "key": "vfs.fs.size[{#FSNAME},pfree]"
+                                },
+                                "graph_items": [
+                                    {
+                                        "drawtype": "BOLD_LINE",
+                                        "color": "1A7C11",
+                                        "item": {
+                                            "host": "Olos - SO Windows Active - DTB01",
+                                            "key": "vfs.fs.size[{#FSNAME},pfree]"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "46fce347c8f44436a9827df3acbaebe4",
+                                "name": "Disk space usage history on the partition: {#FSNAME}",
+                                "width": "500",
+                                "ymin_type_1": "FIXED",
+                                "ymax_type_1": "ITEM",
+                                "ymax_item_1": {
+                                    "host": "Olos - SO Windows Active - DTB01",
+                                    "key": "vfs.fs.size[{#FSNAME},total]"
+                                },
+                                "graph_items": [
+                                    {
+                                        "drawtype": "BOLD_LINE",
+                                        "color": "1A7C11",
+                                        "item": {
+                                            "host": "Olos - SO Windows Active - DTB01",
+                                            "key": "vfs.fs.size[{#FSNAME},used]"
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "uuid": "220568276f6e4f34a7c2ab9ef7eb074a",
+                                "name": "Disk space usage on partition: {#FSNAME}",
+                                "width": "500",
+                                "yaxismax": "0",
+                                "show_work_period": "NO",
+                                "show_triggers": "NO",
+                                "type": "PIE",
+                                "show_3d": "YES",
+                                "graph_items": [
+                                    {
+                                        "color": "00C800",
+                                        "item": {
+                                            "host": "Olos - SO Windows Active - DTB01",
+                                            "key": "vfs.fs.size[{#FSNAME},total]"
+                                        }
+                                    },
+                                    {
+                                        "sortorder": "1",
+                                        "color": "C80000",
+                                        "item": {
+                                            "host": "Olos - SO Windows Active - DTB01",
+                                            "key": "vfs.fs.size[{#FSNAME},free]"
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "macros": [
+                    {
+                        "macro": "{$CPU_AVERAGE}",
+                        "value": "80"
+                    },
+                    {
+                        "macro": "{$CPU_DISASTER}",
+                        "value": "95"
+                    },
+                    {
+                        "macro": "{$CPU_HIGH_0}",
+                        "value": "90"
+                    },
+                    {
+                        "macro": "{$CPU_HIGH_1}",
+                        "value": "85"
+                    },
+                    {
+                        "macro": "{$CPU_TIME}",
+                        "value": "10m"
+                    },
+                    {
+                        "macro": "{$FS_AVERAGE_0}",
+                        "value": "15"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0}",
+                        "value": "5"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0: \"C:\"}",
+                        "value": "50"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0: \"D:\"}",
+                        "value": "50"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0: \"E:\"}",
+                        "value": "20"
+                    },
+                    {
+                        "macro": "{$FS_DISASTER_0: \"F:\"}",
+                        "value": "20"
+                    },
+                    {
+                        "macro": "{$FS_HIGH_0}",
+                        "value": "10"
+                    },
+                    {
+                        "macro": "{$FS_TIME}",
+                        "value": "5m"
+                    },
+                    {
+                        "macro": "{$ICMP_TIME}",
+                        "value": "5m"
+                    },
+                    {
+                        "macro": "{$MEM_AVERAGE}",
+                        "value": "50"
+                    },
+                    {
+                        "macro": "{$MEM_DISASTER}",
+                        "value": "80"
+                    },
+                    {
+                        "macro": "{$MEM_TIME}",
+                        "value": "10m"
+                    },
+                    {
+                        "macro": "{$NET_THRESHOLD}",
+                        "value": "90"
+                    },
+                    {
+                        "macro": "{$NET_TIME}",
+                        "value": "5m"
+                    },
+                    {
+                        "macro": "{$PAGEFILE_THRESHOLD}",
+                        "value": "75"
+                    },
+                    {
+                        "macro": "{$PAGEFILE_TIME}",
+                        "value": "5m"
+                    }
+                ],
+                "valuemaps": [
+                    {
+                        "uuid": "2e1036493817446c817ef9219735de59",
+                        "name": "Service state",
+                        "mappings": [
+                            {
+                                "value": "0",
+                                "newvalue": "Down"
+                            },
+                            {
+                                "value": "1",
+                                "newvalue": "Up"
+                            }
+                        ]
+                    },
+                    {
+                        "uuid": "9e2a9a81229d43d985d14b44839dff34",
+                        "name": "Zabbix agent ping status",
+                        "mappings": [
+                            {
+                                "value": "1",
+                                "newvalue": "Up"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "triggers": [
+            {
+                "uuid": "8ef9f49a8d784934b7971502f718c17d",
+                "expression": "nodata(/Olos - SO Windows Active - DTB01/system.uptime,10m)=1",
+                "recovery_mode": "RECOVERY_EXPRESSION",
+                "recovery_expression": "nodata(/Olos - SO Windows Active - DTB01/system.cpu.util,10m)=0",
+                "name": "{HOSTNAME}: Stopped recieving data (UPTIME) - DISASTER",
+                "priority": "DISASTER"
+            }
+        ],
+        "graphs": [
+            {
+                "uuid": "789f79782fd145319bfa1cc62c3e753e",
+                "name": "Performance overview",
+                "show_work_period": "NO",
+                "show_triggers": "NO",
+                "ymin_type_1": "FIXED",
+                "graph_items": [
+                    {
+                        "drawtype": "BOLD_LINE",
+                        "color": "C80000",
+                        "item": {
+                            "host": "Olos - SO Windows Active - DTB01",
+                            "key": "system.cpu.util"
+                        }
+                    },
+                    {
+                        "sortorder": "1",
+                        "color": "00C800",
+                        "item": {
+                            "host": "Olos - SO Windows Active - DTB01",
+                            "key": "vm.memory.size[pused]"
+                        }
+                    },
+                    {
+                        "sortorder": "2",
+                        "color": "0000EE",
+                        "item": {
+                            "host": "Olos - SO Windows Active - DTB01",
+                            "key": "perf_counter[\\700(_Total)\\702]"
+                        }
+                    },
+                    {
+                        "sortorder": "3",
+                        "color": "DAA520",
+                        "item": {
+                            "host": "Olos - SO Windows Active - DTB01",
+                            "key": "system.cpu.load[percpu,avg1]"
+                        }
+                    },
+                    {
+                        "sortorder": "4",
+                        "color": "6C59DC",
+                        "item": {
+                            "host": "Olos - SO Windows Active - DTB01",
+                            "key": "perf_counter[\\234(_Total)\\1400]"
+                        }
+                    },
+                    {
+                        "sortorder": "5",
+                        "color": "FF33FF",
+                        "item": {
+                            "host": "Olos - SO Windows Active - DTB01",
+                            "key": "perf_counter[\\234(_Total)\\1402]"
+                        }
+                    },
+                    {
+                        "sortorder": "6",
+                        "color": "FFFF33",
+                        "item": {
+                            "host": "Olos - SO Windows Active - DTB01",
+                            "key": "perf_counter[\\234(_Total)\\1404]"
+                        }
+                    }
+                ]
+            }
+        ]
+    }
+}
