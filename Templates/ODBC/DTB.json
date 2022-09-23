@@ -9,20 +9,20 @@
             },
             {
                 "uuid": "91290fe175a04a15adff4015122fa0b6",
-                "name": "Templates/Olos"
+                "name": "Templates/LUANCS"
             }
         ],
         "templates": [
             {
                 "uuid": "37795e173e3b400096314d402183d5d9",
-                "template": "Olos - SO Windows Active - DTBs Cloud",
-                "name": "Olos - SO Windows Active - DTBs Cloud",
+                "template": "LUANCS - SO Windows Active - DTBs Cloud",
+                "name": "LUANCS - SO Windows Active - DTBs Cloud",
                 "groups": [
                     {
                         "name": "Templates/JLCP"
                     },
                     {
-                        "name": "Templates/Olos"
+                        "name": "Templates/LUANCS"
                     }
                 ],
                 "items": [
@@ -44,7 +44,7 @@
                         "triggers": [
                             {
                                 "uuid": "b04f33aa0a8049bf80b42207c4ca5fd6",
-                                "expression": "(last(/Olos - SO Windows Active - DTBs Cloud/agent.hostname,#1)<>last(/Olos - SO Windows Active - DTBs Cloud/agent.hostname,#2))>0",
+                                "expression": "(last(/LUANCS - SO Windows Active - DTBs Cloud/agent.hostname,#1)<>last(/Olos - SO Windows Active - DTBs Cloud/agent.hostname,#2))>0",
                                 "name": "{HOSTNAME}: Host name of zabbix_agentd was changed - INFORMATION",
                                 "priority": "INFO"
                             }
@@ -70,7 +70,7 @@
                         "triggers": [
                             {
                                 "uuid": "42142ca2e2ab4c34a6967decf657e4f3",
-                                "expression": "nodata(/Olos - SO Windows Active - DTBs Cloud/agent.ping,10m)=1",
+                                "expression": "nodata(/LUANCS - SO Windows Active - DTBs Cloud/agent.ping,10m)=1",
                                 "recovery_mode": "RECOVERY_EXPRESSION",
                                 "recovery_expression": "nodata(/Olos - SO Windows Active - DTBs Cloud/agent.ping,10m)=0",
                                 "name": "{HOSTNAME}: Zabbix agent is unreachable - DISASTER",
@@ -96,7 +96,7 @@
                         "triggers": [
                             {
                                 "uuid": "a7f095a59068408ab83e0507d63201dd",
-                                "expression": "(last(/Olos - SO Windows Active - DTBs Cloud/agent.version,#1)<>last(/Olos - SO Windows Active - DTBs Cloud/agent.version,#2))>0",
+                                "expression": "(last(/LUANCS - SO Windows Active - DTBs Cloud/agent.version,#1)<>last(/Olos - SO Windows Active - DTBs Cloud/agent.version,#2))>0",
                                 "name": "{HOSTNAME}: Version of zabbix_agent(d) was changed - INFORMATION",
                                 "priority": "INFO"
                             }
@@ -104,7 +104,7 @@
                     },
                     {
                         "uuid": "eb505156100a4cd9835391fc982acd9a",
-                        "name": "Event Viewer Olos",
+                        "name": "Event Viewer",
                         "type": "ZABBIX_ACTIVE",
                         "key": "eventlog[Application,Olos,,,,,]",
                         "history": "30d",
@@ -119,7 +119,7 @@
                     },
                     {
                         "uuid": "d09ffaf31397418db24cb39f51a04223",
-                        "name": "Event Viewer Olos - Threads",
+                        "name": "Event Viewer - Threads",
                         "type": "ZABBIX_ACTIVE",
                         "key": "eventlog[Application,ThreadAvailable = 0,,,,,]",
                         "history": "30d",
@@ -134,17 +134,17 @@
                         "triggers": [
                             {
                                 "uuid": "83c936b6439e441ea1e5894bb09d8aea",
-                                "expression": "count(/Olos - SO Windows Active - DTBs Cloud/eventlog[Application,ThreadAvailable = 0,,,,,],1m,,\"ThreadAvailable = 0\")>1",
+                                "expression": "count(/LUANCS - SO Windows Active - DTBs Cloud/eventlog[Application,ThreadAvailable = 0,,,,,],1m,,\"ThreadAvailable = 0\")>1",
                                 "recovery_mode": "RECOVERY_EXPRESSION",
-                                "recovery_expression": "nodata(/Olos - SO Windows Active - DTBs Cloud/eventlog[Application,ThreadAvailable = 0,,,,,],1h)=1",
+                                "recovery_expression": "nodata(/LUANCS - SO Windows Active - DTBs Cloud/eventlog[Application,ThreadAvailable = 0,,,,,],1h)=1",
                                 "name": "{HOSTNAME} - Event Viewer - {ITEM.VALUE} 1x in the last minute - HIGH",
                                 "priority": "HIGH"
                             },
                             {
                                 "uuid": "09c866871fe7420ebae931e1aeb8f10a",
-                                "expression": "count(/Olos - SO Windows Active - DTBs Cloud/eventlog[Application,ThreadAvailable = 0,,,,,],1m,,\"ThreadAvailable = 0\")>10",
+                                "expression": "count(/LUANCS - SO Windows Active - DTBs Cloud/eventlog[Application,ThreadAvailable = 0,,,,,],1m,,\"ThreadAvailable = 0\")>10",
                                 "recovery_mode": "RECOVERY_EXPRESSION",
-                                "recovery_expression": "nodata(/Olos - SO Windows Active - DTBs Cloud/eventlog[Application,ThreadAvailable = 0,,,,,],1h)=1",
+                                "recovery_expression": "nodata(/LUANCS - SO Windows Active - DTBs Cloud/eventlog[Application,ThreadAvailable = 0,,,,,],1h)=1",
                                 "name": "{HOSTNAME} - Event Viewer - {ITEM.VALUE} more than 10x in the last minute - DISASTER",
                                 "priority": "DISASTER"
                             }
@@ -215,21 +215,21 @@
                         "triggers": [
                             {
                                 "uuid": "3fd22351bcba44848ed6c1dc35dee3e9",
-                                "expression": "min(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],1h)>=50",
+                                "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],1h)>=50",
                                 "recovery_mode": "RECOVERY_EXPRESSION",
-                                "recovery_expression": "max(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)<50",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)<50",
                                 "name": "{HOSTNAME} - Disk Queue Length is above 50 for more than 1 hour - AVERAGE",
                                 "priority": "AVERAGE",
                                 "dependencies": [
                                     {
                                         "name": "{HOSTNAME} - Disk Queue Length is above 200 for more than 1 hour - HIGH",
-                                        "expression": "min(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],1h)>=200",
-                                        "recovery_expression": "max(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)<200"
+                                        "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],1h)>=200",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)<200"
                                     },
                                     {
                                         "name": "{HOSTNAME} - Disk Queue Length is above 500 for more than 30 minutes - DISASTER",
-                                        "expression": "min(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)>=500",
-                                        "recovery_expression": "max(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],15m)<500"
+                                        "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)>=500",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],15m)<500"
                                     }
                                 ]
                             },
@@ -237,20 +237,20 @@
                                 "uuid": "f8a9e24ac3b949af8f5b2bfaf9406237",
                                 "expression": "min(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],1h)>=200",
                                 "recovery_mode": "RECOVERY_EXPRESSION",
-                                "recovery_expression": "max(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)<200",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)<200",
                                 "name": "{HOSTNAME} - Disk Queue Length is above 200 for more than 1 hour - HIGH",
                                 "priority": "HIGH",
                                 "dependencies": [
                                     {
                                         "name": "{HOSTNAME} - Disk Queue Length is above 500 for more than 30 minutes - DISASTER",
-                                        "expression": "min(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)>=500",
+                                        "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)>=500",
                                         "recovery_expression": "max(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],15m)<500"
                                     }
                                 ]
                             },
                             {
                                 "uuid": "0dd5494d36d64d059df57ca51dc5b85a",
-                                "expression": "min(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)>=500",
+                                "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],30m)>=500",
                                 "recovery_mode": "RECOVERY_EXPRESSION",
                                 "recovery_expression": "max(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\234(_Total)\\1400],15m)<500",
                                 "name": "{HOSTNAME} - Disk Queue Length is above 500 for more than 30 minutes - DISASTER",
@@ -307,59 +307,59 @@
                         "triggers": [
                             {
                                 "uuid": "641aca850b38466ea6ec900c311531cf",
-                                "expression": "avg(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],8h)>50",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],8h)>50",
                                 "recovery_mode": "RECOVERY_EXPRESSION",
-                                "recovery_expression": "avg(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)<=50",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)<=50",
                                 "name": "{HOSTNAME} - Average pagefile usage is more than 50% for more than 8 hours - AVERAGE",
                                 "priority": "AVERAGE",
                                 "dependencies": [
                                     {
                                         "name": "{HOSTNAME} - Average pagefile usage is more than 90% for more then 1 hour - DISASTER",
-                                        "expression": "avg(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>90",
-                                        "recovery_expression": "avg(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],30m)<=90"
+                                        "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>90",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],30m)<=90"
                                     },
                                     {
                                         "name": "{HOSTNAME} - Average pagefile usage is than 70% for more then 1 hour - HIGH",
-                                        "expression": "avg(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>70",
-                                        "recovery_expression": "avg(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)<=70"
+                                        "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>70",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)<=70"
                                     }
                                 ]
                             },
                             {
                                 "uuid": "96234010e25143efa4ae8dc5d76d9e10",
-                                "expression": "avg(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>90",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>90",
                                 "recovery_mode": "RECOVERY_EXPRESSION",
-                                "recovery_expression": "avg(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],30m)<=90",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],30m)<=90",
                                 "name": "{HOSTNAME} - Average pagefile usage is more than 90% for more then 1 hour - DISASTER",
                                 "priority": "DISASTER",
                                 "dependencies": [
                                     {
                                         "name": "{HOSTNAME} - Pagefile above 95% for more then 10 minutes - DISASTER",
-                                        "expression": "min(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)>=95",
-                                        "recovery_expression": "max(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)<95"
+                                        "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)>=95",
+                                        "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)<95"
                                     }
                                 ]
                             },
                             {
                                 "uuid": "10097d1c8a5d40638d0d1caedd6d05cd",
-                                "expression": "avg(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>70",
+                                "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>70",
                                 "recovery_mode": "RECOVERY_EXPRESSION",
-                                "recovery_expression": "avg(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)<=70",
+                                "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)<=70",
                                 "name": "{HOSTNAME} - Average pagefile usage is than 70% for more then 1 hour - HIGH",
                                 "priority": "HIGH",
                                 "dependencies": [
                                     {
                                         "name": "{HOSTNAME} - Average pagefile usage is more than 90% for more then 1 hour - DISASTER",
-                                        "expression": "avg(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>90",
-                                        "recovery_expression": "avg(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],30m)<=90"
+                                        "expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],1h)>90",
+                                        "recovery_expression": "avg(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],30m)<=90"
                                     }
                                 ]
                             },
                             {
                                 "uuid": "dfd71410a03d404897f65800070054f0",
-                                "expression": "min(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)>=95",
+                                "expression": "min(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)>=95",
                                 "recovery_mode": "RECOVERY_EXPRESSION",
-                                "recovery_expression": "max(/Olos - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)<95",
+                                "recovery_expression": "max(/LUANCS - SO Windows Active - DTBs Cloud/perf_counter[\\700(_Total)\\702],10m)<95",
                                 "name": "{HOSTNAME} - Pagefile above 95% for more then 10 minutes - DISASTER",
                                 "priority": "DISASTER"
                             }
