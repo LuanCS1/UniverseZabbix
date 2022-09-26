@@ -89,7 +89,7 @@ Restart Automatico
 chkconfig zabbix-agent on 
 systemctl enable zabbix-agent 
 
-Download NUA
+Download CentOS6
 
 rpm -Uvh https://repo.zabbix.com/zabbix/4.4/rhel/6/x86_64/zabbix-agent-5.4.9-1.el6.x86_64.rpm
 
