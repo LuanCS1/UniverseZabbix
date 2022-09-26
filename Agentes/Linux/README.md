@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <h1 align="center" ><b>Linux Install</b></h1>
 
-<b><h4 align="center">NMS e NUA install LINUX</b></h4>
+<b><h4 align="center">CentOS6 e 7 install LINUX</b></h4>
 
 <pre><code>sudo rpm -Uvh /home/olos/Downloads/zabbix-agent-5.4.9-1.el7.x86_64.rpm
 sudo rpm -Uvh /home/olos/Downloads/zabbix-agent-5.4.9-1.el6.x86_64.rpm
 rpm -Uvh https://repo.zabbix.com/zabbix/4.4/rhel/6/x86_64/zabbix-agent-5.4.9-1.el6.x86_64.rpm
 </pre></code>
 
-<b><h4 align="center">BOT Install :</b></h4>
+<b><h4 align="center">CentOS7 Install :</b></h4>
 
 <pre><code>sudo rpm -Uvh /home/olos/downloads/zabbix-agent-5.4.9-1.el7.x86_64.rpm
 sudo rpm -Uvh /home/olos/zabbix-agent-5.4.9-1.el7.x86_64.rpm</pre></code>
 
-<b><h4 align="center">VPL install:</b></h4>
+<b><h4 align="center">DEbian Wheezy install:</b></h4>
 
 <pre><code>sudo dpkg -i /home/olos/Downloads/zabbix-agent_3.4.0-1+wheezy_amd64.deb
 wget https://repo.zabbix.com/zabbix/3.4/debian/pool/main/z/zabbix/zabbix-agent_3.4.0-1%2Bwheezy_amd64.deb
