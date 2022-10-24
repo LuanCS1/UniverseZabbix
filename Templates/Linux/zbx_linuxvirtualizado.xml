@@ -1,0 +1,781 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zabbix_export>
+    <version>5.0</version>
+    <date>2022-10-24T14:18:03Z</date>
+    <groups>
+        <group>
+            <name>Templates/Operating Systems</name>
+        </group>
+    </groups>
+    <templates>
+        <template>
+            <template>Template OS Linux Virtualizado SNMPv2</template>
+            <name>Template OS Linux Virtualizado SNMPv2</name>
+            <description>Template OS Linux version: 0.14</description>
+            <templates>
+                <template>
+                    <name>Template Module Generic SNMPv2</name>
+                </template>
+                <template>
+                    <name>Template Module HOST-RESOURCES-MIB SNMPv2</name>
+                </template>
+                <template>
+                    <name>Template Module Interfaces SNMPv2</name>
+                </template>
+                <template>
+                    <name>Template Module Linux memory by Zabbix agent</name>
+                </template>
+                <template>
+                    <name>Template SNMPv2 LM-SENSORS</name>
+                </template>
+            </templates>
+            <groups>
+                <group>
+                    <name>Templates/Operating Systems</name>
+                </group>
+            </groups>
+            <applications>
+                <application>
+                    <name>Disk</name>
+                </application>
+                <application>
+                    <name>Partition</name>
+                </application>
+            </applications>
+            <items>
+                <item>
+                    <name>Version of zabbix_agent(d) running</name>
+                    <key>agent.version</key>
+                    <delay>600</delay>
+                    <history>1w</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <applications>
+                        <application>
+                            <name>General</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Interrupts per second</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>1.3.6.1.4.1.2021.11.59.0</snmp_oid>
+                    <key>system.cpu.intr[ssRawInterrupts.0]</key>
+                    <history>1w</history>
+                    <trends>0</trends>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>CHANGE_PER_SECOND</type>
+                            <params/>
+                        </step>
+                    </preprocessing>
+                </item>
+                <item>
+                    <name>Load Average 1</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.2021.10.1.3.1</snmp_oid>
+                    <key>system.cpu.load[percpu,avg1]</key>
+                    <history>1w</history>
+                    <trends>0</trends>
+                    <value_type>FLOAT</value_type>
+                    <inventory_link>OS</inventory_link>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Load Average 5</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.2021.10.1.3.2</snmp_oid>
+                    <key>system.cpu.load[percpu,avg5]</key>
+                    <delay>5m</delay>
+                    <history>1w</history>
+                    <trends>0</trends>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Load Average 15</name>
+                    <type>SNMP_AGENT</type>
+                    <snmp_oid>.1.3.6.1.4.1.2021.10.1.3.3</snmp_oid>
+                    <key>system.cpu.load[percpu,avg15]</key>
+                    <delay>15m</delay>
+                    <history>1w</history>
+                    <trends>0</trends>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Context switches per second</name>
+                    <key>system.cpu.switches</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                    <preprocessing>
+                        <step>
+                            <type>CHANGE_PER_SECOND</type>
+                            <params/>
+                        </step>
+                    </preprocessing>
+                </item>
+                <item>
+                    <name>CPU Usage in %</name>
+                    <key>system.cpu.util</key>
+                    <delay>60</delay>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                    <triggers>
+                        <trigger>
+                            <expression>{min(8h)}&gt;50</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{max(10m)}&lt;=50</recovery_expression>
+                            <name>{HOSTNAME} - Average CPU usage is more than 50% for more than 8 hour - AVERAGE</name>
+                            <priority>AVERAGE</priority>
+                        </trigger>
+                        <trigger>
+                            <expression>{min(1h)}&gt;80</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{max(10m)}&lt;=80</recovery_expression>
+                            <name>{HOSTNAME} - Average CPU usage is more than 80% for more than 1 hour - HIGH</name>
+                            <priority>HIGH</priority>
+                        </trigger>
+                        <trigger>
+                            <expression>{min(1h)}&gt;90</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{max(10m)}&lt;=90</recovery_expression>
+                            <name>{HOSTNAME} - Average CPU usage is more than 90% for more than 1 hour - DISASTER</name>
+                            <priority>DISASTER</priority>
+                        </trigger>
+                        <trigger>
+                            <expression>{min(10m)}&gt;=95</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{max(10m)}&lt;95</recovery_expression>
+                            <name>{HOSTNAME} - CPU usage is above 95% for more than 10 minutes - DISASTER</name>
+                            <priority>DISASTER</priority>
+                        </trigger>
+                    </triggers>
+                </item>
+                <item>
+                    <name>CPU guest time</name>
+                    <key>system.cpu.util[,guest]</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>Guest  time (time  spent  running  a  virtual  CPU  for  a  guest  operating  system)</description>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>CPU guest nice time</name>
+                    <key>system.cpu.util[,guest_nice]</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>Time spent running a niced guest (virtual CPU for guest operating systems under the control of the Linux kernel)</description>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>CPU idle time</name>
+                    <key>system.cpu.util[,idle]</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>The time the CPU has spent doing nothing.</description>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>CPU interrupt time</name>
+                    <key>system.cpu.util[,interrupt]</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>The amount of time the CPU has been servicing hardware interrupts.</description>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>CPU iowait time</name>
+                    <key>system.cpu.util[,iowait]</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>Amount of time the CPU has been waiting for I/O to complete.</description>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>CPU nice time</name>
+                    <key>system.cpu.util[,nice]</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>The time the CPU has spent running users' processes that have been niced.</description>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>CPU softirq time</name>
+                    <key>system.cpu.util[,softirq]</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>The amount of time the CPU has been servicing software interrupts.</description>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>CPU steal time</name>
+                    <key>system.cpu.util[,steal]</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>The amount of CPU 'stolen' from this virtual machine by the hypervisor for other tasks (such as running another virtual machine).</description>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>CPU system time</name>
+                    <key>system.cpu.util[,system]</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>The time the CPU has spent running the kernel and its processes.</description>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>CPU user time</name>
+                    <key>system.cpu.util[,user]</key>
+                    <history>7d</history>
+                    <value_type>FLOAT</value_type>
+                    <units>%</units>
+                    <description>The time the CPU has spent running users' processes that are not niced.</description>
+                    <applications>
+                        <application>
+                            <name>CPU</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>System Version O.S</name>
+                    <key>system.sw.os[name]</key>
+                    <delay>1h</delay>
+                    <history>1w</history>
+                    <trends>0</trends>
+                    <value_type>CHAR</value_type>
+                    <inventory_link>OS_SHORT</inventory_link>
+                    <applications>
+                        <application>
+                            <name>General</name>
+                        </application>
+                    </applications>
+                </item>
+                <item>
+                    <name>Number of logged in users</name>
+                    <key>system.users.num</key>
+                    <history>7d</history>
+                    <description>Number of users who are currently logged in.</description>
+                    <applications>
+                        <application>
+                            <name>General</name>
+                        </application>
+                    </applications>
+                </item>
+            </items>
+            <discovery_rules>
+                <discovery_rule>
+                    <name>Mounted filesystem discovery</name>
+                    <key>vfs.fs.discovery</key>
+                    <delay>1800</delay>
+                    <filter>
+                        <conditions>
+                            <condition>
+                                <macro>{#FSTYPE}</macro>
+                                <value>@File systems for discovery</value>
+                                <formulaid>A</formulaid>
+                            </condition>
+                        </conditions>
+                    </filter>
+                    <lifetime>7d</lifetime>
+                    <item_prototypes>
+                        <item_prototype>
+                            <name>Free disk space on {#FSNAME}</name>
+                            <key>vfs.fs.size[{#FSNAME},free]</key>
+                            <delay>300</delay>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>Disk</name>
+                                </application>
+                            </applications>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>Disk</name>
+                                </application_prototype>
+                            </application_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Free disk space on {#FSNAME} in %</name>
+                            <key>vfs.fs.size[{#FSNAME},pfree]</key>
+                            <delay>300</delay>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <applications>
+                                <application>
+                                    <name>Disk</name>
+                                </application>
+                            </applications>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>Disk</name>
+                                </application_prototype>
+                            </application_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Used disk space in {#FSNAME}</name>
+                            <key>vfs.fs.size[{#FSNAME},pused]</key>
+                            <delay>300</delay>
+                            <value_type>FLOAT</value_type>
+                            <units>%</units>
+                            <applications>
+                                <application>
+                                    <name>Disk</name>
+                                </application>
+                            </applications>
+                            <application_prototypes>
+                                <application_prototype>
+                                    <name>Disk</name>
+                                </application_prototype>
+                            </application_prototypes>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Total disk space on {#FSNAME}</name>
+                            <key>vfs.fs.size[{#FSNAME},total]</key>
+                            <delay>600</delay>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>Disk</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                        <item_prototype>
+                            <name>Used disk space on {#FSNAME}</name>
+                            <key>vfs.fs.size[{#FSNAME},used]</key>
+                            <delay>300</delay>
+                            <units>B</units>
+                            <applications>
+                                <application>
+                                    <name>Disk</name>
+                                </application>
+                            </applications>
+                        </item_prototype>
+                    </item_prototypes>
+                    <trigger_prototypes>
+                        <trigger_prototype>
+                            <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=1 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;1</recovery_expression>
+                            <name>{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER</name>
+                            <priority>DISASTER</priority>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=2 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;2</recovery_expression>
+                            <name>{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER</name>
+                            <priority>DISASTER</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>{HOSTNAME} - Free disk space is less than 1% on partition: {#FSNAME} - DISASTER</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=1 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;1</recovery_expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=3 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;3</recovery_expression>
+                            <name>{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER</name>
+                            <priority>DISASTER</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>{HOSTNAME} - Free disk space is less than 2% on partition: {#FSNAME} - DISASTER</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=2 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;2</recovery_expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=4 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;4</recovery_expression>
+                            <name>{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER</name>
+                            <priority>DISASTER</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>{HOSTNAME} - Free disk space is less than 3% on partition: {#FSNAME} - DISASTER</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=3 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;3</recovery_expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=5 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;5</recovery_expression>
+                            <name>{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER</name>
+                            <priority>DISASTER</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>{HOSTNAME} - Free disk space is less than 4% on partition: {#FSNAME} - DISASTER</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=4 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;4</recovery_expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=10 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;10</recovery_expression>
+                            <name>{HOSTNAME} - Free disk space is less than 10% on partition: {#FSNAME} - DISASTER</name>
+                            <priority>DISASTER</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=5 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;5</recovery_expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=15 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;15</recovery_expression>
+                            <name>{HOSTNAME} - Free disk space is less than 15% on partition: {#FSNAME} - HIGH</name>
+                            <priority>HIGH</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>{HOSTNAME} - Free disk space is less than 10% on partition: {#FSNAME} - DISASTER</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=10 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;10</recovery_expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=20 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;20</recovery_expression>
+                            <name>{HOSTNAME} - Free disk space is less than 20% on partition: {#FSNAME} - HIGH</name>
+                            <priority>HIGH</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>{HOSTNAME} - Free disk space is less than 15% on partition: {#FSNAME} - HIGH</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=15 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;15</recovery_expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=30 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;30</recovery_expression>
+                            <name>{HOSTNAME} - Free disk space is less than 30% on partition: {#FSNAME} - AVERAGE</name>
+                            <priority>AVERAGE</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>{HOSTNAME} - Free disk space is less than 20% on partition: {#FSNAME} - HIGH</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=20 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;20</recovery_expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=40 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;40</recovery_expression>
+                            <name>{HOSTNAME} - Free disk space is less than 40% on partition: {#FSNAME} - AVERAGE</name>
+                            <priority>AVERAGE</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>{HOSTNAME} - Free disk space is less than 5% on partition: {#FSNAME} - DISASTER</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=5 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;5</recovery_expression>
+                                </dependency>
+                                <dependency>
+                                    <name>{HOSTNAME} - Free disk space is less than 10% on partition: {#FSNAME} - DISASTER</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=10 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;10</recovery_expression>
+                                </dependency>
+                                <dependency>
+                                    <name>{HOSTNAME} - Free disk space is less than 15% on partition: {#FSNAME} - HIGH</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=15 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;15</recovery_expression>
+                                </dependency>
+                                <dependency>
+                                    <name>{HOSTNAME} - Free disk space is less than 20% on partition: {#FSNAME} - HIGH</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=20 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;20</recovery_expression>
+                                </dependency>
+                                <dependency>
+                                    <name>{HOSTNAME} - Free disk space is less than 30% on partition: {#FSNAME} - AVERAGE</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=30 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;30</recovery_expression>
+                                </dependency>
+                                <dependency>
+                                    <name>{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=0 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;0</recovery_expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=50 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;50</recovery_expression>
+                            <name>{HOSTNAME} - Free disk space is less than 50% on partition: {#FSNAME} - WARNING</name>
+                            <priority>WARNING</priority>
+                            <dependencies>
+                                <dependency>
+                                    <name>{HOSTNAME} - Free disk space is less than 40% on partition: {#FSNAME} - AVERAGE</name>
+                                    <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=40 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                                    <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;40</recovery_expression>
+                                </dependency>
+                            </dependencies>
+                        </trigger_prototype>
+                        <trigger_prototype>
+                            <expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&lt;=0 and {Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},free].last()}&gt;=0</expression>
+                            <recovery_mode>RECOVERY_EXPRESSION</recovery_mode>
+                            <recovery_expression>{Template OS Linux Virtualizado SNMPv2:vfs.fs.size[{#FSNAME},pfree].last()}&gt;0</recovery_expression>
+                            <name>{HOSTNAME} - There is no free disk space on partition: {#FSNAME} - DISASTER</name>
+                            <priority>DISASTER</priority>
+                        </trigger_prototype>
+                    </trigger_prototypes>
+                    <graph_prototypes>
+                        <graph_prototype>
+                            <name>Disk space usage history in % on the partition: {#FSNAME}</name>
+                            <width>500</width>
+                            <ymin_type_1>FIXED</ymin_type_1>
+                            <ymax_type_1>ITEM</ymax_type_1>
+                            <ymax_item_1>
+                                <host>Template OS Linux Virtualizado SNMPv2</host>
+                                <key>vfs.fs.size[{#FSNAME},pfree]</key>
+                            </ymax_item_1>
+                            <graph_items>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <drawtype>GRADIENT_LINE</drawtype>
+                                    <color>1A7C11</color>
+                                    <item>
+                                        <host>Template OS Linux Virtualizado SNMPv2</host>
+                                        <key>vfs.fs.size[{#FSNAME},pfree]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                        <graph_prototype>
+                            <name>Disk space usage history on the partition: {#FSNAME}</name>
+                            <width>500</width>
+                            <ymin_type_1>FIXED</ymin_type_1>
+                            <ymax_type_1>ITEM</ymax_type_1>
+                            <ymax_item_1>
+                                <host>Template OS Linux Virtualizado SNMPv2</host>
+                                <key>vfs.fs.size[{#FSNAME},total]</key>
+                            </ymax_item_1>
+                            <graph_items>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <drawtype>GRADIENT_LINE</drawtype>
+                                    <color>1A7C11</color>
+                                    <item>
+                                        <host>Template OS Linux Virtualizado SNMPv2</host>
+                                        <key>vfs.fs.size[{#FSNAME},used]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                        <graph_prototype>
+                            <name>Disk space usage on partition: {#FSNAME}</name>
+                            <width>500</width>
+                            <yaxismax>0</yaxismax>
+                            <show_work_period>NO</show_work_period>
+                            <show_triggers>NO</show_triggers>
+                            <type>PIE</type>
+                            <show_3d>YES</show_3d>
+                            <graph_items>
+                                <graph_item>
+                                    <sortorder>1</sortorder>
+                                    <color>00C800</color>
+                                    <item>
+                                        <host>Template OS Linux Virtualizado SNMPv2</host>
+                                        <key>vfs.fs.size[{#FSNAME},total]</key>
+                                    </item>
+                                </graph_item>
+                                <graph_item>
+                                    <sortorder>2</sortorder>
+                                    <color>C80000</color>
+                                    <item>
+                                        <host>Template OS Linux Virtualizado SNMPv2</host>
+                                        <key>vfs.fs.size[{#FSNAME},free]</key>
+                                    </item>
+                                </graph_item>
+                            </graph_items>
+                        </graph_prototype>
+                    </graph_prototypes>
+                </discovery_rule>
+            </discovery_rules>
+            <macros>
+                <macro>
+                    <macro>{$CPU_UTIL_MAX}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$MEMORY_UTIL_MAX}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$STORAGE_UTIL_CRIT}</macro>
+                    <value>90</value>
+                </macro>
+                <macro>
+                    <macro>{$STORAGE_UTIL_WARN}</macro>
+                    <value>80</value>
+                </macro>
+                <macro>
+                    <macro>{$TEMP_CRIT}</macro>
+                    <value>60</value>
+                </macro>
+                <macro>
+                    <macro>{$TEMP_CRIT_LOW}</macro>
+                    <value>5</value>
+                </macro>
+                <macro>
+                    <macro>{$TEMP_WARN}</macro>
+                    <value>50</value>
+                </macro>
+            </macros>
+            <screens>
+                <screen>
+                    <name>System performance</name>
+                    <hsize>2</hsize>
+                    <vsize>6</vsize>
+                    <screen_items>
+                        <screen_item>
+                            <resourcetype>20</resourcetype>
+                            <style>0</style>
+                            <resource>
+                                <name>Interface {#IFNAME}({#IFALIAS}): Network traffic</name>
+                                <host>Template OS Linux Virtualizado SNMPv2</host>
+                            </resource>
+                            <width>750</width>
+                            <height>100</height>
+                            <x>0</x>
+                            <y>5</y>
+                            <colspan>2</colspan>
+                            <rowspan>1</rowspan>
+                            <elements>25</elements>
+                            <valign>0</valign>
+                            <halign>0</halign>
+                            <dynamic>0</dynamic>
+                            <sort_triggers>0</sort_triggers>
+                            <url/>
+                            <application/>
+                            <max_columns>3</max_columns>
+                        </screen_item>
+                    </screen_items>
+                </screen>
+            </screens>
+        </template>
+    </templates>
+    <graphs>
+        <graph>
+            <name>Load Average</name>
+            <yaxismax>24</yaxismax>
+            <ymin_type_1>FIXED</ymin_type_1>
+            <ymax_type_1>FIXED</ymax_type_1>
+            <graph_items>
+                <graph_item>
+                    <drawtype>GRADIENT_LINE</drawtype>
+                    <color>199C0D</color>
+                    <item>
+                        <host>Template OS Linux Virtualizado SNMPv2</host>
+                        <key>system.cpu.load[percpu,avg1]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>1</sortorder>
+                    <drawtype>GRADIENT_LINE</drawtype>
+                    <color>F63100</color>
+                    <item>
+                        <host>Template OS Linux Virtualizado SNMPv2</host>
+                        <key>system.cpu.load[percpu,avg5]</key>
+                    </item>
+                </graph_item>
+                <graph_item>
+                    <sortorder>2</sortorder>
+                    <drawtype>GRADIENT_LINE</drawtype>
+                    <color>2774A4</color>
+                    <item>
+                        <host>Template OS Linux Virtualizado SNMPv2</host>
+                        <key>system.cpu.load[percpu,avg15]</key>
+                    </item>
+                </graph_item>
+            </graph_items>
+        </graph>
+    </graphs>
+</zabbix_export>
