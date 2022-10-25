@@ -1,0 +1,110 @@
+
+
+Adcionar servidor no monitoramento ZABBIX:
+
+- Entrar no servidor e instalar repositorio
+
+sudo rpm -Uvh http://repo.zabbix.com/zabbix/3.0/rhel/7/x86_64/zabbix-release-3.0-1.el7.noarch.rpm
+sudo yum install zabbix-agent
+
+- Editar arquivo do agent zabbix
+sudo nano /etc/zabbix/zabbix_agentd.conf
+
+- Buscar no arquivo
+buscar: ctrl+w
+server= 127.0.0.1
+- Trocar para 
+server=177.53.16.99
+sudo service zabbix-agent restart
+
+- Instalando serviço SNMP
+
+yum install net-snmp net-snmp-utils
+
+cd /etc/
+ls
+snmp
+cd snmp
+ls
+snmpd.conf
+sudo nano snmpd.conf
+
+- Reiniciar serviço SNMP
+
+sudo service snmpd restart
+sudo chkconfig snmpd on
+
+- Apagar o texto que esta no arquivo
+ctrl+k
+
+- Copiar arquivo que esta em SNMP.txt dentro da pasta procedimentos
+- Colar no arquivo e salvar
+
+- Reiniciar arquivo SNMP
+
+service snmpd restart
+chkconfig snmpd on
+cd /etc/
+ls
+cd snmp
+ls
+sudo nano snmpd.conf
+sudo service snmpd restart
+
+SERIDOR WEB ZABBIX: 16.99
+
+http://177.53.16.99:8088/
+
+User: root
+Senha: Nex$0913MS
+
+- Entrar em CONFIGURATION
+- Clicar em Hosts
+- Buscar por Servidor, de preferencia que seja o IP de range igual a servidor a ser adcionado.
+- Clonar o server de pesquisa
+- Editar o servidor clonado com as configurações do servidor a ser adicionado
+- Por fim clicar em Add e verificar se o status esta verde SNMP
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
