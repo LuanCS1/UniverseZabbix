@@ -8,7 +8,7 @@
 
 Requer que o subagente <b>SNMP mod_snmp</b> esteja habilitado no <b>Freeswitch+net-snmp</b>.<br><br><br>
 
-<h2 align="center" >===============Procedimento Ativação SNMP FS===============</b></h2>
+<h2 align="center" >===========Procedimento Ativação SNMP FS==========</b></h2>
 
   <p>Compilação e instalação do <b><span>mod_snmp</span></b><br>
     Habilite a compilação do módulo por padrão, editando o arquivo <b><span>modules.conf</span></b>.</p>
